@@ -1,0 +1,11 @@
+[package]
+name = "sample"
+edition.workspace = true
+publish = false
+
+[dependencies]
+ndeq = { path = "../../" }
+plotters = "0.3"
+plotters-backend = "0.3"
+easy_node = "0.3"
+ref_iter = { git = "https://github.com/nossie531/ref_iter" }

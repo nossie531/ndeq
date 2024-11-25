@@ -15,6 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     sample.run_simulation();
 
     let out = get_out_path()?;
+    eprintln!("{}", out.to_str().unwrap());
     let root = SVGBackend::new(&*out, (600, 400)).into_drawing_area();
     root.fill(&WHITE)?;
 
@@ -32,7 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn get_out_path() -> std::io::Result<PathBuf> {
     let example_name = env!("CARGO_BIN_NAME");
-    let path = format!("examples/{example_name}/out/out.svg");
+    let path = format!("example_pkgs/{example_name}/out/out.svg");
     Ok(env::current_dir()?.join(path.as_str()))
 }
 

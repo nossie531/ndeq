@@ -1,16 +1,19 @@
+[workspace]
+members = ["example_pkgs/*"]
+
+[workspace.package]
+authors = ["Nossie531"]
+edition = "2021"
+repository = "https://github.com/nossie531/ndeq"
+license = "MIT OR Apache-2.0"
+
 [package]
 name = "ndeq"
 version = "0.1.0"
-authors = ["Nossie531"]
-edition = "2021"
 description = "Network diffusion simulator."
-repository = "https://github.com/nossie531/ndeq"
-license = "MIT OR Apache-2.0"
 keywords = ["diffusion equation", "network"]
 categories = ["science", "simulation"]
-
-[dev-dependencies]
-plotters = "0.3"
-plotters-backend = "0.3"
-easy_node = { git = "https://github.com/nossie531/easy_node" }
-ref_iter = { git = "https://github.com/nossie531/ref_iter" }
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true

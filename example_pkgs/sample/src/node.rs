@@ -27,7 +27,7 @@ impl Node {
     }
 
     pub fn conv(this: &Nr<Node>) -> Rc<dyn NdeqNode<f32>> {
-        Nr::bp(this).clone() as Rc<dyn NdeqNode<f32>>
+        Nr::base(this).clone() as Rc<dyn NdeqNode<f32>>
     }
 
     pub fn value(&self) -> f32 {

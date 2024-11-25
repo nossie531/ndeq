@@ -49,9 +49,9 @@ checksum = "79296716171880943b8470b5f8d03aa55eb2e645a4874bdbb28adb49162e012c"
 
 [[package]]
 name = "bytemuck"
-version = "1.19.0"
+version = "1.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8334215b81e418a0a7bdb8ef0849474f40bb10c8b71f1c4ed315cff49f32494d"
+checksum = "8b37c88a63ffd85d15b406896cc343916d7cf57838a847b3a6f2ca5d39a5695a"
 
 [[package]]
 name = "byteorder"
@@ -200,7 +200,8 @@ dependencies = [
 [[package]]
 name = "easy_node"
 version = "0.3.0"
-source = "git+https://github.com/nossie531/easy_node#7fdf641418fb68e015a9659ae8b744f52943c129"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5331d12f370d00964a06fe9d4bae6ad55a14d89c3ad6cc35c778d81db51101fd"
 
 [[package]]
 name = "fdeflate"
@@ -414,12 +415,6 @@ dependencies = [
 [[package]]
 name = "ndeq"
 version = "0.1.0"
-dependencies = [
- "easy_node",
- "plotters",
- "plotters-backend",
- "ref_iter",
-]
 
 [[package]]
 name = "num-traits"
@@ -528,9 +523,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.89"
+version = "1.0.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f139b0662de085916d1fb67d2b4169d1addddda1919e696f3252b740b629986e"
+checksum = "37d3544b3f2748c54e147655edb5025752e2303145b5aefb3c3ea2c78b973bb0"
 dependencies = [
  "unicode-ident",
 ]
@@ -558,7 +553,7 @@ dependencies = [
 [[package]]
 name = "ref_iter"
 version = "0.1.0"
-source = "git+https://github.com/nossie531/ref_iter#a9aeeca96888b82ebd12716c8fe0c3616738da66"
+source = "git+https://github.com/nossie531/ref_iter#fcdc35f50f2fa8f99c997f71ccc596a9903534b3"
 dependencies = [
  "ref_iter_macro",
 ]
@@ -566,7 +561,7 @@ dependencies = [
 [[package]]
 name = "ref_iter_macro"
 version = "0.1.0"
-source = "git+https://github.com/nossie531/ref_iter#a9aeeca96888b82ebd12716c8fe0c3616738da66"
+source = "git+https://github.com/nossie531/ref_iter#fcdc35f50f2fa8f99c997f71ccc596a9903534b3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -592,6 +587,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sample"
+version = "0.0.0"
+dependencies = [
+ "easy_node",
+ "ndeq",
+ "plotters",
+ "plotters-backend",
+ "ref_iter",
+]
+
+[[package]]
 name = "semver"
 version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -611,9 +617,9 @@ checksum = "d66dc143e6b11c1eddc06d5c423cfc97062865baf299914ab64caa38182078fe"
 
 [[package]]
 name = "syn"
-version = "2.0.87"
+version = "2.0.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25aa4ce346d03a6dcd68dd8b4010bcb74e54e62c90c573f394c46eae99aba32d"
+checksum = "44d46482f1c1c87acd84dea20c1bf5ebff4c757009ed6bf19cfd36fb10e92c4e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -648,9 +654,9 @@ checksum = "17f77d76d837a7830fe1d4f12b7b4ba4192c1888001c7164257e4bc6d21d96b4"
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.13"
+version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e91b56cd4cadaeb79bbf1a5645f6b4f8dc5bde8834ad5894a8db35fda9efa1fe"
+checksum = "adb9e6ca4f869e1180728b7950e35922a7fc6397f7b641499e8f3ef06e50dc83"
 
 [[package]]
 name = "walkdir"
