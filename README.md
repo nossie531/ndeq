@@ -17,7 +17,7 @@ Then, diffusion average node values through edge weights.
 
 Full connected three nodes simulation.
 
-<img src="examples/sample/out/out.svg" height="300"/>
+<img src="example_pkgs/sample/out/out.svg" height="300"/>
 
 ## Target network
 
