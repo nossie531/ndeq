@@ -10,7 +10,7 @@ Network diffusion simulator.
 
 This crate simulates diffusion on network.
 Here, network nodes have value.
-Also, network edges have weight.
+And, network edges have weight.
 Then, diffusion average node values through edge weights.
 
 ## Gallery
