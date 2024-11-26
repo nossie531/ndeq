@@ -199,9 +199,9 @@ dependencies = [
 
 [[package]]
 name = "easy_node"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5331d12f370d00964a06fe9d4bae6ad55a14d89c3ad6cc35c778d81db51101fd"
+checksum = "25c3cf9bbebe3f21eaa7dfd9c263f6de056ea1b57d7aa96696b42c9cbc3d5440"
 
 [[package]]
 name = "fdeflate"

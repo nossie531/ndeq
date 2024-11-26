@@ -1,7 +1,5 @@
 //! Provider of [`NdeqNode`].
 
-use std::rc::Rc;
-
 /// Target node of diffusion calculation.
 pub trait NdeqNode<V> {
     /// Get node value.
@@ -18,10 +16,10 @@ pub trait NdeqNode<V> {
     /// Panics if target is currently borrowed.
     fn set_value(&self, value: V);
 
-    /// Get intake edges iterator.
+    /// Get edges iterator.
     ///
     /// # Panics
     ///
     /// Panics if target is currently mutably borrowed.
-    fn in_edges(&self) -> Box<dyn Iterator<Item = (Rc<dyn NdeqNode<V>>, f32)> + '_>;
+    fn edges(&self) -> Box<dyn Iterator<Item = (V, f32)> + '_>;
 }

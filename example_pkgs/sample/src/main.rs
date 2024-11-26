@@ -1,4 +1,4 @@
-mod network;
+mod net;
 mod node;
 mod plotters_util;
 mod sample;
@@ -15,7 +15,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     sample.run_simulation();
 
     let out = get_out_path()?;
-    eprintln!("{}", out.to_str().unwrap());
     let root = SVGBackend::new(&*out, (600, 400)).into_drawing_area();
     root.fill(&WHITE)?;
 

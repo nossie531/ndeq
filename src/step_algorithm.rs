@@ -3,7 +3,6 @@
 use crate::prelude::*;
 use crate::values::{Time, Value};
 use std::ops::Mul;
-use std::rc::Rc;
 
 /// Step algorithm.
 #[must_use]
@@ -26,5 +25,5 @@ where
     ///
     /// * `width` is NaN.
     /// * Calculation target nodes values are borrowed.
-    fn step(&mut self, nodes: &[Rc<dyn NdeqNode<V>>], width: T);
+    fn step(&mut self, nodes: &[&dyn NdeqNode<V>], width: T);
 }

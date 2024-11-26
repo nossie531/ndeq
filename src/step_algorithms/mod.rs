@@ -1,7 +1,7 @@
 //! Step algorithms.
 
-mod explicit_euler;
+mod euler;
 mod runge_kutta;
 
-pub use explicit_euler::*;
+pub use euler::*;
 pub use runge_kutta::*;

@@ -34,7 +34,7 @@ Simulation of diffusion is a type of initial value problem for differential
 equations. On this problem, various numerical analysis approaches are known.
 This crate has following alogorithms. 
 
-* Explicit Euler - Very fast, but inaccurate.
-* Runge Kutta - Little slow, but accurate.
+* Euler methods - Very fast, but inaccurate.
+* Runge-Kutta methods - Little slow, but accurate.
 
 In addition, you can implement additional algorithms by yourself.
