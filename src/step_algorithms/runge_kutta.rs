@@ -1,7 +1,6 @@
 //! Provider of [`RungeKutta`].
 
 use crate::prelude::*;
-use crate::util::sum_values;
 use crate::values::{Time, Value};
 use std::marker::PhantomData;
 use std::ops::Mul;
@@ -42,7 +41,7 @@ where
             let node = nodes[i];
             let curr = values[i];
             let flows = node.edges().map(|(v, w)| (v - curr) * w);
-            slope.push(sum_values(flows));
+            slope.push(V::sum(flows));
         }
     }
 

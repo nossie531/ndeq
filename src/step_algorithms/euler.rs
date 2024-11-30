@@ -1,7 +1,6 @@
 //! Provider of [`ExplicitEuler`].
 
 use crate::prelude::*;
-use crate::util::sum_values;
 use crate::values::{Time, Value};
 use std::marker::PhantomData;
 use std::ops::Mul;
@@ -47,7 +46,7 @@ where
         for node in nodes.iter() {
             let value = node.value();
             let flows = node.edges().map(|(v, w)| (v - value) * w);
-            let slope = sum_values(flows);
+            let slope = V::sum(flows);
             self.values.push(value + slope * width);
         }
     }

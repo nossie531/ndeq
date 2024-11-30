@@ -10,7 +10,6 @@ pub mod values;
 mod ndeq_node;
 mod ndeq_runner;
 mod step_algorithm;
-mod util;
 
 pub use ndeq_node::*;
 pub use ndeq_runner::*;

@@ -12,7 +12,15 @@ pub trait Value:
     + Sub<Self, Output = Self>
     + Mul<f32, Output = Self>
 {
-    // nop.
+    /// Sums the elements of an iterator.
+    fn sum<V: Value>(values: impl Iterator<Item = V>) -> V {
+        let mut ret = V::default();
+        for value in values {
+            ret = ret + value
+        }
+
+        ret
+    }
 }
 
 impl<T> Value for T
