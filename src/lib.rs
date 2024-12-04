@@ -4,13 +4,11 @@
 //! *Forgive me if the document is hard to read.*
 
 pub mod prelude;
-pub mod step_algorithms;
+pub mod diffusion_sims;
 pub mod values;
 
 mod ndeq_node;
-mod ndeq_runner;
-mod step_algorithm;
+mod diffusion_sim;
 
 pub use ndeq_node::*;
-pub use ndeq_runner::*;
-pub use step_algorithm::*;
+pub use diffusion_sim::*;

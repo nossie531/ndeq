@@ -1,4 +1,4 @@
-//! Step algorithms.
+//! Diffusion simulators.
 
 mod euler;
 mod runge_kutta;

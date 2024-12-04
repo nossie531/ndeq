@@ -6,22 +6,21 @@ use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::rc::Rc;
 
-#[derive(Default)]
 pub struct Node {
-    weak: Nw<Self>,
-    network: Nw<Net>,
+    this: Nw<Self>,
+    net: Nw<Net>,
     value: RefCell<f32>,
-    edges: RefCell<BTreeMap<Nw<Node>, f32>>,
+    edges: RefCell<BTreeMap<Nw<Self>, f32>>,
 }
 
 impl Node {
-    pub fn new(network: Nw<Net>) -> Nr<Self> {
-        Nr::new_cyclic(|weak| {
-            let weak = weak.clone();
+    pub fn new(net: Nw<Net>) -> Nr<Self> {
+        Nr::new_cyclic(|this| {
             Self {
-                weak,
-                network,
-                ..Default::default()
+                net,
+                this: this.clone(),
+                value: Default::default(),
+                edges: Default::default(),
             }
         })
     }
@@ -45,7 +44,7 @@ impl Node {
 
     pub fn set_edge(&self, node: &Nr<Node>, w: f32) {
         assert!(self.this() != *node);
-        assert!(self.network == node.network);
+        assert!(self.net == node.net);
         let mut self_edges = self.edges.borrow_mut();
         let mut node_edges = node.edges.borrow_mut();
         self_edges.insert(Nr::downgrade(&node), w);
@@ -53,7 +52,7 @@ impl Node {
     }
 
     fn this(&self) -> Nr<Self> {
-        self.weak.upgrade().unwrap()
+        self.this.upgrade().unwrap()
     }
 }
 
