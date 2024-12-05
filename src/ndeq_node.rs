@@ -2,7 +2,17 @@
 
 /// Target node of diffusion calculation.
 pub trait NdeqNode<V> {
-    /// Get node value.
+    /// Returns key.
+    ///
+    /// The key must be unique in the network.
+    ///
+    /// For example.
+    ///
+    /// * Array index - When node is in array.
+    /// * Pointer address - When node is on smart pointer.
+    fn key(&self) -> usize;
+
+    /// Returns node value.
     ///
     /// # Panics
     ///
@@ -20,6 +30,6 @@ pub trait NdeqNode<V> {
     ///
     /// # Panics
     ///
-    /// Panics if target is currently mutably borrowed.
-    fn edges(&self) -> Box<dyn Iterator<Item = (V, f32)> + '_>;
+    /// Panics if target is currently mutably borrowed.    
+    fn edges(&self) -> Box<dyn Iterator<Item = (usize, f32)> + '_>;
 }

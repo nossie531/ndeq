@@ -2,8 +2,8 @@ use crate::net::Net;
 use crate::node::Node;
 use easy_node::prelude::*;
 use ndeq::prelude::*;
-use std::ops::Range;
 use std::array;
+use std::ops::Range;
 
 type Xy = (f32, f32);
 pub const T_RANGE: Range<f32> = 0.0..1.0;
@@ -36,9 +36,10 @@ impl Sample {
     }
 
     pub fn run_simulation(&mut self) {
-        let mut algorithm = Euler::new(H);
+        let mut sim = NdeqSim::new(Euler::new(H));
         let nodes = self.nodes.iter().map(Node::conv).collect::<Vec<_>>();
         let nodes = nodes.iter().map(|x| &**x).collect::<Vec<_>>();
+        sim.set_nodes(nodes.iter().cloned());
 
         let mut t = T_RANGE.start;
         while t <= T_RANGE.end {
@@ -47,7 +48,7 @@ impl Sample {
             self.seriese_vec[0].push((t, values[0]));
             self.seriese_vec[1].push((t, values[1]));
             self.seriese_vec[2].push((t, values[2]));
-            algorithm.run(nodes.as_slice(), H);
+            sim.run(H);
             t += H;
         }
     }

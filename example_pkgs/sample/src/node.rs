@@ -15,13 +15,11 @@ pub struct Node {
 
 impl Node {
     pub fn new(net: Nw<Net>) -> Nr<Self> {
-        Nr::new_cyclic(|this| {
-            Self {
-                net,
-                this: this.clone(),
-                value: Default::default(),
-                edges: Default::default(),
-            }
+        Nr::new_cyclic(|this| Self {
+            net,
+            this: this.clone(),
+            value: Default::default(),
+            edges: Default::default(),
         })
     }
 
@@ -57,6 +55,10 @@ impl Node {
 }
 
 impl NdeqNode<f32> for Node {
+    fn key(&self) -> usize {
+        self.this.base().as_ptr() as usize
+    }
+
     fn value(&self) -> f32 {
         self.value()
     }
@@ -65,11 +67,11 @@ impl NdeqNode<f32> for Node {
         self.set_value(value);
     }
 
-    fn edges(&self) -> Box<dyn Iterator<Item = (f32, f32)> + '_> {
+    fn edges(&self) -> Box<dyn Iterator<Item = (usize, f32)> + '_> {
         let edges = self.edges();
         let as_tuple = move |n: &Nw<Node>, w: &f32| {
             let nr = &n.upgrade().unwrap();
-            (nr.value(), *w)
+            (nr.key(), *w)
         };
 
         Box::new(edges.map(as_tuple))

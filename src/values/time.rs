@@ -1,32 +1,48 @@
 //! Provider of [`Time`].
 
-use std::{cmp::Ordering, ops::{Add, Div, Mul, Sub}};
+use std::cmp::Ordering;
+use std::ops::{Add, Div, Mul, Sub};
 
 /// Time for diffusion.
 pub trait Time:
     'static
     + Copy
     + Default
-    + PartialEq
     + PartialOrd
     + Add<Self, Output = Self>
     + Sub<Self, Output = Self>
     + Mul<f32, Output = Self>
     + Div<f32, Output = Self>
+    + From<f32>
+    + Into<f32>
 {
     /// Returns zero value.
     fn zero() -> Self {
         Self::default()
     }
 
-    /// Returns `true` if `self` is NaN.
-    fn is_num(&self) -> bool {
-        self.eq(self)
+    /// Returns `true` if this value is NaN.
+    fn is_nan(self) -> bool {
+        self.into().is_nan()
     }
 
-    /// Returns `true` if this number is neither infinite nor NaN.
-    fn is_finite(&self) -> bool {
-        self.is_num() && *self != (*self / 2.0)
+    /// Returns absolute value.
+    fn abs(self) -> Self {
+        if self < Self::zero() {
+            Self::zero() - self
+        } else {
+            self
+        }
+    }
+
+    /// Returns true if this value is infinity.
+    fn is_infinite(self) -> bool {
+        self.into().is_infinite()
+    }
+
+    /// Returns this number with the sign equal to `sign`.
+    fn copysign(self, sign: Self) -> Self {
+        Self::from(self.into().copysign(sign.into()))
     }
 
     /// Compares and returns the minimum of two values.
@@ -45,12 +61,13 @@ where
     T: 'static
         + Copy
         + Default
-        + PartialEq
         + PartialOrd
         + Add<Self, Output = Self>
         + Sub<Self, Output = Self>
         + Mul<f32, Output = Self>
-        + Div<f32, Output = Self>,
+        + Div<f32, Output = Self>
+        + From<f32>
+        + Into<f32>,
 {
     // nop.
 }

@@ -1,5 +1,5 @@
 //! Crate's prelude.
 
-pub use crate::diffusion_sims::*;
-pub use crate::NdeqNode;
-pub use crate::DiffusionSim;
+pub use crate::diffusers::*;
+pub use crate::ndeq_node::*;
+pub use crate::ndeq_sim::*;
