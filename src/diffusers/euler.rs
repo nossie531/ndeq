@@ -1,6 +1,6 @@
 //! Provider of [`ExplicitEuler`].
 
-use crate::net_parts::Net;
+use crate::net_parts::NdeqNet;
 use crate::prelude::*;
 use crate::util::time_util;
 use crate::values::{Time, Value};
@@ -40,7 +40,7 @@ where
     }
 
     /// Calculate node values after small time.
-    fn step(&mut self, net: &mut Net<V>, h: T) {
+    fn step(&mut self, net: &mut NdeqNet<V>, h: T) {
         for i in 0..net.nodes().len() {
             let value = net.nodes()[i].value();
             let flows = net.edges_of(i).map(|(v, w)| (v - value) * w);
@@ -56,7 +56,7 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    fn calc(&mut self, net: &mut Net<V>, p: T) {
+    fn calc(&mut self, net: &mut NdeqNet<V>, p: T) {
         assert!(!p.is_nan());
 
         let mut t = T::zero();

@@ -23,8 +23,8 @@ impl Node {
         })
     }
 
-    pub fn conv(this: &Nr<Node>) -> Nr<dyn NdeqNode<f32>> {
-        let rc = Nr::base(this).clone() as Rc<dyn NdeqNode<f32>>;
+    pub fn conv(this: &Nr<Node>) -> Nr<dyn NodeView<f32>> {
+        let rc = Nr::base(this).clone() as Rc<dyn NodeView<f32>>;
         Nr::from_base(rc)
     }
 
@@ -54,7 +54,7 @@ impl Node {
     }
 }
 
-impl NdeqNode<f32> for Node {
+impl NodeView<f32> for Node {
     fn key(&self) -> usize {
         self.this.base().as_ptr() as usize
     }

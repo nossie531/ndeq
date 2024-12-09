@@ -1,6 +1,6 @@
 //! Provider of [`RungeKutta`].
 
-use crate::net_parts::Net;
+use crate::net_parts::NdeqNet;
 use crate::prelude::*;
 use crate::util::time_util;
 use crate::values::{Time, Value};
@@ -48,7 +48,7 @@ where
     }
 
     /// Calculate slope at values.
-    fn make_slope(slope: &mut Vec<V>, values: &[V], net: &Net<V>) {
+    fn make_slope(slope: &mut Vec<V>, values: &[V], net: &NdeqNet<V>) {
         slope.clear();
         for (i, _) in net.nodes().iter().enumerate() {
             let curr = values[i];
@@ -58,7 +58,7 @@ where
     }
 
     /// Calculate node values after small time.
-    fn step(&mut self, net: &mut Net<V>, h: T) {
+    fn step(&mut self, net: &mut NdeqNet<V>, h: T) {
         assert!(!h.is_nan());
         self.step0(net);
         self.step1(net, h);
@@ -77,7 +77,7 @@ where
     }
 
     /// Calculate step 0.
-    fn step0(&mut self, net: &Net<V>) {
+    fn step0(&mut self, net: &NdeqNet<V>) {
         let iter = net.nodes().iter().map(|x| x.value());
         self.points[0].clear();
         self.points[0].extend(iter);
@@ -85,7 +85,7 @@ where
     }
 
     /// Calculate step 1.
-    fn step1(&mut self, net: &Net<V>, h: T) {
+    fn step1(&mut self, net: &NdeqNet<V>, h: T) {
         let (olds, news) = self.points.split_at_mut(1);
         let f = |i| olds[0][i] + self.slopes[0][i] * (h / 2.0);
         news[0].clear();
@@ -94,7 +94,7 @@ where
     }
 
     /// Calculate step 2.
-    fn step2(&mut self, net: &Net<V>, h: T) {
+    fn step2(&mut self, net: &NdeqNet<V>, h: T) {
         let (olds, news) = self.points.split_at_mut(2);
         let f = |i| olds[0][i] + self.slopes[1][i] * (h / 2.0);
         news[0].clear();
@@ -103,7 +103,7 @@ where
     }
 
     /// Calculate step 3.
-    fn step3(&mut self, net: &Net<V>, h: T) {
+    fn step3(&mut self, net: &NdeqNet<V>, h: T) {
         let (olds, news) = self.points.split_at_mut(3);
         let f = |i| olds[0][i] + self.slopes[2][i] * h;
         news[0].clear();
@@ -117,7 +117,7 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    fn calc(&mut self, net: &mut Net<V>, p: T) {
+    fn calc(&mut self, net: &mut NdeqNet<V>, p: T) {
         assert!(!p.is_nan());
 
         let mut t = T::zero();

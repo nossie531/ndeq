@@ -1,7 +1,7 @@
-//! Provider of [`NdeqNode`].
+//! Provider of [`NodeView`].
 
-/// Target node of diffusion calculation.
-pub trait NdeqNode<V> {
+/// Node view.
+pub trait NodeView<V> {
     /// Returns key.
     ///
     /// The key must be unique in the network.

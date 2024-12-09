@@ -1,6 +1,6 @@
 //! Provider of [`Diffuser`].
 
-use crate::net_parts::Net;
+use crate::net_parts::NdeqNet;
 use crate::values::{Time, Value};
 use std::ops::Mul;
 
@@ -19,5 +19,5 @@ where
     ///
     /// Panics if `p` is NaN or infinity or negative
     /// (if algorithm not supports negative values).
-    fn calc(&mut self, net: &mut Net<V>, p: T);
+    fn calc(&mut self, net: &mut NdeqNet<V>, p: T);
 }

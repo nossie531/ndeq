@@ -1,3 +1,4 @@
+mod ndeq_work;
 mod net;
 mod node;
 mod plotters_util;

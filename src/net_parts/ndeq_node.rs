@@ -1,10 +1,10 @@
-//! Provider of [`Node`].
+//! Provider of [`NdeqNode`].
 
 use crate::values::Value;
 use std::collections::BTreeMap;
 
 /// Network node.
-pub struct Node<V> {
+pub struct NdeqNode<V> {
     /// value.
     value: V,
 
@@ -15,10 +15,19 @@ pub struct Node<V> {
     edges: BTreeMap<usize, f32>,
 }
 
-impl<V> Node<V>
+impl<V> NdeqNode<V>
 where
     V: Value,
 {
+    /// Create new instance.
+    pub fn new(value: V) -> Self {
+        Self {
+            value,
+            calced_value: Default::default(),
+            edges: Default::default(),
+        }
+    }
+
     /// Returns value.
     pub fn value(&self) -> V {
         self.value
@@ -34,27 +43,18 @@ where
         self.calced_value = value
     }
 
-    /// Create instance.
-    pub(crate) fn new(value: V) -> Self {
-        Self {
-            value,
-            calced_value: Default::default(),
-            edges: Default::default(),
-        }
+    /// Returns edges (node-index and weight tuples) to other nodes.
+    pub fn edges(&self) -> impl Iterator<Item = (usize, f32)> + '_ {
+        self.edges.iter().map(|(&index, &weight)| (index, weight))
     }
 
-    /// Returns edges (node-index and weight tuples) to other nodes.
-    pub(crate) fn edges(&self) -> impl Iterator<Item = (usize, f32)> + '_ {
-        self.edges.iter().map(|(&index, &weight)| (index, weight))
+    /// Add edge to other node.
+    pub fn add_edge(&mut self, index: usize, weight: f32) {
+        self.edges.insert(index, weight);
     }
 
     /// Update value from calced value.
     pub(crate) fn update_value(&mut self) {
         self.value = self.calced_value;
-    }
-
-    /// Add edge to other node.
-    pub(crate) fn add_edge(&mut self, index: usize, weight: f32) {
-        self.edges.insert(index, weight);
     }
 }

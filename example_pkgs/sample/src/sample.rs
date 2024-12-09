@@ -11,6 +11,7 @@ pub const V_RANGE: Range<f32> = 0.0..1.0;
 const H: f32 = 0.2;
 
 pub struct Sample {
+    net: Nr<Net>,
     nodes: [Nr<Node>; 3],
     seriese_vec: [Vec<Xy>; 3],
 }
@@ -28,7 +29,11 @@ impl Sample {
         nodes[1].set_edge(&nodes[2], 1.0);
         nodes[2].set_edge(&nodes[0], 1.0);
 
-        Self { nodes, seriese_vec }
+        Self {
+            net,
+            nodes,
+            seriese_vec,
+        }
     }
 
     pub fn series_vec(&self) -> &[Vec<Xy>; 3] {
@@ -36,19 +41,20 @@ impl Sample {
     }
 
     pub fn run_simulation(&mut self) {
+        let mut ndeq_work = self.net.create_ndeq_work();
+
         let mut sim = NdeqSim::new(Euler::new(H));
-        let nodes = self.nodes.iter().map(Node::conv).collect::<Vec<_>>();
-        let nodes = nodes.iter().map(|x| &**x).collect::<Vec<_>>();
-        sim.set_nodes(nodes.iter().cloned());
+        sim.set_net(ndeq_work.net);
 
         let mut t = T_RANGE.start;
         while t <= T_RANGE.end {
-            let values = nodes.iter().map(|x| x.value() as f32);
+            let values = self.nodes.iter().map(|x| x.value() as f32);
             let values = values.collect::<Vec<_>>();
             self.seriese_vec[0].push((t, values[0]));
             self.seriese_vec[1].push((t, values[1]));
             self.seriese_vec[2].push((t, values[2]));
-            sim.run(H);
+            sim.calc(H);
+            (ndeq_work.update)(sim.net());
             t += H;
         }
     }

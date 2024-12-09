@@ -1,15 +1,15 @@
-use crate::net_parts::Net;
+use crate::net_parts::NdeqNet;
 use crate::prelude::*;
 use crate::values::{Time, Value};
 use std::ops::Mul;
 
 /// Network diffusion simulator.
-pub struct NdeqSim<'a, V, T> {
+pub struct NdeqSim<V, T> {
     diffuser: Box<dyn Diffuser<V, T>>,
-    net: Net<'a, V>,
+    net: NdeqNet<V>,
 }
 
-impl<'a, V, T> NdeqSim<'a, V, T>
+impl<V, T> NdeqSim<V, T>
 where
     V: Value + Mul<T, Output = V>,
     T: Time,
@@ -23,33 +23,17 @@ where
     }
 
     /// Returns target network.
-    pub fn net(&self) -> &Net<'a, V> {
+    pub fn net(&self) -> &NdeqNet<V> {
         &self.net
     }
 
-    /// Set target nodes.
-    pub fn set_nodes<I>(&mut self, iter: I)
-    where
-        I: IntoIterator<Item = &'a dyn NdeqNode<V>>,
-    {
-        self.net = Net::from_nodes(iter);
+    /// Set target network.
+    pub fn set_net(&mut self, value: NdeqNet<V>) {
+        self.net = value;
     }
 
-    /// Calc simulation after specified time.
-    ///
-    /// Unlike [`run`](Self::run) method, this method does not update
-    /// nodes values that are set by [`set_nodes`](Self::set_nodes).
-    /// Therefore, values must be checked from [`net`](Self::net).
+    /// Calc simulation until specified time.
     pub fn calc(&mut self, p: T) {
         self.diffuser.calc(&mut self.net, p);
-    }
-
-    /// Run simulation after specified time.
-    ///
-    /// Unlike [`calc`](Self::calc) method, this method actually updates
-    /// node values that are set by [`set_nodes`](Self::set_nodes).
-    pub fn run(&mut self, p: T) {
-        self.calc(p);
-        self.net.update_originals();
     }
 }
