@@ -1,6 +1,6 @@
 use crate::{net::Net, node::Node};
 use easy_node::Nr;
-use ndeq::NdeqNet;
+use ndeq::prelude::*;
 use ref_iter::RefKvIterator;
 use std::collections::BTreeMap;
 

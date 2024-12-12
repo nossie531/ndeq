@@ -6,12 +6,11 @@
 #![warn(missing_docs)]
 
 pub mod diffusers;
+pub mod net_parts;
 pub mod prelude;
 pub mod util;
 pub mod values;
 
 mod ndeq_sim;
-mod net_parts;
 
 pub use ndeq_sim::*;
-pub use net_parts::*;
