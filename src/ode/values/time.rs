@@ -3,7 +3,9 @@
 use std::cmp::Ordering;
 use std::ops::{Add, Div, Mul, Sub};
 
-/// Time for diffusion.
+use super::FloatApprox;
+
+/// Time (input value of ODE system).
 pub trait Time:
     'static
     + Copy
@@ -13,8 +15,7 @@ pub trait Time:
     + Sub<Self, Output = Self>
     + Mul<f32, Output = Self>
     + Div<f32, Output = Self>
-    + From<f32>
-    + Into<f32>
+    + FloatApprox
 {
     /// Returns zero value.
     fn zero() -> Self {
@@ -23,7 +24,7 @@ pub trait Time:
 
     /// Returns `true` if this value is NaN.
     fn is_nan(self) -> bool {
-        self.into().is_nan()
+        self.approx_into_float().is_nan()
     }
 
     /// Returns absolute value.
@@ -37,12 +38,14 @@ pub trait Time:
 
     /// Returns true if this value is infinity.
     fn is_infinite(self) -> bool {
-        self.into().is_infinite()
+        self.approx_into_float().is_infinite()
     }
 
     /// Returns this number with the sign equal to `sign`.
     fn copysign(self, sign: Self) -> Self {
-        Self::from(self.into().copysign(sign.into()))
+        let this = self.approx_into_float();
+        let sign = sign.approx_into_float();
+        Self::approx_from_float(this.copysign(sign))
     }
 
     /// Compares and returns the minimum of two values.
@@ -66,8 +69,7 @@ where
         + Sub<Self, Output = Self>
         + Mul<f32, Output = Self>
         + Div<f32, Output = Self>
-        + From<f32>
-        + Into<f32>,
+        + FloatApprox,
 {
     // nop.
 }

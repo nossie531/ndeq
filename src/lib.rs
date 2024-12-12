@@ -5,12 +5,12 @@
 
 #![warn(missing_docs)]
 
-pub mod diffusers;
-pub mod net_parts;
+pub mod ode;
 pub mod prelude;
 pub mod util;
-pub mod values;
 
-mod ndeq_sim;
-
+pub use ndeq_net::*;
 pub use ndeq_sim::*;
+
+mod ndeq_net;
+mod ndeq_sim;

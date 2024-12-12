@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 
 pub struct NetBinder {
     pub net: NdeqNet<f32>,
-    pub sync: Box<dyn FnMut(&NdeqNet<f32>)>,
+    pub sync: Box<dyn FnMut(&[f32])>,
 }
 
 impl NetBinder {
@@ -28,7 +28,7 @@ impl NetBinder {
             }
         }
 
-        let sync = Self::create_sync(src_nodes, key_to_index);
+        let sync = Self::create_sync(src_nodes);
 
         Self { net, sync }
     }
@@ -37,15 +37,10 @@ impl NetBinder {
         node.edges().map(|k, v| (k.upgrade().unwrap().key(), *v))
     }
 
-    fn create_sync(
-        src_nodes: Vec<Nr<Node>>,
-        key_to_index: BTreeMap<usize, usize>,
-    ) -> Box<impl FnMut(&NdeqNet<f32>)> {
-        Box::new(move |net: &NdeqNet<f32>| {
-            for src_node in src_nodes.iter() {
-                let index = key_to_index[&src_node.key()];
-                let value = net.nodes()[index].value();
-                src_node.set_value(value);
+    fn create_sync(src_nodes: Vec<Nr<Node>>) -> Box<impl FnMut(&[f32])> {
+        Box::new(move |values: &[f32]| {
+            for (i, src_node) in src_nodes.iter().enumerate() {
+                src_node.set_value(values[i]);
             }
         })
     }

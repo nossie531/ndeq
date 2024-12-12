@@ -2,7 +2,7 @@
 
 use std::ops::{Add, Mul, Sub};
 
-/// Node value.
+/// Value (output component of ODE system).
 pub trait Value:
     'static
     + Copy

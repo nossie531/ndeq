@@ -1,14 +1,13 @@
 //! Provider of [`NdeqSim`].
 
-use crate::net_parts::NdeqNet;
+use crate::ode::values::{Time, Value};
 use crate::prelude::*;
-use crate::values::{Time, Value};
 use std::ops::Mul;
 
 /// Network diffusion simulator.
 pub struct NdeqSim<V, T> {
-    /// Diffusion algorithm.
-    diffuser: Box<dyn Diffuser<V, T>>,
+    /// ODE solver.
+    solver: Box<dyn OdeSolver<V, T>>,
 
     /// Target network.
     net: NdeqNet<V>,
@@ -19,10 +18,10 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    /// Create a new simulation with specified diffusion alogorithm.
-    pub fn new(diffuser: Box<dyn Diffuser<V, T>>) -> Self {
+    /// Creates a new instance with specified ODE solver.
+    pub fn new(solver: Box<dyn OdeSolver<V, T>>) -> Self {
         Self {
-            diffuser,
+            solver,
             net: Default::default(),
         }
     }
@@ -32,13 +31,14 @@ where
         &self.net
     }
 
-    /// Set target network.
+    /// Sets target network.
     pub fn set_net(&mut self, value: NdeqNet<V>) {
         self.net = value;
+        self.solver.set_yp(self.net.yp());
     }
 
-    /// Advance target network status for specified time.
+    /// Advance time and update target network node values.
     pub fn run(&mut self, p: T) {
-        self.diffuser.run(&mut self.net, p);
+        self.solver.run(self.net.values_mut(), p);
     }
 }

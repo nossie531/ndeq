@@ -1,6 +1,6 @@
 use crate::node::Node;
 use easy_node::prelude::*;
-use ref_iter::{RefIter, RefIterator};
+use ref_iter::prelude::*;
 use std::cell::RefCell;
 use std::collections::BTreeSet;
 
@@ -18,15 +18,15 @@ impl Net {
         })
     }
 
+    pub fn nodes(&self) -> impl Iterator<Item = Nr<Node>> + '_ {
+        let nodes = RefIter::new(self.nodes.borrow(), |x| x.iter());
+        nodes.cloned()
+    }
+
     pub fn add_node(&self) -> Nr<Node> {
         let ret = Node::new(self.weak.clone());
         let mut nodes = self.nodes.borrow_mut();
         nodes.insert(ret.clone());
         ret
-    }
-
-    pub fn nodes(&self) -> impl Iterator<Item = Nr<Node>> + '_ {
-        let nodes = RefIter::new(self.nodes.borrow(), |x| x.iter());
-        nodes.cloned()
     }
 }

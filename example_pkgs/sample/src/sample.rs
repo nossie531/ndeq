@@ -3,7 +3,6 @@ use crate::net_binder::NetBinder;
 use crate::node::Node;
 use easy_node::prelude::*;
 use ndeq::prelude::*;
-use std::array;
 use std::ops::Range;
 
 type Xy = (f32, f32);
@@ -20,21 +19,17 @@ pub struct Sample {
 impl Sample {
     pub fn new() -> Self {
         let net = Net::new();
-        let nodes = array::from_fn::<Nr<Node>, 3, _>(|_| net.add_node());
-        let seriese_vec = array::from_fn::<Vec<Xy>, 3, _>(|_| vec![]);
+        let nodes = [(); 3].map(|_| net.add_node());
+        let seriese_vec = [(); 3].map(|_| vec![]);
 
         nodes[0].set_value(0.1);
         nodes[1].set_value(0.3);
         nodes[2].set_value(0.9);
-        nodes[0].set_edge(&nodes[1], 1.0);
-        nodes[1].set_edge(&nodes[2], 1.0);
-        nodes[2].set_edge(&nodes[0], 1.0);
+        nodes[0].add_edge(&nodes[1], 1.0);
+        nodes[1].add_edge(&nodes[2], 1.0);
+        nodes[2].add_edge(&nodes[0], 1.0);
 
-        Self {
-            net,
-            nodes,
-            seriese_vec,
-        }
+        Self { net, nodes, seriese_vec }
     }
 
     pub fn series_vec(&self) -> &[Vec<Xy>; 3] {
@@ -44,7 +39,6 @@ impl Sample {
     pub fn run_simulation(&mut self) {
         let mut nb = NetBinder::new(self.net.clone());
         let mut sim = NdeqSim::new(Euler::new(H));
-
         sim.set_net(nb.net);
 
         let mut t = T_RANGE.start;
@@ -55,7 +49,7 @@ impl Sample {
             self.seriese_vec[1].push((t, values[1]));
             self.seriese_vec[2].push((t, values[2]));
             sim.run(H);
-            (nb.sync)(sim.net());
+            (nb.sync)(sim.net().values());
             t += H;
         }
     }

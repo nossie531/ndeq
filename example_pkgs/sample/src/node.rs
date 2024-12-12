@@ -37,7 +37,7 @@ impl Node {
         RefIter::new(self.edges.borrow(), |x| x.iter())
     }
 
-    pub fn set_edge(&self, node: &Nr<Node>, w: f32) {
+    pub fn add_edge(&self, node: &Nr<Node>, w: f32) {
         assert!(self.this() != *node);
         assert!(self.net == node.net);
         let mut self_edges = self.edges.borrow_mut();
