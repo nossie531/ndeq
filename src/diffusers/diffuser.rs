@@ -11,7 +11,7 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    /// Calculate node values after specified time.
+    /// Advance network status for specified time.
     ///
     /// `p` can be negative if algorithm supports it.
     ///
@@ -19,5 +19,5 @@ where
     ///
     /// Panics if `p` is NaN or infinity or negative
     /// (if algorithm not supports negative values).
-    fn calc(&mut self, net: &mut NdeqNet<V>, p: T);
+    fn run(&mut self, net: &mut NdeqNet<V>, p: T);
 }

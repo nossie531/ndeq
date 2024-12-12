@@ -1,10 +1,8 @@
 use crate::net::Net;
 use easy_node::prelude::*;
-use ndeq::prelude::*;
 use ref_iter::prelude::*;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
-use std::rc::Rc;
 
 pub struct Node {
     this: Nw<Self>,
@@ -23,9 +21,8 @@ impl Node {
         })
     }
 
-    pub fn conv(this: &Nr<Node>) -> Nr<dyn NodeView<f32>> {
-        let rc = Nr::base(this).clone() as Rc<dyn NodeView<f32>>;
-        Nr::from_base(rc)
+    pub fn key(&self) -> usize {
+        self.this.base().as_ptr() as usize
     }
 
     pub fn value(&self) -> f32 {
@@ -51,29 +48,5 @@ impl Node {
 
     fn this(&self) -> Nr<Self> {
         self.this.upgrade().unwrap()
-    }
-}
-
-impl NodeView<f32> for Node {
-    fn key(&self) -> usize {
-        self.this.base().as_ptr() as usize
-    }
-
-    fn value(&self) -> f32 {
-        self.value()
-    }
-
-    fn set_value(&self, value: f32) {
-        self.set_value(value);
-    }
-
-    fn edges(&self) -> Box<dyn Iterator<Item = (usize, f32)> + '_> {
-        let edges = self.edges();
-        let as_tuple = move |n: &Nw<Node>, w: &f32| {
-            let nr = &n.upgrade().unwrap();
-            (nr.key(), *w)
-        };
-
-        Box::new(edges.map(as_tuple))
     }
 }

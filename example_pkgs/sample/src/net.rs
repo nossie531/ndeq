@@ -1,6 +1,5 @@
 use crate::node::Node;
 use easy_node::prelude::*;
-use ndeq::NodeView;
 use ref_iter::{RefIter, RefIterator};
 use std::cell::RefCell;
 use std::collections::BTreeSet;
@@ -26,8 +25,8 @@ impl Net {
         ret
     }
 
-    pub fn nodes(&self) -> impl Iterator<Item = Nr<dyn NodeView<f32>>> + '_ {
+    pub fn nodes(&self) -> impl Iterator<Item = Nr<Node>> + '_ {
         let nodes = RefIter::new(self.nodes.borrow(), |x| x.iter());
-        nodes.map(Node::conv)
+        nodes.cloned()
     }
 }

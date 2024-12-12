@@ -20,7 +20,7 @@ pub struct RungeKutta<V, T> {
     /// Slopes.
     slopes: [Vec<V>; 4],
 
-    // Dummy.
+    /// Dummy.
     pd: PhantomData<T>,
 }
 
@@ -117,7 +117,7 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    fn calc(&mut self, net: &mut NdeqNet<V>, p: T) {
+    fn run(&mut self, net: &mut NdeqNet<V>, p: T) {
         assert!(!p.is_nan());
 
         let mut t = T::zero();

@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 /// Network node.
 #[derive(Default)]
 pub struct NdeqNode<V> {
-    /// value.
+    /// Value.
     value: V,
 
     /// New value.
@@ -44,7 +44,7 @@ where
         self.new_value = value
     }
 
-    /// Returns edges (node-index and weight tuples) to other nodes.
+    /// Returns edges(tuples of forward node index and edge weight).
     pub fn edges(&self) -> impl Iterator<Item = (usize, f32)> + '_ {
         self.edges.iter().map(|(&index, &weight)| (index, weight))
     }
@@ -54,7 +54,7 @@ where
         self.edges.insert(index, weight);
     }
 
-    /// Update value from calced value.
+    /// Update value to new value.
     pub(crate) fn update_value(&mut self) {
         self.value = self.new_value;
     }

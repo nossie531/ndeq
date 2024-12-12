@@ -54,7 +54,7 @@ impl Sample {
             self.seriese_vec[0].push((t, values[0]));
             self.seriese_vec[1].push((t, values[1]));
             self.seriese_vec[2].push((t, values[2]));
-            sim.calc(H);
+            sim.run(H);
             (nb.sync)(sim.net());
             t += H;
         }

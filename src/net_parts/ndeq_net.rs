@@ -24,7 +24,7 @@ where
         self.nodes.as_slice()
     }
 
-    /// Returns edges from specified node.
+    /// Returns edges(tuples of forward node value and edge weight) from specified node.
     pub fn edges_of(&self, node_idx: usize) -> impl Iterator<Item = (V, f32)> + '_ {
         let bwd_node = &self.nodes[node_idx];
         bwd_node.edges().map(|(fwd_node_idx, weight)| {
@@ -33,7 +33,7 @@ where
         })
     }
 
-    /// Add node.
+    /// Add node and returns added node index.
     pub fn add_node(&mut self, value: V) -> usize {
         self.nodes.push(NdeqNode::new(value));
         self.nodes.len() - 1

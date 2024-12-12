@@ -1,6 +1,7 @@
-use crate::net::Net;
+use crate::{net::Net, node::Node};
 use easy_node::Nr;
-use ndeq::{NdeqNet, NodeView};
+use ndeq::NdeqNet;
+use ref_iter::RefKvIterator;
 use std::collections::BTreeMap;
 
 pub struct NetBinder {
@@ -21,19 +22,23 @@ impl NetBinder {
         }
 
         for (bwd_index, src_node) in src_nodes.iter().enumerate() {
-            for (key, weight) in src_node.edges() {
-                let fwd_index = key_to_index[&key];
+            for (fwd_key, weight) in Self::key_edges(src_node) {
+                let fwd_index = key_to_index[&fwd_key];
                 net.add_edge(bwd_index, fwd_index, weight);
             }
         }
 
-        let sync = Self::make_sync(src_nodes, key_to_index);
+        let sync = Self::create_sync(src_nodes, key_to_index);
 
         Self { net, sync }
     }
 
-    fn make_sync(
-        src_nodes: Vec<Nr<dyn NodeView<f32>>>,
+    fn key_edges(node: &Nr<Node>) -> impl Iterator<Item = (usize, f32)> + '_ {
+        node.edges().map(|k, v| (k.upgrade().unwrap().key(), *v))
+    }
+
+    fn create_sync(
+        src_nodes: Vec<Nr<Node>>,
         key_to_index: BTreeMap<usize, usize>,
     ) -> Box<impl FnMut(&NdeqNet<f32>)> {
         Box::new(move |net: &NdeqNet<f32>| {

@@ -1,3 +1,5 @@
+//! Provider of [`NdeqSim`].
+
 use crate::net_parts::NdeqNet;
 use crate::prelude::*;
 use crate::values::{Time, Value};
@@ -5,7 +7,10 @@ use std::ops::Mul;
 
 /// Network diffusion simulator.
 pub struct NdeqSim<V, T> {
+    /// Diffusion algorithm.
     diffuser: Box<dyn Diffuser<V, T>>,
+
+    /// Target network.
     net: NdeqNet<V>,
 }
 
@@ -32,8 +37,8 @@ where
         self.net = value;
     }
 
-    /// Calc simulation until specified time.
-    pub fn calc(&mut self, p: T) {
-        self.diffuser.calc(&mut self.net, p);
+    /// Advance target network status for specified time.
+    pub fn run(&mut self, p: T) {
+        self.diffuser.run(&mut self.net, p);
     }
 }
