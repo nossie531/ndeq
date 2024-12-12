@@ -4,12 +4,13 @@ use crate::values::Value;
 use std::collections::BTreeMap;
 
 /// Network node.
+#[derive(Default)]
 pub struct NdeqNode<V> {
     /// value.
     value: V,
 
-    /// Calced value.
-    calced_value: V,
+    /// New value.
+    new_value: V,
 
     /// Edges to other nodes.
     edges: BTreeMap<usize, f32>,
@@ -23,7 +24,7 @@ where
     pub fn new(value: V) -> Self {
         Self {
             value,
-            calced_value: Default::default(),
+            new_value: Default::default(),
             edges: Default::default(),
         }
     }
@@ -33,14 +34,14 @@ where
         self.value
     }
 
-    /// Returns calced value.
-    pub fn calced_value(&self) -> V {
-        self.calced_value
+    /// Returns new value.
+    pub fn new_value(&self) -> V {
+        self.new_value
     }
 
-    /// Set calced value.
-    pub fn set_calced_value(&mut self, value: V) {
-        self.calced_value = value
+    /// Set new value.
+    pub fn set_new_value(&mut self, value: V) {
+        self.new_value = value
     }
 
     /// Returns edges (node-index and weight tuples) to other nodes.
@@ -49,12 +50,12 @@ where
     }
 
     /// Add edge to other node.
-    pub fn add_edge(&mut self, index: usize, weight: f32) {
+    pub(crate) fn add_edge(&mut self, index: usize, weight: f32) {
         self.edges.insert(index, weight);
     }
 
     /// Update value from calced value.
     pub(crate) fn update_value(&mut self) {
-        self.value = self.calced_value;
+        self.value = self.new_value;
     }
 }

@@ -19,11 +19,6 @@ where
         Default::default()
     }
 
-    /// Create new instance from network nodes.
-    pub fn from_nodes(nodes: Vec<NdeqNode<V>>) -> Self {
-        Self { nodes }
-    }
-
     /// Returns nodes slice.
     pub fn nodes(&self) -> &[NdeqNode<V>] {
         self.nodes.as_slice()
@@ -36,6 +31,23 @@ where
             let fwd_node = &self.nodes[fwd_node_idx];
             (fwd_node.value(), weight)
         })
+    }
+
+    /// Add node.
+    pub fn add_node(&mut self, value: V) -> usize {
+        self.nodes.push(NdeqNode::new(value));
+        self.nodes.len() - 1
+    }
+
+    /// Add edge.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `bwd_idx` or `fwd_idx` is out of range.
+    pub fn add_edge(&mut self, bwd_idx: usize, fwd_idx: usize, weight: f32) {
+        assert!((0..self.nodes.len()).contains(&bwd_idx));
+        assert!((0..self.nodes.len()).contains(&fwd_idx));
+        self.nodes[bwd_idx].add_edge(fwd_idx, weight);
     }
 
     /// Returns mutable nodes slice.

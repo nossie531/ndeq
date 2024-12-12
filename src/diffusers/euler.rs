@@ -46,7 +46,7 @@ where
             let flows = net.edges_of(i).map(|(v, w)| (v - value) * w);
             let slope = V::sum(flows);
             let value = value + slope * h;
-            net.nodes_mut()[i].set_calced_value(value);
+            net.nodes_mut()[i].set_new_value(value);
         }
     }
 }

@@ -72,7 +72,7 @@ where
             let slope = (k1 + (k2 + k3) * 2.0 + k4) * (1.0 / 6.0);
             let value = net.nodes()[i].value();
             let value = value + slope * h;
-            net.nodes_mut()[i].set_calced_value(value);
+            net.nodes_mut()[i].set_new_value(value);
         }
     }
 
