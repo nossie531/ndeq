@@ -1,5 +1,4 @@
 mod net;
-mod net_binder;
 mod node;
 mod plotters_util;
 mod sample;

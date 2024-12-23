@@ -1,6 +1,6 @@
 //! Provider of [`Euler`].
 
-use crate::ode::df::{flat, Yp};
+use crate::ode::df::Yp;
 use crate::ode::values::{Time, Value};
 use crate::prelude::*;
 use crate::util;
@@ -10,12 +10,12 @@ use std::ops::Mul;
 /// ODE solver by [Euler methods].
 ///
 /// [Euler methods]: https://en.wikipedia.org/wiki/Euler_method
-pub struct Euler<V, T> {
+pub struct Euler<'a, V, T> {
     /// Step size.
     h: T,
 
     /// Derivative function.
-    yp: Yp<V>,
+    yp: Yp<'a, V>,
 
     /// Work slopes.
     slopes: Vec<V>,
@@ -27,7 +27,7 @@ pub struct Euler<V, T> {
     pd: PhantomData<(V, T)>,
 }
 
-impl<V, T> Euler<V, T>
+impl<'a, V, T> Euler<'a, V, T>
 where
     V: Value + Mul<T, Output = V>,
     T: Time,
@@ -38,13 +38,13 @@ where
     ///
     /// Panics if `h` is zero or negative or NaN or infinity.
     #[must_use]
-    pub fn new(h: T) -> Box<Self> {
+    pub fn new(h: T, yp: Yp<'a, V>) -> Box<Self> {
         assert!(!h.is_nan());
         assert!(!h.is_infinite());
         assert!(h > T::zero());
         Box::new(Self {
             h,
-            yp: Box::new(flat),
+            yp,
             slopes: Default::default(),
             new_values: Default::default(),
             pd: Default::default(),
@@ -68,15 +68,11 @@ where
     }
 }
 
-impl<V, T> OdeSolver<V, T> for Euler<V, T>
+impl<'a, V, T> OdeSolver<V, T> for Euler<'a, V, T>
 where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    fn set_yp(&mut self, value: Yp<V>) {
-        self.yp = value;
-    }
-
     fn run(&mut self, values: &mut [V], p: T) {
         assert!(!p.is_nan());
 

@@ -1,6 +1,6 @@
 //! Provider of [`RungeKutta`].
 
-use crate::ode::df::{flat, Yp};
+use crate::ode::df::Yp;
 use crate::ode::values::{Time, Value};
 use crate::prelude::*;
 use crate::util;
@@ -10,12 +10,12 @@ use std::ops::Mul;
 /// ODE solver by [Runge-Kutta methods].
 ///
 /// [Runge-Kutta methods]: https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
-pub struct RungeKutta<V, T> {
+pub struct RungeKutta<'a, V, T> {
     /// Step size.
     h: T,
 
     /// Derivative function.
-    yp: Yp<V>,
+    yp: Yp<'a, V>,
 
     /// Work points.
     points: [Vec<V>; 4],
@@ -30,7 +30,7 @@ pub struct RungeKutta<V, T> {
     pd: PhantomData<T>,
 }
 
-impl<V, T> RungeKutta<V, T>
+impl<'a, V, T> RungeKutta<'a, V, T>
 where
     V: Value + Mul<T, Output = V>,
     T: Time,
@@ -41,13 +41,13 @@ where
     ///
     /// Panics if `h` is zero or negative or NaN or infinity.
     #[must_use]
-    pub fn new(h: T) -> Box<Self> {
+    pub fn new(h: T, yp: Yp<'a, V>) -> Box<Self> {
         assert!(!h.is_nan());
         assert!(!h.is_infinite());
         assert!(h > T::zero());
         Box::new(Self {
             h,
-            yp: Box::new(flat),
+            yp,
             points: Default::default(),
             slopes: Default::default(),
             new_values: Default::default(),
@@ -129,15 +129,11 @@ where
     }
 }
 
-impl<V, T> OdeSolver<V, T> for RungeKutta<V, T>
+impl<'a, V, T> OdeSolver<V, T> for RungeKutta<'a, V, T>
 where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    fn set_yp(&mut self, value: Yp<V>) {
-        self.yp = value;
-    }
-
     fn run(&mut self, values: &mut [V], p: T) {
         assert!(!p.is_nan());
 

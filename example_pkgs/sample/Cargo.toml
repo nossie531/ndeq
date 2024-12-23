@@ -8,4 +8,4 @@ ndeq = { version = "0.1", path = "../../" }
 plotters = "0.3"
 plotters-backend = "0.3"
 easy_node = "0.3"
-ref_iter = "0.1"
+ref_iter = "0.3"

@@ -552,18 +552,18 @@ dependencies = [
 
 [[package]]
 name = "ref_iter"
-version = "0.1.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7574577f19d05267c1ee02adab05ed2272fe350dac11b983d52b5c6197ae3a98"
+checksum = "6abd2ccdf2d076d96c68c7f7bf314db9a00d2295b5163bd5e55482e5e85d25ef"
 dependencies = [
  "ref_iter_macro",
 ]
 
 [[package]]
 name = "ref_iter_macro"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "944036a979490b1e8c6d58988f9b66a320bf28e7d7482ef0557332027f885f3c"
+checksum = "245e11f54d891aaf54f95953fd182a2d28ab640e2078e074f80442b30e1a432e"
 dependencies = [
  "proc-macro2",
  "quote",

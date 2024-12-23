@@ -1,5 +1,4 @@
 use crate::net::Net;
-use crate::net_binder::NetBinder;
 use crate::node::Node;
 use easy_node::prelude::*;
 use ndeq::prelude::*;
@@ -29,7 +28,11 @@ impl Sample {
         nodes[1].add_edge(&nodes[2], 1.0);
         nodes[2].add_edge(&nodes[0], 1.0);
 
-        Self { net, nodes, seriese_vec }
+        Self {
+            net,
+            nodes,
+            seriese_vec,
+        }
     }
 
     pub fn series_vec(&self) -> &[Vec<Xy>; 3] {
@@ -37,9 +40,9 @@ impl Sample {
     }
 
     pub fn run_simulation(&mut self) {
-        let mut nb = NetBinder::new(self.net.clone());
-        let mut sim = NdeqSim::new(Euler::new(H));
-        sim.set_net(nb.net);
+        let net = &*self.net as &dyn NetView<f32>;
+        let ode = Euler::new(H, net.yp());
+        let mut sim = NdeqSim::new(ode, net);
 
         let mut t = T_RANGE.start;
         while t <= T_RANGE.end {
@@ -49,7 +52,6 @@ impl Sample {
             self.seriese_vec[1].push((t, values[1]));
             self.seriese_vec[2].push((t, values[2]));
             sim.run(H);
-            (nb.sync)(sim.net().values());
             t += H;
         }
     }
