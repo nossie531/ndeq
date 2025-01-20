@@ -39,11 +39,11 @@ impl Node {
 }
 
 impl NodeView<f32> for Node {
-    fn work_idx(&self) -> usize {
+    fn idx(&self) -> usize {
         *self.work_idx.borrow()
     }
 
-    fn set_work_idx(&self, value: usize) {
+    fn set_idx(&self, value: usize) {
         *self.work_idx.borrow_mut() = value;
     }
 
@@ -58,7 +58,7 @@ impl NodeView<f32> for Node {
     fn edges(&self) -> Box<dyn Iterator<Item = (usize, f32)> + '_> {
         let iter = RefIter::new(self.edges.borrow(), |x| x.iter());
         let ret = iter.imap(|k, v| {
-            let idx = k.upgrade().unwrap().work_idx();
+            let idx = k.upgrade().unwrap().idx();
             let weight = *v;
             (idx, weight)
         });

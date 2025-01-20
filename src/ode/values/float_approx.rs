@@ -1,6 +1,6 @@
 //! Provider of [`FloatApprox`].
 
-/// This trait represents that a type can be approximated by [`f32`].
+/// Trait for types that can be approximated by [`f32`].
 pub trait FloatApprox {
     /// Converts this type into [`f32`].
     fn approx_into_float(self) -> f32;

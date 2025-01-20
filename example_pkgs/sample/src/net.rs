@@ -27,7 +27,7 @@ impl Net {
     }
 
     fn node_edges(node: &Nr<Node>) -> impl Iterator<Item = (usize, usize, f32)> + '_ {
-        node.edges().map(|(i, w)| (node.work_idx(), i, w))
+        node.edges().map(|(i, w)| (node.idx(), i, w))
     }
 }
 
@@ -41,7 +41,7 @@ impl NetView<f32> for Net {
     fn load_values(&self, values: &mut Vec<f32>) {
         values.clear();
         for (i, node) in self.nodes.borrow().iter().enumerate() {
-            node.set_work_idx(i);
+            node.set_idx(i);
             values.push(node.value());
         }
     }
@@ -50,7 +50,7 @@ impl NetView<f32> for Net {
         assert_eq!(values.len(), self.nodes.borrow().len());
 
         for node in self.nodes.borrow_mut().iter() {
-            let value = values[node.work_idx()];
+            let value = values[node.idx()];
             node.set_value(value);
         }
     }

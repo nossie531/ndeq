@@ -1,9 +1,9 @@
-//! ODE solvers.
+//! ODE solver.
 
-pub use euler::*;
+pub mod solvers;
+
 pub use ode_solver::*;
-pub use runge_kutta::*;
+pub use ss_ode_solver::*;
 
-mod euler;
 mod ode_solver;
-mod runge_kutta;
+mod ss_ode_solver;

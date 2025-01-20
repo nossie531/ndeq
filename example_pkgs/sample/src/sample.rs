@@ -1,6 +1,7 @@
 use crate::net::Net;
 use crate::node::Node;
 use easy_node::prelude::*;
+use ndeq::ode::solver::solvers;
 use ndeq::prelude::*;
 use std::ops::Range;
 
@@ -41,12 +42,12 @@ impl Sample {
 
     pub fn run_simulation(&mut self) {
         let net = &*self.net as &dyn NetView<f32>;
-        let ode = Euler::new(H, net.yp());
+        let ode = solvers::Euler::new(H, net.yp());
         let mut sim = NdeqSim::new(ode, net);
 
         let mut t = T_RANGE.start;
         while t <= T_RANGE.end {
-            let values = self.nodes.iter().map(|x| x.value() as f32);
+            let values = self.nodes.iter().map(|x| x.value());
             let values = values.collect::<Vec<_>>();
             self.seriese_vec[0].push((t, values[0]));
             self.seriese_vec[1].push((t, values[1]));

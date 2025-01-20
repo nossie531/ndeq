@@ -1,10 +1,8 @@
 //! Provider of [`RungeKutta`].
 
-use crate::ode::df::Yp;
+use crate::ode::solver::SsOdeSolver;
 use crate::ode::values::{Time, Value};
-use crate::prelude::*;
-use crate::util;
-use std::marker::PhantomData;
+use crate::ode::Yp;
 use std::ops::Mul;
 
 /// ODE solver by [Runge-Kutta methods].
@@ -25,9 +23,6 @@ pub struct RungeKutta<'a, V, T> {
 
     /// New values.
     new_values: Vec<V>,
-
-    /// Dummy.
-    pd: PhantomData<T>,
 }
 
 impl<'a, V, T> RungeKutta<'a, V, T>
@@ -35,7 +30,7 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    /// Creates a new instance with step size.
+    /// Creates a new instance.
     ///
     /// # Panics
     ///
@@ -51,39 +46,7 @@ where
             points: Default::default(),
             slopes: Default::default(),
             new_values: Default::default(),
-            pd: Default::default(),
         })
-    }
-
-    /// Init works.
-    fn init_works(&mut self, len: usize) {
-        self.points
-            .iter_mut()
-            .for_each(|x| x.resize(len, V::default()));
-        self.slopes
-            .iter_mut()
-            .for_each(|x| x.resize(len, V::default()));
-        self.new_values.resize(len, V::default());
-    }
-
-    /// Updates node values to their values after small time.
-    fn step(&mut self, values: &[V], h: T) {
-        assert!(!h.is_nan());
-
-        self.step0(values);
-        self.step1(h);
-        self.step2(h);
-        self.step3(h);
-
-        for (i, &value) in values.iter().enumerate() {
-            let k1 = self.slopes[0][i];
-            let k2 = self.slopes[1][i];
-            let k3 = self.slopes[2][i];
-            let k4 = self.slopes[3][i];
-            let slope = (k1 + (k2 + k3) * 2.0 + k4) * (1.0 / 6.0);
-            let new_value = value + slope * h;
-            self.new_values[i] = new_value;
-        }
     }
 
     /// Calculate step 0.
@@ -129,22 +92,43 @@ where
     }
 }
 
-impl<'a, V, T> OdeSolver<V, T> for RungeKutta<'a, V, T>
+impl<'a, V, T> SsOdeSolver<V, T> for RungeKutta<'a, V, T>
 where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    fn run(&mut self, values: &mut [V], p: T) {
-        assert!(!p.is_nan());
+    fn h(&self) -> T {
+        self.h
+    }
 
-        self.init_works(values.len());
+    fn init(&mut self, len: usize) {
+        self.points
+            .iter_mut()
+            .for_each(|x| x.resize(len, V::default()));
+        self.slopes
+            .iter_mut()
+            .for_each(|x| x.resize(len, V::default()));
+        self.new_values.resize(len, V::default());
+    }
 
-        let mut t = T::zero();
-        while t.abs() < p.abs() {
-            let h = util::adjust_h(self.h, p, t);
-            self.step(values, h);
-            values.copy_from_slice(&self.new_values);
-            t = t + h;
+    fn step(&mut self, values: &[V], h: T) -> &[V] {
+        assert!(!h.is_nan());
+
+        self.step0(values);
+        self.step1(h);
+        self.step2(h);
+        self.step3(h);
+
+        for (i, &value) in values.iter().enumerate() {
+            let k1 = self.slopes[0][i];
+            let k2 = self.slopes[1][i];
+            let k3 = self.slopes[2][i];
+            let k4 = self.slopes[3][i];
+            let slope = (k1 + (k2 + k3) * 2.0 + k4) * (1.0 / 6.0);
+            let new_value = value + slope * h;
+            self.new_values[i] = new_value;
         }
+
+        &self.new_values
     }
 }

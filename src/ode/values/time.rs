@@ -5,7 +5,7 @@ use std::ops::{Add, Div, Mul, Sub};
 
 use super::FloatApprox;
 
-/// Time (input value of ODE system).
+/// Time (variable of ODE system).
 pub trait Time:
     'static
     + Copy

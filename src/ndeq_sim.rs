@@ -1,5 +1,6 @@
 //! Provider of [`NdeqSim`].
 
+use crate::ode::solver::OdeSolver;
 use crate::ode::values::{Time, Value};
 use crate::prelude::*;
 use std::ops::Mul;
@@ -9,9 +10,10 @@ pub struct NdeqSim<'a, V, T> {
     /// ODE solver.
     solver: Box<dyn OdeSolver<V, T> + 'a>,
 
-    /// Target network.
+    /// Network.
     net: &'a dyn NetView<V>,
 
+    /// Network node values.
     values: Vec<V>,
 }
 
@@ -20,7 +22,7 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    /// Creates a new instance with specified ODE solver.
+    /// Creates a new instance.
     pub fn new(solver: Box<dyn OdeSolver<V, T> + 'a>, net: &'a dyn NetView<V>) -> Self {
         let values = Default::default();
         Self {
@@ -35,7 +37,7 @@ where
         self.net
     }
 
-    /// Advance time and update target network node values.
+    /// Update target network node values to future values.
     pub fn run(&mut self, p: T) {
         self.net.load_values(&mut self.values);
         self.solver.run(&mut self.values, p);

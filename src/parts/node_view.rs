@@ -1,20 +1,13 @@
 //! Provider of [`NodeView`].
 
-/// Node.
+/// Abstraction trait for network node.
 pub trait NodeView<V> {
-    /// Returns work index.
-    /// 
+    /// Returns node index that is unique in network.
+    ///
     /// # Panics
     ///
     /// Panics if target is currently mutably borrowed.
-    fn work_idx(&self) -> usize;
-
-    /// Set work index.
-    /// 
-    /// # Panics
-    ///
-    /// Panics if target is currently borrowed.
-    fn set_work_idx(&self, value: usize);
+    fn idx(&self) -> usize;
 
     /// Returns node value.
     ///
@@ -23,14 +16,21 @@ pub trait NodeView<V> {
     /// Panics if target is currently mutably borrowed.
     fn value(&self) -> V;
 
-    /// Set node value.
+    /// Sets node index that is unique in network.
+    ///
+    /// # Panics
+    ///
+    /// Panics if target is currently borrowed.
+    fn set_idx(&self, value: usize);
+
+    /// Sets node value.
     ///
     /// # Panics
     ///
     /// Panics if target is currently borrowed.
     fn set_value(&self, value: V);
 
-    /// Get edges iterator.
+    /// Returns edges iterator.
     ///
     /// # Panics
     ///

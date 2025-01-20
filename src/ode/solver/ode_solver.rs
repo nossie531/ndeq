@@ -10,7 +10,10 @@ where
     V: Value + Mul<T, Output = V>,
     T: Time,
 {
-    /// Advance time and update values.
+    /// Initialize with the number of network nodes.
+    fn init(&mut self, len: usize);
+
+    /// Update values to future values.
     ///
     /// `p` can be negative if algorithm supports it.
     ///
