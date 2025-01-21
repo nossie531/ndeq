@@ -2,45 +2,44 @@
 
 use crate::ode::solver::OdeSolver;
 use crate::ode::values::{Time, Value};
-use std::ops::Mul;
+use std::ops::MulAssign;
 
 /// Single step ODE solver.
 #[must_use]
-pub trait SsOdeSolver<V, T>: OdeSolver<V, T>
+pub trait SsOdeSolver<T, V>: OdeSolver<T, V>
 where
-    V: Value + Mul<T, Output = V>,
     T: Time,
+    V: Value + MulAssign<T>,
 {
     /// Returns step size.
     fn h(&self) -> T;
 
-    /// Initialize with the number of network nodes.
-    fn init(&mut self, len: usize);
+    /// Initialize value dimension.
+    fn init_dim(&mut self, value: &V);
 
-    /// Updates values to a moment later values.
-    fn step(&mut self, values: &[V], h: T) -> &[V];
+    /// Updates value to a moment later value.
+    fn step(&mut self, value: &V, h: T) -> &V;
 }
 
-impl<S, V, T> OdeSolver<V, T> for S
+impl<B, T, V> OdeSolver<T, V> for B
 where
-    S: SsOdeSolver<V, T>,
-    V: Value + Mul<T, Output = V>,
+    B: SsOdeSolver<T, V>,
     T: Time,
+    V: Value + MulAssign<T>,
 {
-    fn init(&mut self, len: usize) {
-        SsOdeSolver::init(self, len);
+    fn init_dim(&mut self, value: &V) {
+        SsOdeSolver::init_dim(self, value);
     }
 
-    fn run(&mut self, values: &mut [V], p: T) {
+    fn run(&mut self, value: &mut V, p: T) {
         assert!(!p.is_nan());
 
-        OdeSolver::init(self, values.len());
+        OdeSolver::init_dim(self, value);
 
         let mut t = T::zero();
         while t.abs() < p.abs() {
             let h = adjust_h(self.h(), p, t);
-            let new_values = self.step(values, h);
-            values.copy_from_slice(new_values);
+            value.clone_from(self.step(value, h));
             t = t + h;
         }
     }

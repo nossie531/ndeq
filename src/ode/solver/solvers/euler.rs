@@ -3,29 +3,33 @@
 use crate::ode::solver::SsOdeSolver;
 use crate::ode::values::{Time, Value};
 use crate::ode::Yp;
-use std::ops::Mul;
+use crate::util;
+use std::ops::MulAssign;
 
 /// ODE solver by [Euler methods].
 ///
 /// [Euler methods]: https://en.wikipedia.org/wiki/Euler_method
-pub struct Euler<'a, V, T> {
+pub struct Euler<'a, T, V> {
     /// Step size.
     h: T,
 
     /// Derivative function.
     yp: Yp<'a, V>,
 
-    /// Work slopes.
-    slopes: Vec<V>,
+    /// New value.
+    new_value: V,
 
-    /// New values.
-    new_values: Vec<V>,
+    /// Work for general.
+    work: V,
+
+    /// Work for slope.
+    slope: V,
 }
 
-impl<'a, V, T> Euler<'a, V, T>
+impl<'a, T, V> Euler<'a, T, V>
 where
-    V: Value + Mul<T, Output = V>,
     T: Time,
+    V: Value + MulAssign<T>,
 {
     /// Creates a new instance.
     ///
@@ -40,34 +44,33 @@ where
         Box::new(Self {
             h,
             yp,
-            slopes: Default::default(),
-            new_values: Default::default(),
+            new_value: Default::default(),
+            work: Default::default(),
+            slope: Default::default(),
         })
     }
 }
 
-impl<'a, V, T> SsOdeSolver<V, T> for Euler<'a, V, T>
+impl<'a, T, V> SsOdeSolver<T, V> for Euler<'a, T, V>
 where
-    V: Value + Mul<T, Output = V>,
     T: Time,
+    V: Value + MulAssign<T>,
 {
     fn h(&self) -> T {
         self.h
     }
 
-    fn init(&mut self, len: usize) {
-        self.slopes.resize(len, V::default());
-        self.new_values.resize(len, V::default());
+    fn init_dim(&mut self, value: &V) {
+        self.new_value.init_dim(value);
+        self.work.init_dim(value);
+        self.slope.init_dim(value);
     }
 
-    fn step(&mut self, values: &[V], h: T) -> &[V] {
-        (self.yp)(&mut self.slopes, values);
-
-        for (i, &value) in values.iter().enumerate() {
-            let new_value = value + self.slopes[i] * h;
-            self.new_values[i] = new_value;
-        }
-
-        &self.new_values
+    fn step(&mut self, value: &V, h: T) -> &V {
+        (self.yp)(&mut self.slope, value);
+        let slope = util::work_mul(&mut self.work, &self.slope, h);
+        self.new_value.clone_from(value);
+        self.new_value += &*slope;
+        &self.new_value
     }
 }

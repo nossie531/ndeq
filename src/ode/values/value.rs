@@ -1,29 +1,38 @@
 //! Provider of [`Value`].
 
-use std::ops::{Add, Mul, Sub};
+use std::ops::{AddAssign, MulAssign, SubAssign};
 
 /// Value (function value of ODE system).
 pub trait Value:
     'static
-    + Copy
+    + Clone
     + Default
     + PartialEq
-    + Add<Self, Output = Self>
-    + Sub<Self, Output = Self>
-    + Mul<f32, Output = Self>
+    + MulAssign<f32>
+    + for<'a> AddAssign<&'a Self>
+    + for<'a> SubAssign<&'a Self>
 {
-    // nop.
+    /// Copys dimension and fill this value with zero.
+    fn init_dim(&mut self, x: &Self) {
+        *self = x.clone();
+        self.fill_zero();
+    }
+
+    /// Fills this value with zero.
+    fn fill_zero(&mut self) {
+        *self *= 0.0;
+    }
 }
 
 impl<T> Value for T
 where
     T: 'static
-        + Copy
+        + Clone
         + Default
         + PartialEq
-        + Add<Self, Output = Self>
-        + Sub<Self, Output = Self>
-        + Mul<f32, Output = Self>,
+        + MulAssign<f32>
+        + for<'a> AddAssign<&'a Self>
+        + for<'a> SubAssign<&'a Self>,
 {
     // nop.
 }

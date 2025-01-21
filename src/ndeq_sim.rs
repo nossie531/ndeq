@@ -1,29 +1,29 @@
 //! Provider of [`NdeqSim`].
 
 use crate::ode::solver::OdeSolver;
-use crate::ode::values::{Time, Value};
+use crate::ode::values::{Time, VArr, Value};
 use crate::prelude::*;
-use std::ops::Mul;
+use std::ops::MulAssign;
 
 /// Network diffusion simulator.
-pub struct NdeqSim<'a, V, T> {
+pub struct NdeqSim<'a, T, V> {
     /// ODE solver.
-    solver: Box<dyn OdeSolver<V, T> + 'a>,
+    solver: Box<dyn OdeSolver<T, VArr<V>> + 'a>,
 
     /// Network.
     net: &'a dyn NetView<V>,
 
     /// Network node values.
-    values: Vec<V>,
+    values: VArr<V>,
 }
 
-impl<'a, V, T> NdeqSim<'a, V, T>
+impl<'a, T, V> NdeqSim<'a, T, V>
 where
-    V: Value + Mul<T, Output = V>,
     T: Time,
+    V: Value + MulAssign<T>,
 {
     /// Creates a new instance.
-    pub fn new(solver: Box<dyn OdeSolver<V, T> + 'a>, net: &'a dyn NetView<V>) -> Self {
+    pub fn new(solver: Box<dyn OdeSolver<T, VArr<V>> + 'a>, net: &'a dyn NetView<V>) -> Self {
         let values = Default::default();
         Self {
             solver,
@@ -39,8 +39,8 @@ where
 
     /// Update target network node values to future values.
     pub fn run(&mut self, p: T) {
-        self.net.load_values(&mut self.values);
+        self.net.load_values(self.values.as_mut());
         self.solver.run(&mut self.values, p);
-        self.net.set_values(&self.values);
+        self.net.set_values(self.values.as_ref());
     }
 }

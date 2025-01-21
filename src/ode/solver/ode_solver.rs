@@ -1,19 +1,19 @@
 //! Provider of [`OdeSolver`].
 
 use crate::ode::values::{Time, Value};
-use std::ops::Mul;
+use std::ops::MulAssign;
 
 /// ODE solver.
 #[must_use]
-pub trait OdeSolver<V, T>
+pub trait OdeSolver<T, V>
 where
-    V: Value + Mul<T, Output = V>,
     T: Time,
+    V: Value + MulAssign<T>,
 {
-    /// Initialize with the number of network nodes.
-    fn init(&mut self, len: usize);
+    /// Initialize value dimension.
+    fn init_dim(&mut self, value: &V);
 
-    /// Update values to future values.
+    /// Update value to future value.
     ///
     /// `p` can be negative if algorithm supports it.
     ///
@@ -21,5 +21,5 @@ where
     ///
     /// Panics if `p` is NaN or infinity or negative
     /// (if algorithm not supports negative values).
-    fn run(&mut self, values: &mut [V], p: T);
+    fn run(&mut self, value: &mut V, p: T);
 }

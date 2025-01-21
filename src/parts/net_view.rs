@@ -1,6 +1,6 @@
 //! Provider of [`NetView`].
 
-use crate::ode::values::Value;
+use crate::ode::values::{VArr, Value};
 use crate::ode::Yp;
 
 /// Abstraction trait for Network.
@@ -37,15 +37,18 @@ where
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
-    fn yp(&self) -> Yp<'_, V> {
-        Box::new(move |results, values| {
-            results.fill(V::default());
+    fn yp(&self) -> Yp<'_, VArr<V>> {
+        Box::new(move |result, value| {
+            result.fill_zero();
 
             for (bwd_idx, fwd_idx, w) in self.edges() {
-                let bwd_value = values[bwd_idx];
-                let fwd_value = values[fwd_idx];
-                let flow = (fwd_value - bwd_value) * w;
-                results[bwd_idx] = results[bwd_idx] + flow;
+                let bwd_value = &value[bwd_idx];
+                let fwd_value = &value[fwd_idx];
+                let mut flow = V::default();
+                flow += fwd_value;
+                flow -= bwd_value;
+                flow *= w;
+                result[bwd_idx] += &flow;
             }
         })
     }
