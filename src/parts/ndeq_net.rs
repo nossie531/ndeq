@@ -1,10 +1,10 @@
-//! Provider of [`NetView`].
+//! Provider of [`NdeqNet`].
 
 use crate::ode::values::{VArr, Value};
 use crate::ode::Yp;
 
 /// Abstraction trait for Network.
-pub trait NetView<V>
+pub trait NdeqNet<V>
 where
     V: Value,
 {
@@ -15,14 +15,7 @@ where
     /// Panics if `self` or its nodes are currently mutably borrowed.
     fn edges(&self) -> Box<dyn Iterator<Item = (usize, usize, f32)> + '_>;
 
-    /// Loads node values to vector.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `self` or its nodes are currently borrowed.
-    fn load_values(&self, values: &mut Vec<V>);
-
-    /// Sets node values.
+    /// Imports node values from slice.
     ///
     /// # Panics
     ///
@@ -30,14 +23,21 @@ where
     ///
     /// * `values` length is not equal to nodes count.
     /// * `self` or its nodes are currently mutably borrowed.
-    fn set_values(&self, values: &[V]);
+    fn import_values(&self, values: &[V]);
+
+    /// Exports node values to vector.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `self` or its nodes are currently borrowed.
+    fn export_values(&self, values: &mut Vec<V>);
 
     /// Returns derivative function for network diffusion.
     ///
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
-    fn yp(&self) -> Yp<'_, VArr<V>> {
+    fn yp(&self) -> Box<Yp<'_, VArr<V>>> {
         Box::new(move |result, value| {
             result.fill_zero();
 

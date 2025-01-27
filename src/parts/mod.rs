@@ -1,7 +1,7 @@
 //! Network parts.
 
-pub use net_view::*;
-pub use node_view::*;
+pub use ndeq_net::*;
+pub use ndeq_node::*;
 
-mod net_view;
-mod node_view;
+mod ndeq_net;
+mod ndeq_node;

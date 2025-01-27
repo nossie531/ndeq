@@ -2,6 +2,7 @@
 
 use crate::ode::solver::OdeSolver;
 use crate::ode::values::{Time, Value};
+use crate::ode::Yp;
 use std::ops::MulAssign;
 
 /// Single step ODE solver.
@@ -18,7 +19,7 @@ where
     fn init_dim(&mut self, value: &V);
 
     /// Updates value to a moment later value.
-    fn step(&mut self, value: &V, h: T) -> &V;
+    fn step(&mut self, yp: &Yp<V>, value: &V, h: T) -> &V;
 }
 
 impl<B, T, V> OdeSolver<T, V> for B
@@ -31,15 +32,16 @@ where
         SsOdeSolver::init_dim(self, value);
     }
 
-    fn run(&mut self, value: &mut V, p: T) {
+    fn run(&mut self, value: &mut V, yp: &Yp<V>, p: T) {
         assert!(!p.is_nan());
+        assert!(!p.is_infinite());
 
         OdeSolver::init_dim(self, value);
 
         let mut t = T::zero();
         while t.abs() < p.abs() {
             let h = adjust_h(self.h(), p, t);
-            value.clone_from(self.step(value, h));
+            value.clone_from(self.step(yp, value, h));
             t = t + h;
         }
     }

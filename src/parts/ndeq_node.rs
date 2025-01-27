@@ -1,7 +1,7 @@
-//! Provider of [`NodeView`].
+//! Provider of [`NdeqNode`].
 
 /// Abstraction trait for network node.
-pub trait NodeView<V> {
+pub trait NdeqNode<V> {
     /// Returns node index that is unique in network.
     ///
     /// # Panics

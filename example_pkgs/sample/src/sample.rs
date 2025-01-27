@@ -41,9 +41,9 @@ impl Sample {
     }
 
     pub fn run_simulation(&mut self) {
-        let net = &*self.net as &dyn NetView<f32>;
-        let ode = solvers::Euler::new(H, net.yp());
-        let mut sim = NdeqSim::new(ode, net);
+        let net = &*self.net as &dyn NdeqNet<f32>;
+        let ode = solvers::Euler::new(H);
+        let mut sim = NdeqSim::new(net, ode);
 
         let mut t = T_RANGE.start;
         while t <= T_RANGE.end {

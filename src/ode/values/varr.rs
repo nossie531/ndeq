@@ -19,6 +19,11 @@ impl<T> VArr<T> {
     pub fn len(&self) -> usize {
         self.0.len()
     }
+
+    /// Returns `true` if `self` has no elements.
+    pub fn is_empty(&self) -> bool {
+        self.0.len() == 0
+    }
 }
 
 impl<T> Index<usize> for VArr<T> {
@@ -102,5 +107,5 @@ where
 }
 
 mod msg {
-    pub const SIZE_MISSMATCH: &'static str = "Left and right size missmatch.";
+    pub const SIZE_MISSMATCH: &str = "Left and right size missmatch.";
 }

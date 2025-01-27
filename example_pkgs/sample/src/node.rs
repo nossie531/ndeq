@@ -38,7 +38,7 @@ impl Node {
     }
 }
 
-impl NodeView<f32> for Node {
+impl NdeqNode<f32> for Node {
     fn idx(&self) -> usize {
         *self.work_idx.borrow()
     }
