@@ -3,7 +3,7 @@ members = ["example_pkgs/*"]
 
 [workspace.package]
 authors = ["Nossie531"]
-edition = "2021"
+edition = "2024"
 repository = "https://github.com/nossie531/ndeq"
 license = "MIT OR Apache-2.0"
 
