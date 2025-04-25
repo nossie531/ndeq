@@ -18,11 +18,11 @@ where
 
     /// Update value to future value.
     ///
-    /// `p` can be negative if algorithm supports it.
+    /// `t` can be negative if algorithm supports it.
     ///
     /// # Panics
     ///
-    /// Panics if `p` is NaN or infinity or negative
+    /// Panics if `t` is NaN or infinity or negative
     /// (if algorithm not supports negative values).
-    fn run(&mut self, value: &mut V, yp: &Yp<V>, p: T);
+    fn run(&mut self, value: &mut V, yp: &Yp<V>, t: T);
 }

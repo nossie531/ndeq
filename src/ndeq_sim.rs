@@ -38,9 +38,9 @@ where
     }
 
     /// Update target network node values to future values.
-    pub fn run(&mut self, p: T) {
+    pub fn run(&mut self, t: T) {
         self.net.export_values(self.values.as_mut());
-        self.solver.run(&mut self.values, &self.net.yp(), p);
+        self.solver.run(&mut self.values, &self.net.yp(), t);
         self.net.import_values(self.values.as_ref());
     }
 }

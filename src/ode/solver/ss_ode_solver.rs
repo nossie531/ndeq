@@ -32,17 +32,17 @@ where
         SsOdeSolver::init_dim(self, value);
     }
 
-    fn run(&mut self, value: &mut V, yp: &Yp<V>, p: T) {
-        assert!(!p.is_nan());
-        assert!(!p.is_infinite());
+    fn run(&mut self, value: &mut V, yp: &Yp<V>, t: T) {
+        assert!(!t.is_nan());
+        assert!(!t.is_infinite());
 
         OdeSolver::init_dim(self, value);
 
-        let mut t = T::zero();
-        while t.abs() < p.abs() {
-            let h = adjust_h(self.h(), p, t);
+        let mut x = T::zero();
+        while x.abs() < t.abs() {
+            let h = adjust_h(self.h(), t, x);
             value.clone_from(self.step(yp, value, h));
-            t = t + h;
+            x = x + h;
         }
     }
 }
