@@ -5,7 +5,7 @@ mod sample;
 
 use plotters::coord::Shift;
 use plotters::prelude::*;
-use plotters_util::{PointMarker, SeriesHeader, C2};
+use plotters_util::{C2, PointMarker, SeriesHeader};
 use sample::Sample;
 use std::error::Error;
 use std::{env, path::PathBuf};

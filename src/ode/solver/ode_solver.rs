@@ -1,20 +1,25 @@
 //! Provider of [`OdeSolver`].
 
+use crate::ode::Slope;
 use crate::ode::values::{Time, Value};
-use crate::ode::Yp;
 use std::ops::MulAssign;
+use std::rc::Rc;
 
 /// ODE solver.
 #[must_use]
-pub trait OdeSolver<T, V>
+pub trait OdeSolver<'a, T, V>
 where
     T: Time,
     V: Value + MulAssign<T>,
 {
-    /// Initialize value dimension.
-    fn init_dim(&mut self, value: &V) {
-        let _ = value;
-    }
+    /// Returns new value of this instance.
+    fn new_value(&self) -> &V;
+
+    /// Sets value of this instance.
+    fn set_value(&mut self, value: &V);
+
+    /// Sets slope of this instance.
+    fn set_slope(&mut self, value: Rc<Slope<'a, V>>);
 
     /// Update value to future value.
     ///
@@ -24,5 +29,5 @@ where
     ///
     /// Panics if `t` is NaN or infinity or negative
     /// (if algorithm not supports negative values).
-    fn run(&mut self, value: &mut V, yp: &Yp<V>, t: T);
+    fn run(&mut self, t: T);
 }

@@ -13,8 +13,8 @@ pub trait Value:
     + for<'a> SubAssign<&'a Self>
 {
     /// Copys dimension and fill this value with zero.
-    fn init_dim(&mut self, x: &Self) {
-        *self = x.clone();
+    fn clone_zero(&mut self, x: &Self) {
+        self.clone_from(x);
         self.fill_zero();
     }
 

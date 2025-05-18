@@ -1,7 +1,8 @@
 //! Provider of [`NdeqNet`].
 
+use crate::ode::Slope;
 use crate::ode::values::{VArr, Value};
-use crate::ode::Yp;
+use std::rc::Rc;
 
 /// Abstraction trait for Network.
 pub trait NdeqNet<V>
@@ -37,8 +38,8 @@ where
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
-    fn yp(&self) -> Box<Yp<'_, VArr<V>>> {
-        Box::new(move |result, value| {
+    fn slope(&self) -> Rc<Slope<VArr<V>>> {
+        Rc::new(|result, value| {
             result.fill_zero();
 
             for (bwd_idx, fwd_idx, w) in self.edges() {

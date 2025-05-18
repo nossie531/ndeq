@@ -11,7 +11,7 @@ pub struct NdeqSim<'a, T, V> {
     net: &'a dyn NdeqNet<V>,
 
     /// ODE solver.
-    solver: Box<dyn OdeSolver<T, VArr<V>> + 'a>,
+    solver: Box<dyn OdeSolver<'a, T, VArr<V>> + 'a>,
 
     /// Network node values.
     values: VArr<V>,
@@ -23,12 +23,12 @@ where
     V: Value + MulAssign<T>,
 {
     /// Creates a new instance.
-    pub fn new(net: &'a dyn NdeqNet<V>, solver: Box<dyn OdeSolver<T, VArr<V>> + 'a>) -> Self {
-        let values = Default::default();
+    pub fn new(net: &'a dyn NdeqNet<V>, mut solver: Box<dyn OdeSolver<'a, T, VArr<V>> + 'a>) -> Self {
+        solver.set_slope(net.slope());
         Self {
             net,
             solver,
-            values,
+            values: Default::default(),
         }
     }
 
@@ -40,7 +40,8 @@ where
     /// Update target network node values to future values.
     pub fn run(&mut self, t: T) {
         self.net.export_values(self.values.as_mut());
-        self.solver.run(&mut self.values, &self.net.yp(), t);
-        self.net.import_values(self.values.as_ref());
+        self.solver.set_value(&self.values);
+        self.solver.run(t);
+        self.net.import_values(self.solver.new_value().as_ref());
     }
 }
