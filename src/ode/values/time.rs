@@ -1,9 +1,8 @@
 //! Provider of [`Time`].
 
+use crate::ode::values::FloatApprox;
 use std::cmp::Ordering;
 use std::ops::{Add, Div, Mul, Sub};
-
-use super::FloatApprox;
 
 /// Time (variable of ODE system).
 pub trait Time:

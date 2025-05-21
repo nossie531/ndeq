@@ -2,7 +2,7 @@
 
 use crate::ode::solver::OdeSolver;
 use crate::ode::values::{Time, Value};
-use crate::ode::{ode_util, Slope};
+use crate::ode::{Slope, ode_util};
 use crate::util::WorkOn;
 use std::ops::MulAssign;
 use std::rc::Rc;
@@ -53,7 +53,7 @@ where
             old_value: Default::default(),
             new_value: Default::default(),
             slope: ode_util::flat_slope(),
-            work: Default::default(),            
+            work: Default::default(),
             points: Default::default(),
             grads: Default::default(),
         })
@@ -91,7 +91,9 @@ where
     /// Calculate step 1.
     fn step1(&mut self, slope: Rc<Slope<V>>, h: T) {
         let (points, rest) = self.points.split_at_mut(1);
-        let dy = WorkOn(&mut self.work).set(&self.grads[0]).calc(|w| *w *= h / 2.0);
+        let dy = WorkOn(&mut self.work)
+            .set(&self.grads[0])
+            .calc(|w| *w *= h / 2.0);
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[1], &mut rest[0]);
@@ -100,7 +102,9 @@ where
     /// Calculate step 2.
     fn step2(&mut self, slope: Rc<Slope<V>>, h: T) {
         let (points, rest) = self.points.split_at_mut(2);
-        let dy = WorkOn(&mut self.work).set(&self.grads[1]).calc(|w| *w *= h / 2.0);
+        let dy = WorkOn(&mut self.work)
+            .set(&self.grads[1])
+            .calc(|w| *w *= h / 2.0);
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[2], &mut rest[0]);
@@ -124,7 +128,7 @@ where
     fn new_value(&self) -> &V {
         &self.new_value
     }
-    
+
     fn set_value(&mut self, value: &V) {
         self.old_value.clone_from(value);
         self.new_value.clone_zero(value);
@@ -132,11 +136,11 @@ where
         self.points.iter_mut().for_each(|x| x.clone_zero(value));
         self.grads.iter_mut().for_each(|x| x.clone_zero(value));
     }
-    
+
     fn set_slope(&mut self, value: Rc<Slope<'a, V>>) {
         self.slope = value;
     }
-    
+
     fn run(&mut self, t: T) {
         let h = self.h;
         let mut step = |h| self.step(h, self.slope.clone());

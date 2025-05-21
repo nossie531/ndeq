@@ -23,7 +23,10 @@ where
     V: Value + MulAssign<T>,
 {
     /// Creates a new instance.
-    pub fn new(net: &'a dyn NdeqNet<V>, mut solver: Box<dyn OdeSolver<'a, T, VArr<V>> + 'a>) -> Self {
+    pub fn new(
+        net: &'a dyn NdeqNet<V>,
+        mut solver: Box<dyn OdeSolver<'a, T, VArr<V>> + 'a>,
+    ) -> Self {
         solver.set_slope(net.slope());
         Self {
             net,
