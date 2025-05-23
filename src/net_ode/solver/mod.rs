@@ -1,6 +1,6 @@
 //! Network ODE solver.
 
-pub mod solvers;
+pub mod adapters;
 
 pub use net_ode_solver::*;
 

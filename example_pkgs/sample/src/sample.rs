@@ -1,7 +1,7 @@
 use crate::net::Net;
 use crate::node::Node;
 use easy_node::prelude::*;
-use ndeq::net_ode::solver::solvers::NetEuler;
+use ndeq::net_ode::solver::adapters::NetEuler;
 use ndeq::prelude::*;
 use std::ops::Range;
 

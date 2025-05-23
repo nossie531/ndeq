@@ -1,4 +1,4 @@
-//! Network ODE solvers.
+//! Network ODE adapters.
 
 pub use net_euler::*;
 pub use net_runge_kutta::*;

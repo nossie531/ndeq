@@ -1,4 +1,4 @@
-//! Network and ODE system adapter.
+//! Network and ODE mediator.
 
 pub mod solver;
 
