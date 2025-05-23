@@ -5,11 +5,9 @@
 
 #![warn(missing_docs)]
 
+pub mod net_ode;
 pub mod ode;
 pub mod parts;
 pub mod prelude;
 
-pub use ndeq_sim::*;
-
-mod ndeq_sim;
 mod util;

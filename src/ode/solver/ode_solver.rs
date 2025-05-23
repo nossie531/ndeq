@@ -1,9 +1,7 @@
 //! Provider of [`OdeSolver`].
 
-use crate::ode::Slope;
 use crate::ode::values::{Time, Value};
 use std::ops::MulAssign;
-use std::rc::Rc;
 
 /// ODE solver.
 #[must_use]
@@ -17,9 +15,6 @@ where
 
     /// Sets value of this instance.
     fn set_value(&mut self, value: &V);
-
-    /// Sets slope of this instance.
-    fn set_slope(&mut self, value: Rc<Slope<'a, V>>);
 
     /// Update value to future value.
     ///

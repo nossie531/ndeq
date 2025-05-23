@@ -10,7 +10,7 @@ use std::ops::{AddAssign, Index, IndexMut, MulAssign, SubAssign};
 pub struct VArr<T>(Vec<T>);
 
 impl<T> VArr<T> {
-    /// Creates new instance.
+    /// Creates a new instance.
     pub fn new(x: Vec<T>) -> Self {
         Self(x)
     }

@@ -1,5 +1,6 @@
 //! Provider of [`NdeqSim`].
 
+use crate::net_ode::solver::NetOdeSolver;
 use crate::ode::solver::OdeSolver;
 use crate::ode::values::{Time, VArr, Value};
 use crate::prelude::*;
@@ -23,14 +24,10 @@ where
     V: Value + MulAssign<T>,
 {
     /// Creates a new instance.
-    pub fn new(
-        net: &'a dyn NdeqNet<V>,
-        mut solver: Box<dyn OdeSolver<'a, T, VArr<V>> + 'a>,
-    ) -> Self {
-        solver.set_slope(net.slope());
+    pub fn new(net: &'a dyn NdeqNet<V>, solver: &dyn NetOdeSolver<T, V>) -> Self {
         Self {
             net,
-            solver,
+            solver: solver.create(net),
             values: Default::default(),
         }
     }

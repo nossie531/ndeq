@@ -1,6 +1,6 @@
 //! Provider of [`RungeKutta`].
 
-use crate::ode::solver::OdeSolver;
+use crate::ode::solver::{GpOdeSolver, OdeSolver};
 use crate::ode::values::{Time, Value};
 use crate::ode::{Slope, ode_util};
 use crate::util::WorkOn;
@@ -137,13 +137,19 @@ where
         self.grads.iter_mut().for_each(|x| x.clone_zero(value));
     }
 
-    fn set_slope(&mut self, value: Rc<Slope<'a, V>>) {
-        self.slope = value;
-    }
-
     fn run(&mut self, t: T) {
         let h = self.h;
         let mut step = |h| self.step(h, self.slope.clone());
         ode_util::run_steps(t, h, &mut step);
+    }
+}
+
+impl<'a, T, V> GpOdeSolver<'a, T, V> for RungeKutta<'a, T, V>
+where
+    T: Time,
+    V: Value + MulAssign<T>,
+{
+    fn set_slope(&mut self, value: Rc<Slope<'a, V>>) {
+        self.slope = value;
     }
 }
