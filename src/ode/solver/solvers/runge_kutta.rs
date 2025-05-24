@@ -1,7 +1,7 @@
 //! Provider of [`RungeKutta`].
 
 use crate::ode::solver::{GpOdeSolver, OdeSolver};
-use crate::ode::values::{Time, Value};
+use crate::ode::values::{RF32, Time, Value};
 use crate::ode::{Slope, ode_util};
 use crate::util::WorkOn;
 use std::ops::MulAssign;
@@ -68,10 +68,10 @@ where
         self.step2(slope.clone(), h);
         self.step3(slope.clone(), h);
 
-        self.grads[0] *= h * 1.0 / 6.0;
-        self.grads[1] *= h * 2.0 / 6.0;
-        self.grads[2] *= h * 2.0 / 6.0;
-        self.grads[3] *= h * 1.0 / 6.0;
+        self.grads[0] *= h * RF32(1.0 / 6.0);
+        self.grads[1] *= h * RF32(2.0 / 6.0);
+        self.grads[2] *= h * RF32(2.0 / 6.0);
+        self.grads[3] *= h * RF32(1.0 / 6.0);
         self.work.fill_zero();
         self.work += &self.grads[0];
         self.work += &self.grads[1];
@@ -93,7 +93,7 @@ where
         let (points, rest) = self.points.split_at_mut(1);
         let dy = WorkOn(&mut self.work)
             .set(&self.grads[0])
-            .calc(|w| *w *= h / 2.0);
+            .calc(|w| *w *= h / RF32(2.0));
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[1], &mut rest[0]);
@@ -104,7 +104,7 @@ where
         let (points, rest) = self.points.split_at_mut(2);
         let dy = WorkOn(&mut self.work)
             .set(&self.grads[1])
-            .calc(|w| *w *= h / 2.0);
+            .calc(|w| *w *= h / RF32(2.0));
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[2], &mut rest[0]);

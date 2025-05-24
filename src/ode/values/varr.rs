@@ -2,7 +2,7 @@
 
 use std::borrow::{Borrow, BorrowMut};
 use std::mem;
-use std::ops::{AddAssign, Index, IndexMut, MulAssign, SubAssign};
+use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 
 /// Value array.
 #[repr(transparent)]
@@ -23,20 +23,6 @@ impl<T> VArr<T> {
     /// Returns `true` if `self` has no elements.
     pub fn is_empty(&self) -> bool {
         self.0.len() == 0
-    }
-}
-
-impl<T> Index<usize> for VArr<T> {
-    type Output = T;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        self.0.index(index)
-    }
-}
-
-impl<T> IndexMut<usize> for VArr<T> {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        self.0.index_mut(index)
     }
 }
 
@@ -70,6 +56,20 @@ impl<T> From<&Vec<T>> for &VArr<T> {
     }
 }
 
+impl<T> Index<usize> for VArr<T> {
+    type Output = T;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        self.0.index(index)
+    }
+}
+
+impl<T> IndexMut<usize> for VArr<T> {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        self.0.index_mut(index)
+    }
+}
+
 impl<T, U> MulAssign<U> for VArr<T>
 where
     T: MulAssign<U>,
@@ -78,6 +78,18 @@ where
     fn mul_assign(&mut self, rhs: U) {
         for i in 0..self.len() {
             self.0[i] *= rhs;
+        }
+    }
+}
+
+impl<T, U> DivAssign<U> for VArr<T>
+where
+    T: DivAssign<U>,
+    U: Copy,
+{
+    fn div_assign(&mut self, rhs: U) {
+        for i in 0..self.len() {
+            self.0[i] /= rhs;
         }
     }
 }

@@ -1,7 +1,7 @@
 //! Provider of [`NdeqNet`].
 
 use crate::ode::Slope;
-use crate::ode::values::{VArr, Value};
+use crate::ode::values::{RF32, VArr, Value};
 use std::rc::Rc;
 
 /// Abstraction trait for Network.
@@ -48,7 +48,7 @@ where
                 let mut flow = V::default();
                 flow += fwd_value;
                 flow -= bwd_value;
-                flow *= w;
+                flow *= RF32(w);
                 result[bwd_idx] += &flow;
             }
         })

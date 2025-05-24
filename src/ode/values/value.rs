@@ -1,6 +1,7 @@
 //! Provider of [`Value`].
 
-use std::ops::{AddAssign, MulAssign, SubAssign};
+use crate::ode::values::RF32;
+use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// Value (function value of ODE system).
 pub trait Value:
@@ -8,7 +9,8 @@ pub trait Value:
     + Clone
     + Default
     + PartialEq
-    + MulAssign<f32>
+    + MulAssign<RF32>
+    + DivAssign<RF32>
     + for<'a> AddAssign<&'a Self>
     + for<'a> SubAssign<&'a Self>
 {
@@ -20,7 +22,7 @@ pub trait Value:
 
     /// Fills this value with zero.
     fn fill_zero(&mut self) {
-        *self *= 0.0;
+        *self *= RF32(0.0);
     }
 }
 
@@ -30,7 +32,8 @@ where
         + Clone
         + Default
         + PartialEq
-        + MulAssign<f32>
+        + MulAssign<RF32>
+        + DivAssign<RF32>
         + for<'a> AddAssign<&'a Self>
         + for<'a> SubAssign<&'a Self>,
 {
