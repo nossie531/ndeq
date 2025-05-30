@@ -8,7 +8,7 @@ use crate::parts::NdeqNet;
 use std::marker::PhantomData;
 use std::ops::MulAssign;
 
-/// Euler ODE solver for network.
+/// ODE solver for network with Euler method.
 pub struct NetEuler<T, V> {
     h: T,
     pd: PhantomData<V>,

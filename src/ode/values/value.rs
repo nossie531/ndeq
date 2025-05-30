@@ -4,6 +4,10 @@ use crate::ode::values::RF32;
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// Value (function value of ODE system).
+/// 
+/// # Value type
+/// 
+/// This value can be a vector as well as a scalar.
 pub trait Value:
     'static
     + Clone

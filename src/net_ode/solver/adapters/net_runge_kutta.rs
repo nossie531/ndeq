@@ -8,7 +8,7 @@ use crate::parts::NdeqNet;
 use std::marker::PhantomData;
 use std::ops::MulAssign;
 
-/// Runge-Kutta ODE solver for network.
+/// ODE solver for network with Runge-Kutta method.
 pub struct NetRungeKutta<T, V> {
     h: T,
     pd: PhantomData<V>,
