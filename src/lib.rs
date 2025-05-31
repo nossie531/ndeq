@@ -10,4 +10,5 @@ pub mod ode;
 pub mod parts;
 pub mod prelude;
 
+mod linear;
 mod util;
