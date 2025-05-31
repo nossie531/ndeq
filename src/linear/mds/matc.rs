@@ -10,13 +10,11 @@ pub struct Matc<T> {
 
 impl<T> Matc<T>
 where
-    T: Scalar
+    T: Scalar,
 {
     /// Creates a new value.
     pub fn new(pos: (usize, usize), val: T) -> Self {
-        Self {
-            pos, val, 
-        }
+        Self { pos, val }
     }
 
     /// Returns row index.

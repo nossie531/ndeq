@@ -2,9 +2,7 @@
 
 use std::ops::{Add, AddAssign, Mul};
 
-use super::{
-    mds::MData, Scalar
-};
+use super::{Scalar, mds::MData};
 
 /// [Matrix].
 ///
@@ -107,13 +105,13 @@ where
 }
 
 impl<T> PartialEq for Matrix<T>
-where 
-    T: Scalar
+where
+    T: Scalar,
 {
     /// Tests for `self` and `other` values to be equal, and is used by `==`.
-    /// 
+    ///
     /// # Comparison rule
-    /// 
+    ///
     /// Comparisons are based only on whether the values of all components match
     /// ([`Self::sparse`] does not affect the result).
     fn eq(&self, other: &Self) -> bool {
@@ -157,7 +155,7 @@ where
         true
     }
 
-    fn add_assign_for_dense_rhs(&mut self, rhs: Self)  {
+    fn add_assign_for_dense_rhs(&mut self, rhs: Self) {
         for i in 0..rhs.m() {
             for j in 0..rhs.n() {
                 let curr = self.get((i, j));

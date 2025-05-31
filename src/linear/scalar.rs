@@ -17,3 +17,17 @@ pub trait Scalar:
 {
     // nop.
 }
+
+impl<T> Scalar for T
+where
+    T: 'static
+        + Copy
+        + Default
+        + PartialEq
+        + Mul<Output = Self>
+        + Add<Output = Self>
+        + MulAssign
+        + AddAssign,
+{
+    // nop.
+}

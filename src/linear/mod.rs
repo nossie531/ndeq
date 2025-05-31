@@ -9,3 +9,4 @@ pub use scalar::*;
 
 mod matrix;
 mod scalar;
+mod tests;

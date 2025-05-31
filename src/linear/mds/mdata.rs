@@ -1,8 +1,8 @@
 //! Provider of [`MData`].
 
-use std::collections::BTreeMap;
-use crate::linear::mds::Matc;
 use crate::linear::Scalar;
+use crate::linear::mds::Matc;
+use std::collections::BTreeMap;
 
 /// Matrix main data.
 #[derive(Clone, PartialEq)]
@@ -43,28 +43,31 @@ where
         }
     }
 
-    pub fn none_zeros<'a>(&'a self, size: (usize, usize)) -> Box<dyn Iterator<Item = Matc<T>> + 'a> {
+    pub fn none_zeros<'a>(
+        &'a self,
+        size: (usize, usize),
+    ) -> Box<dyn Iterator<Item = Matc<T>> + 'a> {
         match self {
             MData::Dense(v) => {
-                let ret = v.iter()
-                .enumerate()
-                .filter(|&(_, v)| *v != T::default())
-                .map(move |(i, &v)| {
-                    let row = i / size.1;
-                    let col = i % size.1;
-                    Matc::new((row, col), v)
-                });
+                let ret = v
+                    .iter()
+                    .enumerate()
+                    .filter(|&(_, v)| *v != T::default())
+                    .map(move |(i, &v)| {
+                        let row = i / size.1;
+                        let col = i % size.1;
+                        Matc::new((row, col), v)
+                    });
                 Box::new(ret) as Box<dyn Iterator<Item = _>>
-            },
+            }
             MData::Sparse(m) => {
-                let ret = m.iter()
-                .map(|(&pos, &v)| Matc::new(pos, v));
+                let ret = m.iter().map(|(&pos, &v)| Matc::new(pos, v));
                 Box::new(ret) as Box<dyn Iterator<Item = _>>
             }
         }
     }
 
-     /// Sets value to specified position.
+    /// Sets value to specified position.
     pub fn set(&mut self, size: (usize, usize), pos: (usize, usize), val: T) {
         match self {
             Self::Dense(v) => v[pos.0 * size.1 + pos.1] = val,
@@ -74,7 +77,7 @@ where
                 } else {
                     m.insert(pos, val);
                 }
-            },
+            }
         }
     }
 }
