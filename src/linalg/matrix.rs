@@ -1,15 +1,14 @@
-//! Provider of [`SMatrix`].
+//! Provider of [`Matrix`].
 
-use std::ops::{Add, AddAssign, Mul};
-
-use super::{Scalar, mds::MData};
+use crate::linalg::parts::{MData, Matc, Pos, Scalar, Size};
+use std::ops::{AddAssign, Mul};
 
 /// [Matrix].
 ///
 /// [Matrix]: https://en.wikipedia.org/wiki/Matrix_(mathematics)
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Matrix<T> {
-    size: (usize, usize),
+    size: Size,
     data: MData<T>,
 }
 
@@ -17,38 +16,65 @@ impl<T> Matrix<T>
 where
     T: Scalar,
 {
-    pub fn new(m: usize, n: usize, sparse: bool) -> Self {
-        let size = (m, n);
-        let data = MData::new(m, n, sparse);
+    /// Creates a new value.
+    #[must_use]
+    pub fn new(size: Size, sparse: bool) -> Self {
+        let data = MData::new(size, sparse);
         Self { size, data }
     }
 
+    /// Returns `true` if storage format is for sparse matrix.
+    #[must_use]
     pub fn is_sparse(&self) -> bool {
         self.data.is_sparse()
     }
 
+    /// Returns row length.
+    #[must_use]
     pub fn m(&self) -> usize {
         self.size.0
     }
 
+    /// Returns column length.
+    #[must_use]
     pub fn n(&self) -> usize {
         self.size.1
     }
 
-    pub fn size(&self) -> (usize, usize) {
+    /// Returns size.
+    #[must_use]
+    pub fn size(&self) -> Size {
         self.size
     }
 
-    pub fn get(&self, pos: (usize, usize)) -> T {
+    /// Sets value from specified position.
+    #[must_use]
+    pub fn get(&self, pos: Pos) -> T {
+        assert!((0..self.size.0).contains(&pos.0));
+        assert!((0..self.size.1).contains(&pos.1));
         self.data.get(self.size, pos)
     }
 
-    pub fn set(&mut self, pos: (usize, usize), value: T) {
+    /// Clone this matrix with sparse flag.
+    #[must_use]
+    pub fn clone_sparse(&self, sparse: bool) -> Self {
+        let mut ret = Self::new(self.size, sparse);
+        for mc in self.none_zeros() {
+            ret.set(mc.pos(), self.get(mc.pos()));
+        }
+
+        ret
+    }
+
+    /// Sets value to specified position.
+    pub fn set(&mut self, pos: Pos, value: T) {
+        assert!((0..self.size.0).contains(&pos.0));
+        assert!((0..self.size.1).contains(&pos.1));
         self.data.set(self.size, pos, value);
     }
 }
 
-impl<T> AddAssign for Matrix<T>
+impl<T> AddAssign<&Self> for Matrix<T>
 where
     T: Scalar,
 {
@@ -57,7 +83,7 @@ where
     /// # Panics
     ///
     /// Panics if both operands size are not same.
-    fn add_assign(&mut self, rhs: Self) {
+    fn add_assign(&mut self, rhs: &Self) {
         assert_eq!(self.size(), rhs.size());
 
         let method = if rhs.is_sparse() {
@@ -70,11 +96,11 @@ where
     }
 }
 
-impl<T> Mul for Matrix<T>
+impl<T> Mul for &Matrix<T>
 where
     T: Scalar,
 {
-    type Output = Self;
+    type Output = Matrix<T>;
 
     /// Performs the `*` operation.
     ///
@@ -93,9 +119,9 @@ where
         let use_sparse_calc = self.is_sparse() || rhs.is_sparse();
         let return_sparse_fmt = self.is_sparse() && rhs.is_sparse();
         let method = if use_sparse_calc {
-            Self::mul_with_sparse
+            Matrix::mul_with_sparse
         } else {
-            Self::mul_without_sparse
+            Matrix::mul_without_sparse
         };
 
         let ret = method(&self, rhs);
@@ -116,9 +142,9 @@ where
     /// ([`Self::sparse`] does not affect the result).
     fn eq(&self, other: &Self) -> bool {
         let method = if self.is_sparse() == other.is_sparse() {
-            Self::eq_for_homo
+            Self::eq_by_inside
         } else {
-            Self::eq_for_hetelo
+            Self::eq_by_outside
         };
 
         method(&self, other)
@@ -129,7 +155,13 @@ impl<T> Matrix<T>
 where
     T: Scalar,
 {
-    fn eq_for_homo(&self, other: &Self) -> bool {
+    /// Returns none-zero components iterator.
+    fn none_zeros(&self) -> Box<dyn Iterator<Item = Matc<T>> + '_> {
+        self.data.none_zeros(self.size)
+    }
+
+    /// Compare this matrix to other matrix with their inside.
+    fn eq_by_inside(&self, other: &Self) -> bool {
         if self.size != other.size {
             return false;
         }
@@ -137,14 +169,15 @@ where
         self.data.eq(&other.data)
     }
 
-    fn eq_for_hetelo(&self, other: &Self) -> bool {
+    /// Compare this matrix to other matrix with their outside.
+    fn eq_by_outside(&self, other: &Self) -> bool {
         if self.size != other.size {
             return false;
         }
 
         let sm = if self.is_sparse() { self } else { other };
         let dm = if self.is_sparse() { other } else { self };
-        for mc in sm.data.none_zeros(self.size()) {
+        for mc in sm.none_zeros() {
             let sv = mc.val();
             let dv = dm.get(mc.pos());
             if sv != dv {
@@ -155,7 +188,8 @@ where
         true
     }
 
-    fn add_assign_for_dense_rhs(&mut self, rhs: Self) {
+    /// Perform add assign with dense matrix on the right-hand side.
+    fn add_assign_for_dense_rhs(&mut self, rhs: &Self) {
         for i in 0..rhs.m() {
             for j in 0..rhs.n() {
                 let curr = self.get((i, j));
@@ -165,17 +199,19 @@ where
         }
     }
 
-    fn add_assign_for_sparse_rhs(&mut self, rhs: Self) {
-        for mc in rhs.data.none_zeros(self.size()) {
+    /// Perform add assign with sparse matrix on the right-hand side.
+    fn add_assign_for_sparse_rhs(&mut self, rhs: &Self) {
+        for mc in rhs.none_zeros() {
             let curr = self.get(mc.pos());
             let addition = mc.val();
             self.set(mc.pos(), curr + addition)
         }
     }
 
-    fn mul_without_sparse(&self, rhs: Self) -> Self {
+    /// Perform multiple operation without sparse matrix.
+    fn mul_without_sparse(&self, rhs: &Self) -> Self {
         let ret_for_sparse = self.data.is_sparse() && rhs.data.is_sparse();
-        let mut ret = Matrix::<T>::new(self.m(), rhs.n(), ret_for_sparse);
+        let mut ret = Matrix::<T>::new((self.m(), rhs.n()), ret_for_sparse);
 
         for i in 0..ret.m() {
             for j in 0..ret.n() {
@@ -191,33 +227,35 @@ where
         ret
     }
 
-    fn mul_with_sparse(&self, rhs: Self) -> Self {
+    /// Perform multiple operation with sparse matrix.
+    fn mul_with_sparse(&self, rhs: &Self) -> Self {
         let ret_for_sparse = self.data.is_sparse() && rhs.data.is_sparse();
-        let size = self.size();
-        let mut ret = Matrix::<T>::new(self.m(), rhs.n(), ret_for_sparse);
-        let mut l_iter = self.data.none_zeros(size);
-        let mut r_iter = rhs.data.none_zeros(size);
-        let mut l_cell = l_iter.next();
-        let mut last_row = None as Option<usize>;
+        let mut ret = Matrix::<T>::new((self.m(), rhs.n()), ret_for_sparse);
+        let mut lhs_iter = self.none_zeros();
+        let mut rhs_iter = rhs.none_zeros();
+        let mut last_lc = <Option<Matc<T>>>::None;
+        let mut last_rc = <Option<Matc<T>>>::None;
 
-        while l_cell.is_some() {
-            let l_row = l_cell.as_ref().unwrap().row();
-            let l_val = l_cell.as_ref().unwrap().val();
-            if Some(l_row) != last_row {
-                r_iter = rhs.data.none_zeros(size);
+        while let Some(lc) = lhs_iter.next() {
+            if Some(lc.row()) != last_lc.map(|x| x.row()) {
+                last_lc = Some(lc);
+                last_rc = None;
+                rhs_iter = rhs.none_zeros();
             }
 
-            let mut r_cell = r_iter.next();
-            while r_cell.is_some() && r_cell.as_ref().unwrap().row() == l_row {
-                let r_col = r_cell.as_ref().unwrap().col();
-                let r_val = r_cell.as_ref().unwrap().val();
-                let curr = ret.get((l_row, r_col));
-                ret.set((l_row, r_col), curr + l_val * r_val);
-                r_cell = r_iter.next();
-            }
+            while let Some(rc) = last_rc.or_else(|| rhs_iter.next()) {
+                last_rc = None;
 
-            l_cell = l_iter.next();
-            last_row = Some(l_row);
+                if rc.row() == lc.col() {
+                    let curr = ret.get((lc.row(), rc.col()));
+                    ret.set((lc.row(), rc.col()), curr + lc.val() * rc.val());
+                }
+
+                if rc.row() > lc.col() {
+                    last_rc = Some(rc);
+                    break;
+                }
+            }
         }
 
         ret

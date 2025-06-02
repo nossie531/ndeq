@@ -10,5 +10,8 @@ pub mod ode;
 pub mod parts;
 pub mod prelude;
 
-mod linear;
+mod linalg;
 mod util;
+
+#[cfg(test)]
+mod linalg_tests;

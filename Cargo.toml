@@ -17,3 +17,8 @@ authors.workspace = true
 edition.workspace = true
 repository.workspace = true
 license.workspace = true
+
+[dev-dependencies]
+rand = "0.9"
+rand_pcg = "0.9"
+test_panic = "0.3"

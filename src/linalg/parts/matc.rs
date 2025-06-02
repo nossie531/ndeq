@@ -1,10 +1,13 @@
 //! Provider of [`Matc`].
 
-use crate::linear::Scalar;
+use crate::linalg::parts::{Pos, Scalar};
 
 /// Matrix component.
+#[derive(Clone, Copy, Debug)]
 pub struct Matc<T> {
-    pos: (usize, usize),
+    /// Position.
+    pos: Pos,
+    /// Value.
     val: T,
 }
 
@@ -13,7 +16,7 @@ where
     T: Scalar,
 {
     /// Creates a new value.
-    pub fn new(pos: (usize, usize), val: T) -> Self {
+    pub fn new(pos: Pos, val: T) -> Self {
         Self { pos, val }
     }
 
@@ -27,7 +30,7 @@ where
         self.pos.1
     }
 
-    pub fn pos(&self) -> (usize, usize) {
+    pub fn pos(&self) -> Pos {
         self.pos
     }
 

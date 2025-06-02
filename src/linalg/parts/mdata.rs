@@ -1,14 +1,15 @@
 //! Provider of [`MData`].
 
-use crate::linear::Scalar;
-use crate::linear::mds::Matc;
+use crate::linalg::parts::{Matc, Pos, Scalar, Size};
 use std::collections::BTreeMap;
 
 /// Matrix main data.
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum MData<T> {
+    /// Dense strage format.
     Dense(Vec<T>),
-    Sparse(BTreeMap<(usize, usize), T>),
+    /// Sparse strage format.
+    Sparse(BTreeMap<Pos, T>),
 }
 
 impl<T> MData<T>
@@ -16,13 +17,13 @@ where
     T: Scalar,
 {
     /// Creates a new value.
-    pub fn new(m: usize, n: usize, sparse: bool) -> Self {
+    pub fn new(size: Size, sparse: bool) -> Self {
         if sparse {
             Self::Sparse(BTreeMap::new())
         } else {
-            let size = m * n;
-            let mut vals = Vec::with_capacity(size);
-            vals.extend((0..size).map(|_| T::default()));
+            let len = size.0 * size.1;
+            let mut vals = Vec::with_capacity(len);
+            vals.extend((0..len).map(|_| T::default()));
             Self::Dense(vals)
         }
     }
@@ -36,17 +37,15 @@ where
     }
 
     /// Returns matrix value of specified position.
-    pub fn get(&self, size: (usize, usize), pos: (usize, usize)) -> T {
+    pub fn get(&self, size: Size, pos: Pos) -> T {
         match self {
             Self::Dense(v) => v[pos.0 * size.1 + pos.1],
             Self::Sparse(m) => m.get(&pos).copied().unwrap_or_default(),
         }
     }
 
-    pub fn none_zeros<'a>(
-        &'a self,
-        size: (usize, usize),
-    ) -> Box<dyn Iterator<Item = Matc<T>> + 'a> {
+    /// Returns none-zero components iterator.
+    pub fn none_zeros<'a>(&'a self, size: Size) -> Box<dyn Iterator<Item = Matc<T>> + 'a> {
         match self {
             MData::Dense(v) => {
                 let ret = v
@@ -58,6 +57,7 @@ where
                         let col = i % size.1;
                         Matc::new((row, col), v)
                     });
+
                 Box::new(ret) as Box<dyn Iterator<Item = _>>
             }
             MData::Sparse(m) => {
@@ -68,7 +68,7 @@ where
     }
 
     /// Sets value to specified position.
-    pub fn set(&mut self, size: (usize, usize), pos: (usize, usize), val: T) {
+    pub fn set(&mut self, size: Size, pos: Pos, val: T) {
         match self {
             Self::Dense(v) => v[pos.0 * size.1 + pos.1] = val,
             Self::Sparse(m) => {

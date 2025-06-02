@@ -2,11 +2,8 @@
 //!
 //! [Linear algebra]: https://en.wikipedia.org/wiki/Linear_algebra
 
-pub mod mds;
+pub mod parts;
 
 pub use matrix::*;
-pub use scalar::*;
 
 mod matrix;
-mod scalar;
-mod tests;

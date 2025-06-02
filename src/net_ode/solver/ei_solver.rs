@@ -1,6 +1,6 @@
 //! Provider of [`EiSolver`].
 
-use crate::linear::Matrix;
+use crate::linalg::Matrix;
 use crate::net_ode::solver::NetOdeSolver;
 use crate::ode::solver::OdeSolver;
 use crate::ode::values::VArr;
