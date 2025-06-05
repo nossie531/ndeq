@@ -1,9 +1,9 @@
 //! Provider of [`NdeqSim`].
 
 use crate::net_ode::solver::NetOdeSolver;
-use crate::ode::solver::OdeSolver;
-use crate::ode::values::{Time, VArr, Value};
 use crate::prelude::*;
+use ndeq_ode::solver::OdeSolver;
+use ndeq_ode::values::{Time, VArr, Value};
 use std::ops::MulAssign;
 
 /// Network diffusion simulator.

@@ -1,11 +1,15 @@
-//! Provider of [`Rmg`].
+//! Provider of [`Sample`].
 
-use crate::linalg::Matrix;
-use crate::linalg::parts::{Pos, Size};
+use crate::for_tests::consts;
+use ndeq_linalg::Matrix;
+use ndeq_linalg::aliases::{Pos, Size};
 use rand::seq::index::sample;
 use rand::{Rng, SeedableRng};
 use rand_pcg::Pcg32;
 use std::collections::BTreeSet;
+
+/// Pseudo random sequence seed.
+static SEED: u64 = 0;
 
 /// Random matrix generator.
 pub struct Sample {
@@ -13,22 +17,19 @@ pub struct Sample {
 }
 
 impl Sample {
-    /// Standard vector length.
-    pub const STD_LEN: usize = 3;
-
     /// Sample square matrix size.
-    pub const SQ_SIZE: Size = (Self::STD_LEN, Self::STD_LEN);
+    pub const SQ_SIZE: Size = (consts::STD_N, consts::STD_N);
 
     /// Sample row vector size.
-    pub const ROW_VEC_SIZE: Size = (1, Self::STD_LEN);
+    pub const ROW_VEC_SIZE: Size = (1, consts::STD_N);
 
     /// Sample column vector size.
-    pub const COL_VEC_SIZE: Size = (Self::STD_LEN, 1);
+    pub const COL_VEC_SIZE: Size = (consts::STD_N, 1);
 
     /// Creates a new value.
-    pub fn new(seed: u64) -> Self {
+    pub fn new() -> Self {
         Self {
-            rng: Pcg32::seed_from_u64(seed),
+            rng: Pcg32::seed_from_u64(SEED),
         }
     }
 

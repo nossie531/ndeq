@@ -1,10 +1,10 @@
 //! Provider of [`NetEuler`].
 
 use crate::net_ode::solver::NetOdeSolver;
-use crate::ode::solver::solvers::Euler;
-use crate::ode::solver::{GpOdeSolver, OdeSolver};
-use crate::ode::values::{Time, VArr, Value};
 use crate::parts::NdeqNet;
+use ndeq_ode::solver::solvers::Euler;
+use ndeq_ode::solver::{GpOdeSolver, OdeSolver};
+use ndeq_ode::values::{Time, VArr, Value};
 use std::marker::PhantomData;
 use std::ops::MulAssign;
 

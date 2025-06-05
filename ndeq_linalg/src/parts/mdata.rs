@@ -1,6 +1,8 @@
 //! Provider of [`MData`].
 
-use crate::linalg::parts::{Matc, Pos, Scalar, Size};
+use crate::aliases::{Pos, Size};
+use crate::iters::{MCells, MCellsMut};
+use crate::parts::Scalar;
 use std::collections::BTreeMap;
 
 /// Matrix main data.
@@ -23,7 +25,7 @@ where
         } else {
             let len = size.0 * size.1;
             let mut vals = Vec::with_capacity(len);
-            vals.extend((0..len).map(|_| T::default()));
+            vals.extend((0..len).map(|_| T::zero()));
             Self::Dense(vals)
         }
     }
@@ -40,31 +42,13 @@ where
     pub fn get(&self, size: Size, pos: Pos) -> T {
         match self {
             Self::Dense(v) => v[pos.0 * size.1 + pos.1],
-            Self::Sparse(m) => m.get(&pos).copied().unwrap_or_default(),
+            Self::Sparse(m) => m.get(&pos).copied().unwrap_or_else(|| T::zero()),
         }
     }
 
     /// Returns none-zero components iterator.
-    pub fn none_zeros<'a>(&'a self, size: Size) -> Box<dyn Iterator<Item = Matc<T>> + 'a> {
-        match self {
-            MData::Dense(v) => {
-                let ret = v
-                    .iter()
-                    .enumerate()
-                    .filter(|&(_, v)| *v != T::default())
-                    .map(move |(i, &v)| {
-                        let row = i / size.1;
-                        let col = i % size.1;
-                        Matc::new((row, col), v)
-                    });
-
-                Box::new(ret) as Box<dyn Iterator<Item = _>>
-            }
-            MData::Sparse(m) => {
-                let ret = m.iter().map(|(&pos, &v)| Matc::new(pos, v));
-                Box::new(ret) as Box<dyn Iterator<Item = _>>
-            }
-        }
+    pub fn nz_iter<'a>(&'a self, size: Size) -> MCells<'a, T> {
+        MCells::new(self, size)
     }
 
     /// Sets value to specified position.
@@ -72,12 +56,17 @@ where
         match self {
             Self::Dense(v) => v[pos.0 * size.1 + pos.1] = val,
             Self::Sparse(m) => {
-                if val == T::default() {
+                if val == T::zero() {
                     m.remove(&pos);
                 } else {
                     m.insert(pos, val);
                 }
             }
         }
+    }
+
+    /// Returns mutable none-zero components iterator.
+    pub fn nz_iter_mut<'a>(&'a mut self, size: Size) -> MCellsMut<'a, T> {
+        MCellsMut::new(self, size)
     }
 }

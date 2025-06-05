@@ -428,10 +428,22 @@ dependencies = [
 name = "ndeq"
 version = "0.1.0"
 dependencies = [
+ "ndeq_linalg",
+ "ndeq_ode",
+]
+
+[[package]]
+name = "ndeq_linalg"
+version = "0.1.0"
+dependencies = [
  "rand",
  "rand_pcg",
  "test_panic",
 ]
+
+[[package]]
+name = "ndeq_ode"
+version = "0.1.0"
 
 [[package]]
 name = "num-traits"

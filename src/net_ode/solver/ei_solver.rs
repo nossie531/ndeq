@@ -1,10 +1,10 @@
 //! Provider of [`EiSolver`].
 
-use crate::linalg::Matrix;
 use crate::net_ode::solver::NetOdeSolver;
-use crate::ode::solver::OdeSolver;
-use crate::ode::values::VArr;
 use crate::parts::NdeqNet;
+use ndeq_linalg::Matrix;
+use ndeq_ode::solver::OdeSolver;
+use ndeq_ode::values::VArr;
 
 /// ODE solver for network with [Exponential Integrator].
 ///

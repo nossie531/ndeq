@@ -1,6 +1,6 @@
 //! Provider of [`OdeSolver`].
 
-use crate::ode::values::{Time, Value};
+use crate::values::{Time, Value};
 use std::ops::MulAssign;
 
 /// ODE solver.

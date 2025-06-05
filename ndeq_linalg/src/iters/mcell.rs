@@ -1,22 +1,19 @@
-//! Provider of [`Matc`].
+//! Provider of [`MCell`].
 
-use crate::linalg::parts::{Pos, Scalar};
+use crate::aliases::Pos;
 
 /// Matrix component.
 #[derive(Clone, Copy, Debug)]
-pub struct Matc<T> {
+pub struct MCell<'a, T> {
     /// Position.
     pos: Pos,
     /// Value.
-    val: T,
+    val: &'a T,
 }
 
-impl<T> Matc<T>
-where
-    T: Scalar,
-{
+impl<'a, T> MCell<'a, T> {
     /// Creates a new value.
-    pub fn new(pos: Pos, val: T) -> Self {
+    pub fn new(pos: Pos, val: &'a T) -> Self {
         Self { pos, val }
     }
 
@@ -30,12 +27,13 @@ where
         self.pos.1
     }
 
+    /// Returns position.
     pub fn pos(&self) -> Pos {
         self.pos
     }
 
-    /// Returns value.
-    pub fn val(&self) -> T {
+    /// Returns value reference.
+    pub fn val(&self) -> &'a T {
         self.val
     }
 }

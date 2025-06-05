@@ -1,6 +1,6 @@
 //! Provider of [`Value`].
 
-use crate::ode::values::RF32;
+use crate::values::RF32;
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// Value (function value of ODE system).

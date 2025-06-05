@@ -6,12 +6,5 @@
 #![warn(missing_docs)]
 
 pub mod net_ode;
-pub mod ode;
 pub mod parts;
 pub mod prelude;
-
-mod linalg;
-mod util;
-
-#[cfg(test)]
-mod linalg_tests;

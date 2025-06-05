@@ -1,5 +1,5 @@
 [workspace]
-members = ["example_pkgs/*"]
+members = ["example_pkgs/*", "ndeq_linalg", "ndeq_ode"]
 
 [workspace.package]
 authors = ["Nossie531"]
@@ -18,7 +18,6 @@ edition.workspace = true
 repository.workspace = true
 license.workspace = true
 
-[dev-dependencies]
-rand = "0.9"
-rand_pcg = "0.9"
-test_panic = "0.3"
+[dependencies]
+ndeq_linalg = { path = "ndeq_linalg" }
+ndeq_ode = { path = "ndeq_ode" }

@@ -1,6 +1,6 @@
-use crate::ode::Slope;
-use crate::ode::solver::OdeSolver;
-use crate::ode::values::{Time, Value};
+use crate::Slope;
+use crate::solver::OdeSolver;
+use crate::values::{Time, Value};
 use std::ops::MulAssign;
 use std::rc::Rc;
 

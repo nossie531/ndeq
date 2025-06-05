@@ -1,9 +1,9 @@
 //! Provider of [`Euler`].
 
-use crate::ode::solver::{GpOdeSolver, OdeSolver};
-use crate::ode::values::{Time, Value};
-use crate::ode::{Slope, ode_util};
+use crate::solver::{GpOdeSolver, OdeSolver};
 use crate::util::WorkOn;
+use crate::values::{Time, Value};
+use crate::{Slope, ode_util};
 use std::ops::MulAssign;
 use std::rc::Rc;
 

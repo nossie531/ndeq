@@ -1,7 +1,7 @@
 //! Utility for ODE.
 
-use crate::ode::Slope;
-use crate::ode::values::{Time, Value};
+use crate::Slope;
+use crate::values::{Time, Value};
 use std::rc::Rc;
 
 /// Create flat slope.

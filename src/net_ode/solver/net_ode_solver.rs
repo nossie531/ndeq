@@ -1,8 +1,8 @@
 //! Provider of [`NetOdeSolver`].
 
-use crate::ode::solver::OdeSolver;
-use crate::ode::values::VArr;
 use crate::parts::NdeqNet;
+use ndeq_ode::solver::OdeSolver;
+use ndeq_ode::values::VArr;
 
 /// ODE solver for network.
 pub trait NetOdeSolver<T, V> {

@@ -1,7 +1,7 @@
 //! Provider of [`NdeqNet`].
 
-use crate::ode::Slope;
-use crate::ode::values::{RF32, VArr, Value};
+use ndeq_ode::Slope;
+use ndeq_ode::values::{RF32, VArr, Value};
 use std::rc::Rc;
 
 /// Abstraction trait for Network.
