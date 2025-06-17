@@ -1,8 +1,8 @@
 //! Provider of [`Scalar`].
 
-use super::real::Real;
 use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Mul, MulAssign};
+use crate::num::Float;
 
 /// [Scalar] value.
 ///
@@ -14,12 +14,13 @@ pub trait Scalar:
     + Display
     + PartialEq
     + From<f32>
+    + From<Self::Real>
     + Mul<Output = Self>
     + Add<Output = Self>
     + MulAssign
     + AddAssign
 {
-    type Real: Real;
+    type Real: Float;
 
     /// Returns zero.
     fn zero() -> Self {

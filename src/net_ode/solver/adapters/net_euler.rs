@@ -29,7 +29,7 @@ where
     T: Time,
     V: Value + MulAssign<T>,
 {
-    fn create<'a>(&self, net: &'a dyn NdeqNet<V>) -> Box<dyn OdeSolver<'a, T, VArr<V>> + 'a> {
+    fn create<'a>(&self, net: &'a dyn NdeqNet<V>) -> Box<dyn OdeSolver<T, VArr<V>> + 'a> {
         let mut ret = Euler::new(self.h);
         ret.set_slope(net.slope());
         ret

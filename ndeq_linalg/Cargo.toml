@@ -3,6 +3,9 @@ name = "ndeq_linalg"
 edition = "2024"
 version = "0.1.0"
 
+[dependencies]
+iter_chunk_ext = { git = "https://github.com/nossie531/iter_chunk_ext.git" }
+
 [dev-dependencies]
 rand = "0.9"
 rand_pcg = "0.9"

@@ -12,7 +12,7 @@ pub struct NdeqSim<'a, T, V> {
     net: &'a dyn NdeqNet<V>,
 
     /// ODE solver.
-    solver: Box<dyn OdeSolver<'a, T, VArr<V>> + 'a>,
+    solver: Box<dyn OdeSolver<T, VArr<V>> + 'a>,
 
     /// Network node values.
     values: VArr<V>,

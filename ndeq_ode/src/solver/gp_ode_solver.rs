@@ -5,7 +5,7 @@ use std::ops::MulAssign;
 use std::rc::Rc;
 
 /// General purpose ODE solver.
-pub trait GpOdeSolver<'a, T, V>: OdeSolver<'a, T, V>
+pub trait GpOdeSolver<'a, T, V>: OdeSolver<T, V>
 where
     T: Time,
     V: Value + MulAssign<T>,

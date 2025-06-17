@@ -120,7 +120,7 @@ where
     }
 }
 
-impl<'a, T, V> OdeSolver<'a, T, V> for RungeKutta<'a, T, V>
+impl<'a, T, V> OdeSolver<T, V> for RungeKutta<'a, T, V>
 where
     T: Time,
     V: Value + MulAssign<T>,

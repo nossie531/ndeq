@@ -2,7 +2,9 @@
 
 use crate::aliases::{Pos, Size, Vector};
 use crate::iters::{MCell, MCells, MCellsMut};
-use crate::parts::{MData, Scalar, Real};
+use crate::num::Float;
+use crate::parts::{MData, Scalar};
+use iter_chunk_ext::prelude::*;
 use std::mem;
 use std::ops::{AddAssign, Mul, MulAssign};
 
@@ -97,8 +99,10 @@ where
         let mut term = vec.clone();
         let mut work = Matrix::new(vec.size, false);
         // TODO: 1..10 はものすごく適当…。
-        // max_scale_nrom を使用予定。
-        todo!();
+        // let s = self.max_scale_nrom();
+        // let scale = T::Real::from(s as f32).exp2();
+        // let matrix = self * T::from(T::Real::from(1.) / scale);
+
         for i in 1..10 {
             self.mul_to(&term, &mut work);
             mem::swap(&mut term, &mut work);
@@ -122,7 +126,7 @@ where
     ///
     /// Panics if any of the following occurs.
     ///
-    /// * `work` size missmatch to result size.
+    /// * `out` size missmatch to result size.
     /// * `self` columns count and `rhs` rows count do not match.
     fn mul_to(&self, rhs: &Self, out: &mut Self) {
         assert_eq!(self.n(), rhs.m());
@@ -268,17 +272,17 @@ where
     /// Returns max scale norm.
     ///
     /// "Max scale norm" is coined term by author.
+    /// 
     /// This value is calculated by the following steps.
-    /// 1. For each row, sum absolute of all components and take log base 2 of it.
+    /// 
+    /// 1. For each row, sum all components absolute values and get it max digits in binary.
     /// 2. Select the one with the largest absolute value of them.
-    fn max_scale_nrom(&self) -> T::Real {
-        let mut ret = T::Real::zero();
-        let mut row = T::Real::zero();
-        for mc in self.nz_iter() {
-            todo!()
-        }
-
-        ret
+    fn max_scale_nrom(&self) -> i32 {
+        self.nz_iter()
+            .chunk_by(|x| x.row())
+            .map(|x| x.fold(T::Real::zero(), |s, x| s + x.val().abs()).exponent())
+            .max()
+            .unwrap_or_default()
     }
 
     /// Returns none-zero components iterator.

@@ -5,7 +5,7 @@ use std::ops::MulAssign;
 
 /// ODE solver.
 #[must_use]
-pub trait OdeSolver<'a, T, V>
+pub trait OdeSolver<T, V>
 where
     T: Time,
     V: Value + MulAssign<T>,

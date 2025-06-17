@@ -64,7 +64,7 @@ where
     }
 }
 
-impl<'a, T, V> OdeSolver<'a, T, V> for Euler<'a, T, V>
+impl<'a, T, V> OdeSolver<T, V> for Euler<'a, T, V>
 where
     T: Time,
     V: Value + MulAssign<T>,

@@ -18,7 +18,7 @@ pub struct EiSolver<T, V> {
 }
 
 impl<T, V> NetOdeSolver<T, V> for EiSolver<T, V> {
-    fn create<'a>(&self, net: &'a dyn NdeqNet<V>) -> Box<dyn OdeSolver<'a, T, VArr<V>> + 'a> {
+    fn create<'a>(&self, net: &'a dyn NdeqNet<V>) -> Box<dyn OdeSolver<T, VArr<V>> + 'a> {
         todo!()
         // - net から [各ノード値のベクトル] と [ラプラシアン行列] を取得する。
         // - [各ノード値のベクトル] と [ラプラシアン行列] から行列指数関数を実行する。
