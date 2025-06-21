@@ -1,11 +1,22 @@
 //! Provider of [`NetOdeSolver`].
 
 use crate::parts::NdeqNet;
-use ndeq_ode::solver::OdeSolver;
-use ndeq_ode::values::VArr;
 
 /// ODE solver for network.
-pub trait NetOdeSolver<T, V> {
-    /// Creates ODE solver.
-    fn create<'a>(&self, net: &'a dyn NdeqNet<V>) -> Box<dyn OdeSolver<T, VArr<V>> + 'a>;
+pub trait NetOdeSolver<'a, T, V> {
+    /// Returns new node values of network.
+    fn new_values(&self) -> &[V];
+
+    /// Sets network of this instance.
+    fn set_net(&mut self, net: &'a dyn NdeqNet<V>);
+
+    /// Calculate new node values.
+    ///
+    /// `t` can be negative if algorithm supports it.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `t` is NaN or infinity or negative
+    /// (if algorithm not supports negative values).    
+    fn run(&mut self, t: T);
 }

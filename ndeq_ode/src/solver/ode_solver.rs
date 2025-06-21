@@ -10,13 +10,13 @@ where
     T: Time,
     V: Value + MulAssign<T>,
 {
-    /// Returns new value of this instance.
+    /// Returns new value.
     fn new_value(&self) -> &V;
 
-    /// Sets value of this instance.
+    /// Sets value.
     fn set_value(&mut self, value: &V);
 
-    /// Update value to future value.
+    /// Calculate new values.
     ///
     /// `t` can be negative if algorithm supports it.
     ///

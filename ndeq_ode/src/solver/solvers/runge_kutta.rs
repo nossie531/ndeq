@@ -1,6 +1,6 @@
 //! Provider of [`RungeKutta`].
 
-use crate::solver::{GpOdeSolver, OdeSolver};
+use crate::solver::{UnivOdeSolver, OdeSolver};
 use crate::util::WorkOn;
 use crate::values::{RF32, Time, Value};
 use crate::{Slope, ode_util};
@@ -44,11 +44,11 @@ where
     ///
     /// Panics if `h` is zero or negative or NaN or infinity.
     #[must_use]
-    pub fn new(h: T) -> Box<Self> {
+    pub fn new(h: T) -> Self {
         assert!(!h.is_nan());
         assert!(!h.is_infinite());
         assert!(h > T::zero());
-        Box::new(Self {
+        Self {
             h,
             old_value: Default::default(),
             new_value: Default::default(),
@@ -56,7 +56,7 @@ where
             work: Default::default(),
             points: Default::default(),
             grads: Default::default(),
-        })
+        }
     }
 
     /// Advance step.
@@ -144,7 +144,7 @@ where
     }
 }
 
-impl<'a, T, V> GpOdeSolver<'a, T, V> for RungeKutta<'a, T, V>
+impl<'a, T, V> UnivOdeSolver<'a, T, V> for RungeKutta<'a, T, V>
 where
     T: Time,
     V: Value + MulAssign<T>,

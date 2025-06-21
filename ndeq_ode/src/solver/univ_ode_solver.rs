@@ -4,8 +4,8 @@ use crate::values::{Time, Value};
 use std::ops::MulAssign;
 use std::rc::Rc;
 
-/// General purpose ODE solver.
-pub trait GpOdeSolver<'a, T, V>: OdeSolver<T, V>
+/// Universal ODE solver.
+pub trait UnivOdeSolver<'a, T, V>: OdeSolver<T, V>
 where
     T: Time,
     V: Value + MulAssign<T>,

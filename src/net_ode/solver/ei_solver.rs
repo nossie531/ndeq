@@ -1,10 +1,7 @@
 //! Provider of [`EiSolver`].
 
-use crate::net_ode::solver::NetOdeSolver;
-use crate::parts::NdeqNet;
+use crate::{net_ode::solver::NetOdeSolver, parts::NdeqNet};
 use ndeq_linalg::Matrix;
-use ndeq_ode::solver::OdeSolver;
-use ndeq_ode::values::VArr;
 
 /// ODE solver for network with [Exponential Integrator].
 ///
@@ -17,10 +14,18 @@ pub struct EiSolver<T, V> {
     laplacian: Matrix<V>,
 }
 
-impl<T, V> NetOdeSolver<T, V> for EiSolver<T, V> {
-    fn create<'a>(&self, net: &'a dyn NdeqNet<V>) -> Box<dyn OdeSolver<T, VArr<V>> + 'a> {
+impl<'a, T, V> NetOdeSolver<'a, T, V> for EiSolver<T, V> {
+    // - net から [各ノード値のベクトル] と [ラプラシアン行列] を取得する。
+    // - [各ノード値のベクトル] と [ラプラシアン行列] から行列指数関数を実行する。
+    fn new_values(&self) -> &[V] {
         todo!()
-        // - net から [各ノード値のベクトル] と [ラプラシアン行列] を取得する。
-        // - [各ノード値のベクトル] と [ラプラシアン行列] から行列指数関数を実行する。
+    }
+
+    fn set_net(&mut self, net: &'a dyn NdeqNet<V>) {
+        todo!()
+    }
+
+    fn run(&mut self, t: T) {
+        todo!()
     }
 }

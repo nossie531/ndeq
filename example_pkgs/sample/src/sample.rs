@@ -1,7 +1,8 @@
 use crate::net::Net;
 use crate::node::Node;
 use easy_node::prelude::*;
-use ndeq::net_ode::solver::adapters::NetEuler;
+use ndeq::net_ode::solver::solvers::NetEuler;
+use ndeq::prelude::solver::NetOdeSolver;
 use ndeq::prelude::*;
 use std::ops::Range;
 
@@ -42,17 +43,20 @@ impl Sample {
 
     pub fn run_simulation(&mut self) {
         let net = &*self.net as &dyn NdeqNet<f32>;
-        let solver = NetEuler::new(H);
-        let mut sim = NdeqSim::new(net, &solver);
+        let mut solver = NetEuler::new(H);
+        solver.set_net(net);
 
         let mut t = T_RANGE.start;
         while t <= T_RANGE.end {
-            let values = self.nodes.iter().map(|x| x.value());
-            let values = values.collect::<Vec<_>>();
-            self.seriese_vec[0].push((t, values[0]));
-            self.seriese_vec[1].push((t, values[1]));
-            self.seriese_vec[2].push((t, values[2]));
-            sim.run(H);
+            let node_values = self.nodes.iter().map(|x| x.value());
+            let node_values = node_values.collect::<Vec<_>>();
+            self.seriese_vec[0].push((t, node_values[0]));
+            self.seriese_vec[1].push((t, node_values[1]));
+            self.seriese_vec[2].push((t, node_values[2]));
+
+            solver.run(H);
+            net.import_values(solver.new_values().as_ref());
+
             t += H;
         }
     }
