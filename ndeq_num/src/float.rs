@@ -1,8 +1,8 @@
 //! Provider of [`Float`].
 
+use crate::util;
 use std::cmp::Ordering;
 use std::ops::{Add, Div, Mul, Sub};
-use crate::util;
 
 /// Floating point number.
 pub trait Float:
@@ -95,9 +95,9 @@ impl Float for f32 {
     fn copysign(self, sign: Self) -> Self {
         self.copysign(sign)
     }
-    
+
     fn exponent(self) -> i32 {
-        util::exponent::<u32, {f32::MANTISSA_DIGITS}>(self.to_bits())
+        util::exponent::<u32, { f32::MANTISSA_DIGITS }>(self.to_bits())
     }
 }
 
@@ -117,8 +117,8 @@ impl Float for f64 {
     fn copysign(self, sign: Self) -> Self {
         self.copysign(sign)
     }
-    
+
     fn exponent(self) -> i32 {
-        util::exponent::<u64, {f64::MANTISSA_DIGITS}>(self.to_bits())
+        util::exponent::<u64, { f64::MANTISSA_DIGITS }>(self.to_bits())
     }
 }

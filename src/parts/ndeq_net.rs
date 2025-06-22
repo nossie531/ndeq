@@ -10,9 +10,9 @@ where
     V: Value,
 {
     /// Returns the number of nodes.
-    /// 
+    ///
     /// # Panics
-    /// 
+    ///
     /// Panics if `self` is currently mutably borrowed.
     fn len(&self) -> usize;
 

@@ -1,8 +1,8 @@
 //! Provider of [`Scalar`].
 
+use ndeq_num::Float;
 use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Mul, MulAssign};
-use ndeq_num::Float;
 
 /// [Scalar] value.
 ///

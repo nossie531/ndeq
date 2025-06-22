@@ -1,6 +1,6 @@
 //! Provider of [`RungeKutta`].
 
-use crate::solver::{UnivOdeSolver, OdeSolver};
+use crate::solver::{OdeSolver, UnivOdeSolver};
 use crate::util::WorkOn;
 use crate::values::{RF32, Time, Value};
 use crate::{Slope, ode_util};

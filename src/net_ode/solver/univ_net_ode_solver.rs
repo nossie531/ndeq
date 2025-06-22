@@ -36,12 +36,12 @@ where
     fn new_values(&self) -> &[V] {
         self.base.new_value().as_ref()
     }
-    
+
     fn set_net(&mut self, net: &'a dyn NdeqNet<V>) {
         self.net = Some(net);
         self.base.set_slope(net.slope());
     }
-    
+
     fn run(&mut self, t: T) {
         self.net.unwrap().export_values(self.values.as_mut());
         self.base.set_value(&self.values);

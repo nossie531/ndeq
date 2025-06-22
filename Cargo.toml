@@ -11,6 +11,7 @@ license = "MIT OR Apache-2.0"
 ndeq_linalg = { version = "=0.1.0", path = "ndeq_linalg" }
 ndeq_num = { version = "=0.1.0", path = "ndeq_num" }
 ndeq_ode = { version = "=0.1.0", path = "ndeq_ode" }
+ndeq = { version = "=0.1.0", path = "." }
 
 [package]
 name = "ndeq"

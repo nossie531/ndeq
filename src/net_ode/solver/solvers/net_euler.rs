@@ -8,7 +8,7 @@ use std::ops::MulAssign;
 
 /// ODE solver for network with Euler method.
 pub struct NetEuler<'a, T, V> {
-    adapter: UnivNetOdeSolver<'a, T, V>
+    adapter: UnivNetOdeSolver<'a, T, V>,
 }
 
 impl<'a, T, V> NetEuler<'a, T, V>
@@ -32,11 +32,11 @@ where
     fn new_values(&self) -> &[V] {
         self.adapter.new_values()
     }
-    
+
     fn set_net(&mut self, net: &'a dyn NdeqNet<V>) {
         self.adapter.set_net(net);
     }
-    
+
     fn run(&mut self, t: T) {
         self.adapter.run(t);
     }

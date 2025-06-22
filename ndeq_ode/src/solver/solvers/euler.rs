@@ -1,6 +1,6 @@
 //! Provider of [`Euler`].
 
-use crate::solver::{UnivOdeSolver, OdeSolver};
+use crate::solver::{OdeSolver, UnivOdeSolver};
 use crate::util::WorkOn;
 use crate::values::{Time, Value};
 use crate::{Slope, ode_util};

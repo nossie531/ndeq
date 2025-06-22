@@ -199,9 +199,9 @@ dependencies = [
 
 [[package]]
 name = "easy_node"
-version = "0.3.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25c3cf9bbebe3f21eaa7dfd9c263f6de056ea1b57d7aa96696b42c9cbc3d5440"
+checksum = "16185de00fc580d32338c122347e2c9a3c52a28be2bb347e9bf80fec221f4023"
 
 [[package]]
 name = "fdeflate"
@@ -648,18 +648,18 @@ dependencies = [
 
 [[package]]
 name = "ref_iter"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6abd2ccdf2d076d96c68c7f7bf314db9a00d2295b5163bd5e55482e5e85d25ef"
+checksum = "9073fcf954be0fef46ceafcfbf3f427a793dbf7d99f589ff3779d3e7592226a1"
 dependencies = [
  "ref_iter_macro",
 ]
 
 [[package]]
 name = "ref_iter_macro"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "245e11f54d891aaf54f95953fd182a2d28ab640e2078e074f80442b30e1a432e"
+checksum = "45858459691fbb2af39efc2519142109a8981b453798d66bb9395834cc9c001e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -726,9 +726,9 @@ dependencies = [
 
 [[package]]
 name = "test_panic"
-version = "0.3.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b441d8a820d7328a95120c2825bc62468b11dc30cd4031839d1c6311eab3ce5f"
+checksum = "aca0abf6f8968356e8236fba75ee5a4dc3c2da59fc5780d97a207e4c5545f18c"
 
 [[package]]
 name = "thiserror"

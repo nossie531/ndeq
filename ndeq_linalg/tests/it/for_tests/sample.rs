@@ -1,8 +1,8 @@
 //! Provider of [`Sample`].
 
 use crate::for_tests::consts;
-use ndeq_linalg::prelude::*;
 use ndeq_linalg::aliases::{Pos, Size};
+use ndeq_linalg::prelude::*;
 use rand::seq::index::sample;
 use rand::{Rng, SeedableRng};
 use rand_pcg::Pcg32;

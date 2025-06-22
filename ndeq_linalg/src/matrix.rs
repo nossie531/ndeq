@@ -272,9 +272,9 @@ where
     /// Returns max scale norm.
     ///
     /// "Max scale norm" is coined term by author.
-    /// 
+    ///
     /// This value is calculated by the following steps.
-    /// 
+    ///
     /// 1. For each row, sum all components absolute values and get it max digits in binary.
     /// 2. Select the one with the largest absolute value of them.
     fn max_scale_nrom(&self) -> i32 {
