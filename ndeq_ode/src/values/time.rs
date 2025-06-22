@@ -1,6 +1,7 @@
 //! Provider of [`Time`].
 
-use crate::values::{Float, RF32};
+use crate::values::RF32;
+use ndeq_num::prelude::*;
 use std::ops::{Add, Div, Mul, Sub};
 
 /// Time (variable of ODE system).

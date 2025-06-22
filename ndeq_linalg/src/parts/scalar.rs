@@ -2,7 +2,7 @@
 
 use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Mul, MulAssign};
-use crate::num::Float;
+use ndeq_num::Float;
 
 /// [Scalar] value.
 ///

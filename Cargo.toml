@@ -1,11 +1,16 @@
 [workspace]
-members = ["example_pkgs/*", "ndeq_linalg", "ndeq_ode"]
+members = ["example_pkgs/*", "ndeq_linalg", "ndeq_num", "ndeq_ode"]
 
 [workspace.package]
 authors = ["Nossie531"]
 edition = "2024"
 repository = "https://github.com/nossie531/ndeq"
 license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+ndeq_linalg = { version = "=0.1.0", path = "ndeq_linalg" }
+ndeq_num = { version = "=0.1.0", path = "ndeq_num" }
+ndeq_ode = { version = "=0.1.0", path = "ndeq_ode" }
 
 [package]
 name = "ndeq"
@@ -19,5 +24,5 @@ repository.workspace = true
 license.workspace = true
 
 [dependencies]
-ndeq_linalg = { path = "ndeq_linalg" }
-ndeq_ode = { path = "ndeq_ode" }
+ndeq_linalg = { workspace = true }
+ndeq_ode = { workspace = true }

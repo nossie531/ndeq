@@ -32,6 +32,10 @@ impl Net {
 }
 
 impl NdeqNet<f32> for Net {
+    fn len(&self) -> usize {
+        self.nodes.borrow().len()
+    }
+
     fn edges(&self) -> Box<dyn Iterator<Item = (usize, usize, f32)> + '_> {
         let nodes = RefIter::new(self.nodes.borrow(), |x| x.iter());
         let ret = nodes.iflat_map(Self::node_edges);

@@ -2,7 +2,7 @@
 
 use crate::net_ode::solver::{NetOdeSolver, UnivNetOdeSolver};
 use crate::parts::NdeqNet;
-use ndeq_ode::solver::solvers::Euler;
+use ndeq_ode::prelude::*;
 use ndeq_ode::values::{Time, Value};
 use std::ops::MulAssign;
 

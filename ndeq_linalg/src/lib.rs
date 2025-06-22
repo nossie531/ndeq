@@ -4,8 +4,8 @@
 
 pub mod aliases;
 pub mod iters;
-pub mod num;
 pub mod parts;
+pub mod prelude;
 
 pub use matrix::*;
 

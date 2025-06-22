@@ -3,6 +3,7 @@
 //! [ODE]: https://en.wikipedia.org/wiki/Ordinary_differential_equation
 
 pub mod ode_util;
+pub mod prelude;
 pub mod solver;
 pub mod values;
 

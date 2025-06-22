@@ -2,24 +2,42 @@
 
 use std::cmp::Ordering;
 use std::ops::{Add, Div, Mul, Sub};
+use crate::util;
 
-/// Float type abstraction trait.
+/// Floating point number.
 pub trait Float:
     Copy
-    + Default
-    + Sized
-    + PartialEq
+    + From<f32>
     + PartialOrd
     + Add<Output = Self>
     + Sub<Output = Self>
     + Mul<Output = Self>
     + Div<Output = Self>
 {
+    /// Returns zero.
+    fn zero() -> Self {
+        0.0.into()
+    }
+
+    /// Returns one.
+    fn one() -> Self {
+        1.0.into()
+    }
+
     /// Converts self into [`f32`].
     fn as_f32(self) -> f32;
 
+    /// Returns 2^(self).
+    fn exp2(self) -> Self;
+
+    /// Returns the base 2 logarithm of the number.
+    fn log2(self) -> Self;
+
     /// Returns this number with the sign equal to `sign`.
     fn copysign(self, sign: Self) -> Self;
+
+    /// Returns exponential part.
+    fn exponent(self) -> i32;
 
     /// Returns true if this value is infinity.
     fn is_infinite(self) -> bool {
@@ -31,11 +49,6 @@ pub trait Float:
         self.as_f32().is_nan()
     }
 
-    /// Returns zero value.
-    fn zero() -> Self {
-        Self::default()
-    }
-
     /// Returns absolute value.
     fn abs(self) -> Self {
         if self < Self::zero() {
@@ -45,7 +58,17 @@ pub trait Float:
         }
     }
 
-    /// Compares and returns the minimum of two values.
+    /// Returns the maximum of the two numbers, ignoring NaN.
+    fn max(self, other: Self) -> Option<Self> {
+        match self.partial_cmp(&other) {
+            Some(Ordering::Equal) => Some(self),
+            Some(Ordering::Less) => Some(other),
+            Some(Ordering::Greater) => Some(self),
+            _ => None,
+        }
+    }
+
+    /// Returns the minimum of the two numbers, ignoring NaN.
     fn min(self, other: Self) -> Option<Self> {
         match self.partial_cmp(&other) {
             Some(Ordering::Equal) => Some(self),
@@ -61,8 +84,20 @@ impl Float for f32 {
         self
     }
 
+    fn exp2(self) -> Self {
+        self.exp2()
+    }
+
+    fn log2(self) -> Self {
+        self.log2()
+    }
+
     fn copysign(self, sign: Self) -> Self {
         self.copysign(sign)
+    }
+    
+    fn exponent(self) -> i32 {
+        util::exponent::<u32, {f32::MANTISSA_DIGITS}>(self.to_bits())
     }
 }
 
@@ -71,7 +106,19 @@ impl Float for f64 {
         self as f32
     }
 
+    fn exp2(self) -> Self {
+        self.exp2()
+    }
+
+    fn log2(self) -> Self {
+        self.log2()
+    }
+
     fn copysign(self, sign: Self) -> Self {
         self.copysign(sign)
+    }
+    
+    fn exponent(self) -> i32 {
+        util::exponent::<u64, {f64::MANTISSA_DIGITS}>(self.to_bits())
     }
 }

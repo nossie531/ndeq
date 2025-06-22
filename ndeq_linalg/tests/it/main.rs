@@ -1,7 +1,8 @@
 mod for_tests;
 
 use for_tests::{Sample, scale};
-use ndeq_linalg::{Matrix, parts::Scalar};
+use ndeq_linalg::prelude::*;
+use ndeq_linalg::parts::Scalar;
 use test_panic::test_panic;
 
 #[test]

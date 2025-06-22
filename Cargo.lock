@@ -442,14 +442,22 @@ name = "ndeq_linalg"
 version = "0.1.0"
 dependencies = [
  "iter_chunk_ext",
+ "ndeq_num",
  "rand",
  "rand_pcg",
  "test_panic",
 ]
 
 [[package]]
+name = "ndeq_num"
+version = "0.1.0"
+
+[[package]]
 name = "ndeq_ode"
 version = "0.1.0"
+dependencies = [
+ "ndeq_num",
+]
 
 [[package]]
 name = "num-traits"

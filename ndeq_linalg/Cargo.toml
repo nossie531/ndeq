@@ -1,13 +1,13 @@
 [package]
 name = "ndeq_linalg"
-edition = "2024"
 version = "0.1.0"
+edition = { workspace = true}
 
 [dependencies]
 iter_chunk_ext = { git = "https://github.com/nossie531/iter_chunk_ext.git" }
+ndeq_num = { path = "../ndeq_num" }
 
 [dev-dependencies]
 rand = "0.9"
 rand_pcg = "0.9"
 test_panic = "0.3"
-

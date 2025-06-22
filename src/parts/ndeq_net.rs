@@ -9,6 +9,13 @@ pub trait NdeqNet<V>
 where
     V: Value,
 {
+    /// Returns the number of nodes.
+    /// 
+    /// # Panics
+    /// 
+    /// Panics if `self` is currently mutably borrowed.
+    fn len(&self) -> usize;
+
     /// Returns edges.
     ///
     /// # Panics
@@ -53,4 +60,10 @@ where
             }
         })
     }
+
+    // TODO;
+    // fn laplacian(&self) -> Matrix<V> {
+    //     let ret = Matrix::new((self.len(), self.len()), true);
+    //     ret
+    // }
 }

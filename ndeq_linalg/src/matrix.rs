@@ -2,9 +2,9 @@
 
 use crate::aliases::{Pos, Size, Vector};
 use crate::iters::{MCell, MCells, MCellsMut};
-use crate::num::Float;
 use crate::parts::{MData, Scalar};
 use iter_chunk_ext::prelude::*;
+use ndeq_num::prelude::*;
 use std::mem;
 use std::ops::{AddAssign, Mul, MulAssign};
 

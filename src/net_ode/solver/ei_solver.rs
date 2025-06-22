@@ -1,7 +1,7 @@
 //! Provider of [`EiSolver`].
 
 use crate::{net_ode::solver::NetOdeSolver, parts::NdeqNet};
-use ndeq_linalg::Matrix;
+use ndeq_linalg::prelude::*;
 
 /// ODE solver for network with [Exponential Integrator].
 ///
