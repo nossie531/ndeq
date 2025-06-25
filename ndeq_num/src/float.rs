@@ -1,10 +1,12 @@
 //! Provider of [`Float`].
 
 use crate::util;
+use dyn_compatible::prelude::*;
 use std::cmp::Ordering;
 use std::ops::{Add, Div, Mul, Sub};
 
 /// Floating point number.
+#[dyn_compatible(false)]
 pub trait Float:
     Copy
     + From<f32>

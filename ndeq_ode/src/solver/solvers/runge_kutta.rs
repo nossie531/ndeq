@@ -2,7 +2,7 @@
 
 use crate::solver::{OdeSolver, UnivOdeSolver};
 use crate::util::WorkOn;
-use crate::values::{RF32, Time, Value};
+use crate::values::{OdeTime, OdeValue, RF32};
 use crate::{Slope, ode_util};
 use std::ops::MulAssign;
 use std::rc::Rc;
@@ -35,8 +35,8 @@ pub struct RungeKutta<'a, T, V> {
 
 impl<T, V> RungeKutta<'_, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     /// Creates a new instance.
     ///
@@ -122,8 +122,8 @@ where
 
 impl<'a, T, V> OdeSolver<T, V> for RungeKutta<'a, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     fn new_value(&self) -> &V {
         &self.new_value
@@ -146,8 +146,8 @@ where
 
 impl<'a, T, V> UnivOdeSolver<'a, T, V> for RungeKutta<'a, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     fn set_slope(&mut self, value: Rc<Slope<'a, V>>) {
         self.slope = value;

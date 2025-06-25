@@ -1,14 +1,16 @@
 use crate::Slope;
 use crate::solver::OdeSolver;
-use crate::values::{Time, Value};
+use crate::values::{OdeTime, OdeValue};
+use dyn_compatible::prelude::*;
 use std::ops::MulAssign;
 use std::rc::Rc;
 
 /// Universal ODE solver.
+#[dyn_compatible(true)]
 pub trait UnivOdeSolver<'a, T, V>: OdeSolver<T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     /// Sets slope of this instance.
     fn set_slope(&mut self, value: Rc<Slope<'a, V>>);

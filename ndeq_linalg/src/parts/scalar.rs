@@ -1,5 +1,6 @@
 //! Provider of [`Scalar`].
 
+use dyn_compatible::prelude::*;
 use ndeq_num::Float;
 use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Mul, MulAssign};
@@ -7,6 +8,7 @@ use std::ops::{Add, AddAssign, Mul, MulAssign};
 /// [Scalar] value.
 ///
 /// [Scalar]: https://en.wikipedia.org/wiki/Scalar_(mathematics)
+#[dyn_compatible(false)]
 pub trait Scalar:
     'static
     + Copy

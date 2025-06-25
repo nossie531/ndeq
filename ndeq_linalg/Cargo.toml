@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = { workspace = true}
 
 [dependencies]
+dyn_compatible = { workspace = true }
 iter_chunk_ext = { git = "https://github.com/nossie531/iter_chunk_ext.git" }
 ndeq_num = { path = "../ndeq_num" }
 

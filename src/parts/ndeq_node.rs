@@ -1,6 +1,9 @@
 //! Provider of [`NdeqNode`].
 
+use dyn_compatible::prelude::*;
+
 /// Abstraction trait for network node.
+#[dyn_compatible(true)]
 pub trait NdeqNode<V> {
     /// Returns node index that is unique in network.
     ///

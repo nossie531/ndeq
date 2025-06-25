@@ -8,6 +8,7 @@ repository = "https://github.com/nossie531/ndeq"
 license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
+dyn_compatible = { version = "0.1" }
 ndeq_linalg = { version = "=0.1.0", path = "ndeq_linalg" }
 ndeq_num = { version = "=0.1.0", path = "ndeq_num" }
 ndeq_ode = { version = "=0.1.0", path = "ndeq_ode" }
@@ -25,5 +26,6 @@ repository.workspace = true
 license.workspace = true
 
 [dependencies]
+dyn_compatible = { workspace = true }
 ndeq_linalg = { workspace = true }
 ndeq_ode = { workspace = true }

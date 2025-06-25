@@ -3,7 +3,7 @@
 use crate::net_ode::solver::{NetOdeSolver, UnivNetOdeSolver};
 use crate::parts::NdeqNet;
 use ndeq_ode::prelude::*;
-use ndeq_ode::values::{Time, Value};
+use ndeq_ode::values::{OdeTime, OdeValue};
 use std::ops::MulAssign;
 
 /// ODE solver for network with Euler method.
@@ -13,8 +13,8 @@ pub struct NetEuler<'a, T, V> {
 
 impl<'a, T, V> NetEuler<'a, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     /// Creates a new instance.
     pub fn new(h: T) -> Self {
@@ -26,8 +26,8 @@ where
 
 impl<'a, T, V> NetOdeSolver<'a, T, V> for NetEuler<'a, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     fn new_values(&self) -> &[V] {
         self.adapter.new_values()

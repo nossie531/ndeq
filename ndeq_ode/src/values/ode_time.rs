@@ -1,11 +1,13 @@
-//! Provider of [`Time`].
+//! Provider of [`OdeTime`].
 
 use crate::values::RF32;
+use dyn_compatible::prelude::*;
 use ndeq_num::prelude::*;
 use std::ops::{Add, Div, Mul, Sub};
 
-/// Time (variable of ODE system).
-pub trait Time:
+/// ODE system time.
+#[dyn_compatible(false)]
+pub trait OdeTime:
     'static
     + Float
     + Add<RF32, Output = Self>
@@ -16,7 +18,7 @@ pub trait Time:
     // nop.
 }
 
-impl<T> Time for T
+impl<T> OdeTime for T
 where
     T: 'static
         + Float

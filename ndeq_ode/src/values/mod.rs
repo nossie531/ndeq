@@ -1,11 +1,11 @@
 //! Values for ODE.
 
+pub use ode_time::*;
+pub use ode_value::*;
+pub use ode_vec::*;
 pub use rf32::*;
-pub use time::*;
-pub use value::*;
-pub use varr::*;
 
+mod ode_time;
+mod ode_value;
+mod ode_vec;
 mod rf32;
-mod time;
-mod value;
-mod varr;

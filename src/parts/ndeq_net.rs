@@ -1,13 +1,15 @@
 //! Provider of [`NdeqNet`].
 
+use dyn_compatible::prelude::*;
 use ndeq_ode::Slope;
-use ndeq_ode::values::{RF32, VArr, Value};
+use ndeq_ode::values::{OdeValue, OdeVec, RF32};
 use std::rc::Rc;
 
 /// Abstraction trait for Network.
+#[dyn_compatible(true)]
 pub trait NdeqNet<V>
 where
-    V: Value,
+    V: OdeValue,
 {
     /// Returns the number of nodes.
     ///
@@ -45,7 +47,7 @@ where
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
-    fn slope(&self) -> Rc<Slope<VArr<V>>> {
+    fn slope(&self) -> Rc<Slope<OdeVec<V>>> {
         Rc::new(|result, value| {
             result.fill_zero();
 

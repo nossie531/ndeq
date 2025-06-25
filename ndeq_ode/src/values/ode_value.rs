@@ -1,14 +1,14 @@
-//! Provider of [`Value`].
+//! Provider of [`OdeValue`].
 
 use crate::values::RF32;
+use dyn_compatible::prelude::*;
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
-/// Value (function value of ODE system).
-///
-/// # Value type
+/// ODE system value.
 ///
 /// This value can be a vector as well as a scalar.
-pub trait Value:
+#[dyn_compatible(false)]
+pub trait OdeValue:
     'static
     + Clone
     + Default
@@ -30,7 +30,7 @@ pub trait Value:
     }
 }
 
-impl<T> Value for T
+impl<T> OdeValue for T
 where
     T: 'static
         + Clone

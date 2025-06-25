@@ -1,15 +1,15 @@
-//! Provider of [`VArr`]
+//! Provider of [`OdeVec`]
 
 use std::borrow::{Borrow, BorrowMut};
 use std::mem;
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 
-/// Value array.
+/// New type of vector for ODE system.
 #[repr(transparent)]
 #[derive(Clone, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
-pub struct VArr<T>(Vec<T>);
+pub struct OdeVec<T>(Vec<T>);
 
-impl<T> VArr<T> {
+impl<T> OdeVec<T> {
     /// Creates a new instance.
     pub fn new(x: Vec<T>) -> Self {
         Self(x)
@@ -26,37 +26,37 @@ impl<T> VArr<T> {
     }
 }
 
-impl<T> AsRef<Vec<T>> for VArr<T> {
+impl<T> AsRef<Vec<T>> for OdeVec<T> {
     fn as_ref(&self) -> &Vec<T> {
         self.borrow()
     }
 }
 
-impl<T> AsMut<Vec<T>> for VArr<T> {
+impl<T> AsMut<Vec<T>> for OdeVec<T> {
     fn as_mut(&mut self) -> &mut Vec<T> {
         self.borrow_mut()
     }
 }
 
-impl<T> Borrow<Vec<T>> for VArr<T> {
+impl<T> Borrow<Vec<T>> for OdeVec<T> {
     fn borrow(&self) -> &Vec<T> {
         unsafe { mem::transmute(self) }
     }
 }
 
-impl<T> BorrowMut<Vec<T>> for VArr<T> {
+impl<T> BorrowMut<Vec<T>> for OdeVec<T> {
     fn borrow_mut(&mut self) -> &mut Vec<T> {
         unsafe { mem::transmute(self) }
     }
 }
 
-impl<T> From<&Vec<T>> for &VArr<T> {
+impl<T> From<&Vec<T>> for &OdeVec<T> {
     fn from(value: &Vec<T>) -> Self {
         unsafe { mem::transmute(value) }
     }
 }
 
-impl<T> Index<usize> for VArr<T> {
+impl<T> Index<usize> for OdeVec<T> {
     type Output = T;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -64,13 +64,13 @@ impl<T> Index<usize> for VArr<T> {
     }
 }
 
-impl<T> IndexMut<usize> for VArr<T> {
+impl<T> IndexMut<usize> for OdeVec<T> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         self.0.index_mut(index)
     }
 }
 
-impl<T, U> MulAssign<U> for VArr<T>
+impl<T, U> MulAssign<U> for OdeVec<T>
 where
     T: MulAssign<U>,
     U: Copy,
@@ -82,7 +82,7 @@ where
     }
 }
 
-impl<T, U> DivAssign<U> for VArr<T>
+impl<T, U> DivAssign<U> for OdeVec<T>
 where
     T: DivAssign<U>,
     U: Copy,
@@ -94,7 +94,7 @@ where
     }
 }
 
-impl<'a, T> AddAssign<&'a Self> for VArr<T>
+impl<'a, T> AddAssign<&'a Self> for OdeVec<T>
 where
     T: AddAssign<&'a T>,
 {
@@ -106,7 +106,7 @@ where
     }
 }
 
-impl<'a, T> SubAssign<&'a Self> for VArr<T>
+impl<'a, T> SubAssign<&'a Self> for OdeVec<T>
 where
     T: SubAssign<&'a T>,
 {

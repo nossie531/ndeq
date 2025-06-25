@@ -1,8 +1,10 @@
 //! Provider of [`NetOdeSolver`].
 
 use crate::parts::NdeqNet;
+use dyn_compatible::prelude::*;
 
 /// ODE solver for network.
+#[dyn_compatible(true)]
 pub trait NetOdeSolver<'a, T, V> {
     /// Returns new node values of network.
     fn new_values(&self) -> &[V];

@@ -1,14 +1,16 @@
 //! Provider of [`OdeSolver`].
 
-use crate::values::{Time, Value};
+use crate::values::{OdeTime, OdeValue};
+use dyn_compatible::prelude::*;
 use std::ops::MulAssign;
 
 /// ODE solver.
 #[must_use]
+#[dyn_compatible(true)]
 pub trait OdeSolver<T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     /// Returns new value.
     fn new_value(&self) -> &V;

@@ -198,6 +198,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "dyn_compatible"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8903555317a43f0ee4feb1e6b6f605430e912110419c97ad4ccc260a808eb592"
+dependencies = [
+ "dyn_compatible_macro",
+]
+
+[[package]]
+name = "dyn_compatible_macro"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c3a5d4c3f7befc3b550da960fda622d157ca0913a882a121bce17c55e51960ba"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "easy_node"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -433,6 +453,7 @@ dependencies = [
 name = "ndeq"
 version = "0.1.0"
 dependencies = [
+ "dyn_compatible",
  "ndeq_linalg",
  "ndeq_ode",
 ]
@@ -441,6 +462,7 @@ dependencies = [
 name = "ndeq_linalg"
 version = "0.1.0"
 dependencies = [
+ "dyn_compatible",
  "iter_chunk_ext",
  "ndeq_num",
  "rand",
@@ -451,11 +473,15 @@ dependencies = [
 [[package]]
 name = "ndeq_num"
 version = "0.1.0"
+dependencies = [
+ "dyn_compatible",
+]
 
 [[package]]
 name = "ndeq_ode"
 version = "0.1.0"
 dependencies = [
+ "dyn_compatible",
  "ndeq_num",
 ]
 

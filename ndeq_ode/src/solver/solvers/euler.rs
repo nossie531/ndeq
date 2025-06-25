@@ -2,7 +2,7 @@
 
 use crate::solver::{OdeSolver, UnivOdeSolver};
 use crate::util::WorkOn;
-use crate::values::{Time, Value};
+use crate::values::{OdeTime, OdeValue};
 use crate::{Slope, ode_util};
 use std::ops::MulAssign;
 use std::rc::Rc;
@@ -32,8 +32,8 @@ pub struct Euler<'a, T, V> {
 
 impl<T, V> Euler<'_, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     /// Creates a new instance.
     ///
@@ -66,8 +66,8 @@ where
 
 impl<'a, T, V> OdeSolver<T, V> for Euler<'a, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     fn new_value(&self) -> &V {
         &self.new_value
@@ -89,8 +89,8 @@ where
 
 impl<'a, T, V> UnivOdeSolver<'a, T, V> for Euler<'a, T, V>
 where
-    T: Time,
-    V: Value + MulAssign<T>,
+    T: OdeTime,
+    V: OdeValue + MulAssign<T>,
 {
     fn set_slope(&mut self, value: Rc<Slope<'a, V>>) {
         self.slope = value;
