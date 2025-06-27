@@ -3,18 +3,24 @@
 use crate::util;
 use dyn_compatible::prelude::*;
 use std::cmp::Ordering;
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
 /// Floating point number.
 #[dyn_compatible(false)]
 pub trait Float:
-    Copy
+    'static
+    + Copy
     + From<f32>
+    + PartialEq
     + PartialOrd
     + Add<Output = Self>
     + Sub<Output = Self>
     + Mul<Output = Self>
     + Div<Output = Self>
+    + for<'a> AddAssign<&'a Self>
+    + for<'a> SubAssign<&'a Self>
+    + for<'a> MulAssign<&'a Self>
+    + for<'a> DivAssign<&'a Self>
 {
     /// Returns zero.
     fn zero() -> Self {
