@@ -37,7 +37,7 @@ impl Sample {
     pub fn create_row_vector(&mut self) -> Matrix<f32> {
         let mut ret = Matrix::new(Self::ROW_VEC_SIZE, false);
         for i in 0..ret.m() {
-            ret.set((0, i), self.random_in_open01());
+            *ret.cell((0, i)) = self.random_in_open01();
         }
 
         ret
@@ -47,7 +47,7 @@ impl Sample {
     pub fn create_col_vector(&mut self) -> Matrix<f32> {
         let mut ret = Matrix::new(Self::COL_VEC_SIZE, false);
         for i in 0..ret.m() {
-            ret.set((i, 0), self.random_in_open01());
+            *ret.cell((i, 0)) = self.random_in_open01();
         }
 
         ret
@@ -62,12 +62,11 @@ impl Sample {
         for i in 0..ret.m() {
             for j in 0..ret.n() {
                 let is_zero = zero_poss.contains(&(i, j));
-                let val = if is_zero {
+                *ret.cell((i, j)) = if is_zero {
                     0.0
                 } else {
                     self.random_in_open01()
                 };
-                ret.set((i, j), val);
             }
         }
 

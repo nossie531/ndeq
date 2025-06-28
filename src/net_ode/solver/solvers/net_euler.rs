@@ -1,7 +1,7 @@
 //! Provider of [`NetEuler`].
 
-use crate::net_ode::solver::{NetOdeSolver, UnivNetOdeSolver};
-use crate::parts::NdeqNet;
+use crate::net_ode::solver::UnivNetOdeSolver;
+use crate::prelude::*;
 use ndeq_ode::prelude::*;
 use ndeq_ode::values::{OdeTime, OdeValue};
 use std::ops::MulAssign;
@@ -16,7 +16,7 @@ where
     T: OdeTime,
     V: OdeValue + MulAssign<T>,
 {
-    /// Creates a new instance.
+    /// Creates a new value.
     pub fn new(h: T) -> Self {
         let base = Box::new(Euler::new(h));
         let adapter = UnivNetOdeSolver::new(base);

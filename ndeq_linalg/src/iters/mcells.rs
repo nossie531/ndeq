@@ -37,7 +37,7 @@ where
                     let pos = (*i / *m, *i % *m);
                     *i += 1;
 
-                    if *val != T::zero() {
+                    if val != T::zero() {
                         return Some(MCell::new(pos, val));
                     }
                 }

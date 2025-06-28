@@ -1,6 +1,6 @@
 //! Type aliases.
 
-use crate::Matrix;
+use crate::prelude::*;
 
 /// Size of matrix.
 pub type Size = (usize, usize);

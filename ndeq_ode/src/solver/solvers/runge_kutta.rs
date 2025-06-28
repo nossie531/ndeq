@@ -1,9 +1,9 @@
 //! Provider of [`RungeKutta`].
 
 use crate::solver::{OdeSolver, UnivOdeSolver};
-use crate::util::WorkOn;
+use crate::util::Work;
 use crate::values::{OdeTime, OdeValue, RF32};
-use crate::{Slope, ode_util};
+use crate::{FnSlope, tools};
 use std::ops::MulAssign;
 use std::rc::Rc;
 
@@ -21,7 +21,7 @@ pub struct RungeKutta<'a, T, V> {
     new_value: V,
 
     /// Slope closure.
-    slope: Rc<Slope<'a, V>>,
+    slope: Rc<FnSlope<'a, V>>,
 
     /// Work for general.
     work: V,
@@ -38,7 +38,7 @@ where
     T: OdeTime,
     V: OdeValue + MulAssign<T>,
 {
-    /// Creates a new instance.
+    /// Creates a new value.
     ///
     /// # Panics
     ///
@@ -52,7 +52,7 @@ where
             h,
             old_value: Default::default(),
             new_value: Default::default(),
-            slope: ode_util::flat_slope(),
+            slope: tools::flat_slope(),
             work: Default::default(),
             points: Default::default(),
             grads: Default::default(),
@@ -60,7 +60,7 @@ where
     }
 
     /// Advance step.
-    fn step(&mut self, h: T, slope: Rc<Slope<V>>) {
+    fn step(&mut self, h: T, slope: Rc<FnSlope<V>>) {
         assert!(!h.is_nan());
 
         self.step0(slope.clone());
@@ -83,37 +83,33 @@ where
     }
 
     /// Calculate step 0.
-    fn step0(&mut self, slope: Rc<Slope<V>>) {
+    fn step0(&mut self, slope: Rc<FnSlope<V>>) {
         self.points[0].clone_from(&self.old_value);
         slope(&mut self.grads[0], &self.points[0]);
     }
 
     /// Calculate step 1.
-    fn step1(&mut self, slope: Rc<Slope<V>>, h: T) {
+    fn step1(&mut self, slope: Rc<FnSlope<V>>, h: T) {
         let (points, rest) = self.points.split_at_mut(1);
-        let dy = WorkOn(&mut self.work)
-            .set(&self.grads[0])
-            .calc(|w| *w *= h / RF32(2.0));
+        let dy = Work(&mut self.work, &self.grads[0]).exec(|w| *w *= h / RF32(2.0));
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[1], &mut rest[0]);
     }
 
     /// Calculate step 2.
-    fn step2(&mut self, slope: Rc<Slope<V>>, h: T) {
+    fn step2(&mut self, slope: Rc<FnSlope<V>>, h: T) {
         let (points, rest) = self.points.split_at_mut(2);
-        let dy = WorkOn(&mut self.work)
-            .set(&self.grads[1])
-            .calc(|w| *w *= h / RF32(2.0));
+        let dy = Work(&mut self.work, &self.grads[1]).exec(|w| *w *= h / RF32(2.0));
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[2], &mut rest[0]);
     }
 
     /// Calculate step 3.
-    fn step3(&mut self, slope: Rc<Slope<V>>, h: T) {
+    fn step3(&mut self, slope: Rc<FnSlope<V>>, h: T) {
         let (points, rest) = self.points.split_at_mut(3);
-        let dy = WorkOn(&mut self.work).set(&self.grads[2]).calc(|w| *w *= h);
+        let dy = Work(&mut self.work, &self.grads[2]).exec(|w| *w *= h);
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[3], &mut rest[0]);
@@ -140,7 +136,7 @@ where
     fn run(&mut self, t: T) {
         let h = self.h;
         let mut step = |h| self.step(h, self.slope.clone());
-        ode_util::run_steps(t, h, &mut step);
+        tools::run_steps(t, h, &mut step);
     }
 }
 
@@ -149,7 +145,7 @@ where
     T: OdeTime,
     V: OdeValue + MulAssign<T>,
 {
-    fn set_slope(&mut self, value: Rc<Slope<'a, V>>) {
+    fn set_slope(&mut self, value: Rc<FnSlope<'a, V>>) {
         self.slope = value;
     }
 }

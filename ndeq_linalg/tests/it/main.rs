@@ -15,7 +15,7 @@ fn new() {
     assert_eq!(result.is_sparse(), sparse);
     for i in 0..result.m() {
         for j in 0..result.n() {
-            assert_eq!(result.get((i, j)), 0.0);
+            assert_eq!(result[(i, j)], 0.0);
         }
     }
 }
@@ -26,7 +26,7 @@ fn identity() {
     for i in 0..result.m() {
         for j in 0..result.n() {
             let val = if i == j { 1.0 } else { 0.0 };
-            assert_eq!(result.get((i, j)), val);
+            assert_eq!(result[(i, j)], val);
         }
     }
 }
@@ -38,7 +38,7 @@ fn get() {
 
     fn with_err_index() {
         let target = Matrix::<f32>::new((3, 4), false);
-        let result = test_panic(|| _ = target.get((2, 4)));
+        let result = test_panic(|| _ = target[(2, 4)]);
 
         assert!(result.is_panic());
     }
@@ -47,21 +47,21 @@ fn get() {
         let mut target = Matrix::<f32>::new((3, 4), false);
         let pos = (1, 2);
         let val = 3.0;
-        target.set(pos, val);
+        *target.cell(pos) = val;
 
-        let result = target.get(pos);
+        let result = target[pos];
         assert_eq!(result, val);
     }
 }
 
 #[test]
-fn set() {
+fn cell() {
     with_err_index();
     with_normal();
 
     fn with_err_index() {
         let mut target = Matrix::<f32>::new((3, 4), false);
-        let result = test_panic(|| _ = target.set((2, 4), 0.42));
+        let result = test_panic(|| *target.cell((2, 4)) = 0.42);
 
         assert!(result.is_panic());
     }
@@ -70,9 +70,9 @@ fn set() {
         let mut target = Matrix::<f32>::new((3, 4), false);
         let pos = (1, 2);
         let val = 3.0;
-        target.set(pos, val);
+        *target.cell(pos) = val;
 
-        assert_eq!(target.get(pos), val);
+        assert_eq!(target[pos], val);
     }
 }
 
@@ -105,7 +105,7 @@ fn eq() {
         let sample = &mut Sample::new();
         let target_x = sample.create_sq_matrix(false);
         let mut target_y = target_x.clone();
-        target_y.set((0, 0), target_y.get((0, 0)) + 1.0);
+        *target_y.cell((0, 0)) += 1.0;
         assert!(target_x != target_y);
     }
 
@@ -257,7 +257,7 @@ fn mul_scalar() {
         let mut ret = Matrix::new(lhs.size(), false);
         for i in 0..ret.m() {
             for j in 0..ret.n() {
-                ret.set((i, j), lhs.get((i, j)) * rhs);
+                *ret.cell((i, j)) = lhs[(i, j)] * rhs;
             }
         }
 

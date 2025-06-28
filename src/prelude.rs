@@ -1,4 +1,5 @@
 //! Crate's prelude.
 
-pub use crate::net_ode::*;
-pub use crate::parts::*;
+pub use crate::net_ode::solver::NetOdeSolver;
+pub use crate::parts::NdeqNet;
+pub use crate::parts::NdeqNode;

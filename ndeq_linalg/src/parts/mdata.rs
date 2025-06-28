@@ -38,11 +38,11 @@ where
         }
     }
 
-    /// Returns matrix value of specified position.
-    pub fn get(&self, size: Size, pos: Pos) -> T {
+    /// Returns component of specified position.
+    pub fn get(&self, size: Size, pos: Pos) -> &T {
         match self {
-            Self::Dense(v) => v[pos.0 * size.1 + pos.1],
-            Self::Sparse(m) => m.get(&pos).copied().unwrap_or_else(|| T::zero()),
+            Self::Dense(v) => &v[pos.0 * size.1 + pos.1],
+            Self::Sparse(m) => m.get(&pos).unwrap_or_else(|| T::zero()),
         }
     }
 
@@ -56,7 +56,7 @@ where
         match self {
             Self::Dense(v) => v[pos.0 * size.1 + pos.1] = val,
             Self::Sparse(m) => {
-                if val == T::zero() {
+                if val == *T::zero() {
                     m.remove(&pos);
                 } else {
                     m.insert(pos, val);

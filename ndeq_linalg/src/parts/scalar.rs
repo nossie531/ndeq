@@ -1,7 +1,7 @@
 //! Provider of [`Scalar`].
 
 use dyn_compatible::prelude::*;
-use ndeq_num::Float;
+use ndeq_num::prelude::*;
 use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Mul, MulAssign};
 
@@ -25,14 +25,9 @@ pub trait Scalar:
     type Real: Float;
 
     /// Returns zero.
-    fn zero() -> Self {
-        0.0.into()
-    }
-
+    fn zero() -> &'static Self;
     /// Returns one.
-    fn one() -> Self {
-        1.0.into()
-    }
+    fn one() -> &'static Self;
 
     /// Returns absolute value.
     fn abs(&self) -> Self::Real;
@@ -41,6 +36,14 @@ pub trait Scalar:
 impl Scalar for f32 {
     type Real = Self;
 
+    fn zero() -> &'static Self {
+        &0.0
+    }
+
+    fn one() -> &'static Self {
+        &1.0
+    }
+
     fn abs(&self) -> Self::Real {
         f32::abs(*self)
     }
@@ -48,6 +51,14 @@ impl Scalar for f32 {
 
 impl Scalar for f64 {
     type Real = Self;
+
+    fn zero() -> &'static Self {
+        &0.0
+    }
+
+    fn one() -> &'static Self {
+        &1.0
+    }
 
     fn abs(&self) -> Self::Real {
         f64::abs(*self)

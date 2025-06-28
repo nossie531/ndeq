@@ -2,12 +2,12 @@
 //!
 //! [ODE]: https://en.wikipedia.org/wiki/Ordinary_differential_equation
 
-pub mod ode_util;
 pub mod prelude;
 pub mod solver;
+pub mod tools;
 pub mod values;
 
-pub use slope::*;
+pub use aliases::*;
 
-mod slope;
+mod aliases;
 mod util;

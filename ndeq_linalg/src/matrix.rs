@@ -2,11 +2,11 @@
 
 use crate::aliases::{Pos, Size, Vector};
 use crate::iters::{MCell, MCells, MCellsMut};
-use crate::parts::{MData, Scalar};
+use crate::parts::{Editor, MData, Scalar};
 use iter_chunk_ext::prelude::*;
 use ndeq_num::prelude::*;
 use std::mem;
-use std::ops::{AddAssign, Mul, MulAssign};
+use std::ops::{AddAssign, Index, Mul, MulAssign};
 
 /// [Matrix].
 ///
@@ -36,7 +36,7 @@ where
         for i in 0..len {
             for j in 0..len {
                 let val = if i == j { T::one() } else { T::zero() };
-                ret.set((i, j), val);
+                *ret.cell((i, j)) = *val;
             }
         }
 
@@ -67,20 +67,12 @@ where
         self.size
     }
 
-    /// Sets value from specified position.
-    #[must_use]
-    pub fn get(&self, pos: Pos) -> T {
-        assert!((0..self.size.0).contains(&pos.0));
-        assert!((0..self.size.1).contains(&pos.1));
-        self.data.get(self.size, pos)
-    }
-
     /// Clone this matrix with sparse flag.
     #[must_use]
     pub fn clone_sparse(&self, sparse: bool) -> Self {
         let mut ret = Self::new(self.size, sparse);
         for mc in self.nz_iter() {
-            ret.set(mc.pos(), self.get(mc.pos()));
+            *ret.cell(mc.pos()) = self[mc.pos()];
         }
 
         ret
@@ -113,11 +105,15 @@ where
         ret
     }
 
-    /// Sets value to specified position.
-    pub fn set(&mut self, pos: Pos, value: T) {
+    /// Returns mutable reference of matrix component.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `pos` is out of range.
+    pub fn cell(&mut self, pos: Pos) -> Editor<'_, T> {
         assert!((0..self.size.0).contains(&pos.0));
         assert!((0..self.size.1).contains(&pos.1));
-        self.data.set(self.size, pos, value);
+        Editor::new(self, pos)
     }
 
     /// Perform multiple operation and store its result to `out`.
@@ -165,13 +161,26 @@ where
         let dm = if self.is_sparse() { other } else { self };
         for mc in sm.nz_iter() {
             let sv = *mc.val();
-            let dv = dm.get(mc.pos());
+            let dv = dm[mc.pos()];
             if sv != dv {
                 return false;
             }
         }
 
         true
+    }
+}
+
+impl<T> Index<Pos> for Matrix<T>
+where
+    T: Scalar,
+{
+    type Output = T;
+
+    fn index(&self, index: Pos) -> &Self::Output {
+        assert!((0..self.size.0).contains(&index.0));
+        assert!((0..self.size.1).contains(&index.1));
+        self.data.get(self.size, index)
     }
 }
 
@@ -231,7 +240,7 @@ where
     fn mul(self, rhs: T) -> Self::Output {
         let mut ret = Matrix::new(self.size, self.is_sparse());
         for mc in self.nz_iter() {
-            ret.set(mc.pos(), *mc.val() * rhs);
+            *ret.cell(mc.pos()) = *mc.val() * rhs;
         }
 
         ret
@@ -254,6 +263,10 @@ impl<T> Matrix<T>
 where
     T: Scalar,
 {
+    pub(crate) fn mdata_mut(&mut self) -> &mut MData<T> {
+        &mut self.data
+    }
+
     /// Returns whether sparse matrix format is recommended.
     ///
     /// If `nnz` (The Number of Non Zero) is much small than `size` (Matrix size),
@@ -295,9 +308,7 @@ where
         assert_eq!(self.size(), rhs.size());
         for i in 0..rhs.m() {
             for j in 0..rhs.n() {
-                let curr = self.get((i, j));
-                let addition = rhs.get((i, j));
-                self.set((i, j), curr + addition);
+                *self.cell((i, j)) += rhs[(i, j)];
             }
         }
     }
@@ -306,9 +317,7 @@ where
     fn add_assign_for_sparse_rhs(&mut self, rhs: &Self) {
         assert_eq!(self.size(), rhs.size());
         for mc in rhs.nz_iter() {
-            let curr = self.get(mc.pos());
-            let addition = *mc.val();
-            self.set(mc.pos(), curr + addition)
+            *self.cell(mc.pos()) += *mc.val();
         }
     }
 
@@ -319,12 +328,12 @@ where
 
         for i in 0..out.m() {
             for j in 0..out.n() {
-                let mut sum = T::zero();
+                let mut sum = *T::zero();
                 for k in 0..self.n() {
-                    sum += self.get((i, k)) * rhs.get((k, j));
+                    sum += self[(i, k)] * rhs[(k, j)];
                 }
 
-                out.set((i, j), sum);
+                *out.cell((i, j)) = sum;
             }
         }
     }
@@ -350,8 +359,7 @@ where
                 last_rc = None;
 
                 if rc.row() == lc.col() {
-                    let curr = out.get((lc.row(), rc.col()));
-                    out.set((lc.row(), rc.col()), curr + *lc.val() * *rc.val());
+                    *out.cell((lc.row(), rc.col())) += *lc.val() * *rc.val();
                 }
 
                 if rc.row() > lc.col() {

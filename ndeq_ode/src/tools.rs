@@ -1,11 +1,11 @@
-//! Utility for ODE.
+//! Tools for ODE.
 
-use crate::Slope;
+use crate::FnSlope;
 use crate::values::{OdeTime, OdeValue};
 use std::rc::Rc;
 
 /// Create flat slope.
-pub fn flat_slope<V>() -> Rc<Slope<'static, V>>
+pub fn flat_slope<V>() -> Rc<FnSlope<'static, V>>
 where
     V: OdeValue,
 {

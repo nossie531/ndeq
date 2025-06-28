@@ -1,4 +1,4 @@
-use crate::Slope;
+use crate::FnSlope;
 use crate::solver::OdeSolver;
 use crate::values::{OdeTime, OdeValue};
 use dyn_compatible::prelude::*;
@@ -13,5 +13,5 @@ where
     V: OdeValue + MulAssign<T>,
 {
     /// Sets slope of this instance.
-    fn set_slope(&mut self, value: Rc<Slope<'a, V>>);
+    fn set_slope(&mut self, value: Rc<FnSlope<'a, V>>);
 }

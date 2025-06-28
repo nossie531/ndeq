@@ -1,9 +1,9 @@
 //! Provider of [`Euler`].
 
 use crate::solver::{OdeSolver, UnivOdeSolver};
-use crate::util::WorkOn;
+use crate::util::Work;
 use crate::values::{OdeTime, OdeValue};
-use crate::{Slope, ode_util};
+use crate::{FnSlope, tools};
 use std::ops::MulAssign;
 use std::rc::Rc;
 
@@ -21,7 +21,7 @@ pub struct Euler<'a, T, V> {
     new_value: V,
 
     /// Slope closure.
-    slope: Rc<Slope<'a, V>>,
+    slope: Rc<FnSlope<'a, V>>,
 
     /// Work for general.
     work: V,
@@ -35,7 +35,7 @@ where
     T: OdeTime,
     V: OdeValue + MulAssign<T>,
 {
-    /// Creates a new instance.
+    /// Creates a new value.
     ///
     /// # Panics
     ///
@@ -49,16 +49,16 @@ where
             h,
             old_value: Default::default(),
             new_value: Default::default(),
-            slope: ode_util::flat_slope(),
+            slope: tools::flat_slope(),
             work: Default::default(),
             grad: Default::default(),
         }
     }
 
     /// Advance step.
-    fn step(&mut self, h: T, slope: Rc<Slope<V>>) {
+    fn step(&mut self, h: T, slope: Rc<FnSlope<V>>) {
         slope(&mut self.grad, &self.old_value);
-        let dy = WorkOn(&mut self.work).set(&self.grad).calc(|x| *x *= h);
+        let dy = Work(&mut self.work, &self.grad).exec(|x| *x *= h);
         self.new_value.clone_from(&self.old_value);
         self.new_value += dy;
     }
@@ -83,7 +83,7 @@ where
     fn run(&mut self, t: T) {
         let h = self.h;
         let mut step = |h| self.step(h, self.slope.clone());
-        ode_util::run_steps(t, h, &mut step);
+        tools::run_steps(t, h, &mut step);
     }
 }
 
@@ -92,7 +92,7 @@ where
     T: OdeTime,
     V: OdeValue + MulAssign<T>,
 {
-    fn set_slope(&mut self, value: Rc<Slope<'a, V>>) {
+    fn set_slope(&mut self, value: Rc<FnSlope<'a, V>>) {
         self.slope = value;
     }
 }

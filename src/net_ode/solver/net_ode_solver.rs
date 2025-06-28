@@ -1,6 +1,6 @@
 //! Provider of [`NetOdeSolver`].
 
-use crate::parts::NdeqNet;
+use crate::prelude::*;
 use dyn_compatible::prelude::*;
 
 /// ODE solver for network.

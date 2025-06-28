@@ -1,7 +1,8 @@
 //! Provider of [`NdeqNet`].
 
 use dyn_compatible::prelude::*;
-use ndeq_ode::Slope;
+use ndeq_linalg::prelude::*;
+use ndeq_ode::FnSlope;
 use ndeq_ode::values::{OdeValue, OdeVec, RF32};
 use std::rc::Rc;
 
@@ -47,11 +48,15 @@ where
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
-    fn slope(&self) -> Rc<Slope<OdeVec<V>>> {
+    fn slope(&self) -> Rc<FnSlope<OdeVec<V>>> {
         Rc::new(|result, value| {
             result.fill_zero();
 
             for (bwd_idx, fwd_idx, w) in self.edges() {
+                if bwd_idx == fwd_idx {
+                    continue;
+                }
+
                 let bwd_value = &value[bwd_idx];
                 let fwd_value = &value[fwd_idx];
                 let mut flow = V::default();
@@ -63,9 +68,23 @@ where
         })
     }
 
-    // TODO;
-    // fn laplacian(&self) -> Matrix<V> {
-    //     let ret = Matrix::new((self.len(), self.len()), true);
-    //     ret
-    // }
+    /// Returns network laplacian.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `self` or its nodes are currently mutably borrowed.
+    fn laplacian(&self) -> Matrix<f32> {
+        let mut ret = Matrix::new((self.len(), self.len()), true);
+
+        for (bwd_idx, fwd_idx, w) in self.edges() {
+            if bwd_idx == fwd_idx {
+                continue;
+            }
+
+            *ret.cell((bwd_idx, fwd_idx)) = w;
+            *ret.cell((fwd_idx, fwd_idx)) -= w;
+        }
+
+        ret
+    }
 }

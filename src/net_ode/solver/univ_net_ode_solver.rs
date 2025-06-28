@@ -1,7 +1,6 @@
 //! Provider of [`UnivNetOdeSolver`].
 
-use crate::net_ode::solver::NetOdeSolver;
-use crate::parts::NdeqNet;
+use crate::prelude::*;
 use ndeq_ode::solver::UnivOdeSolver;
 use ndeq_ode::values::{OdeTime, OdeValue, OdeVec};
 use std::ops::MulAssign;
@@ -18,7 +17,7 @@ where
     T: OdeTime,
     V: OdeValue + MulAssign<T>,
 {
-    /// Creates a new instance.
+    /// Creates a new value.
     pub fn new(base: Box<dyn UnivOdeSolver<'a, T, OdeVec<V>> + 'a>) -> Self {
         Self {
             base: base,

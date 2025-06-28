@@ -10,7 +10,7 @@ use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 pub struct OdeVec<T>(Vec<T>);
 
 impl<T> OdeVec<T> {
-    /// Creates a new instance.
+    /// Creates a new value.
     pub fn new(x: Vec<T>) -> Self {
         Self(x)
     }

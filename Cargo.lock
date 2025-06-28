@@ -455,6 +455,7 @@ version = "0.1.0"
 dependencies = [
  "dyn_compatible",
  "ndeq_linalg",
+ "ndeq_num",
  "ndeq_ode",
 ]
 

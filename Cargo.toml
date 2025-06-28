@@ -28,4 +28,5 @@ license.workspace = true
 [dependencies]
 dyn_compatible = { workspace = true }
 ndeq_linalg = { workspace = true }
+ndeq_num = { workspace = true }
 ndeq_ode = { workspace = true }
