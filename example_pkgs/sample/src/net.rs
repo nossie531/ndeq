@@ -3,12 +3,11 @@ use easy_node::prelude::*;
 use ndeq::prelude::*;
 use ref_iter::prelude::*;
 use std::cell::RefCell;
-use std::collections::BTreeSet;
 
 #[derive(Default)]
 pub struct Net {
     weak: Nw<Self>,
-    nodes: RefCell<BTreeSet<Nr<Node>>>,
+    nodes: RefCell<Vec<Nr<Node>>>,
 }
 
 impl Net {
@@ -22,7 +21,7 @@ impl Net {
     pub fn add_node(&self) -> Nr<Node> {
         let ret = Node::new(self.weak.clone());
         let mut nodes = self.nodes.borrow_mut();
-        nodes.insert(ret.clone());
+        nodes.insert(ret.idx(), ret.clone());
         ret
     }
 
@@ -44,8 +43,7 @@ impl NdeqNet<f32> for Net {
 
     fn export_values(&self, values: &mut Vec<f32>) {
         values.clear();
-        for (i, node) in self.nodes.borrow().iter().enumerate() {
-            node.set_idx(i);
+        for node in self.nodes.borrow().iter() {
             values.push(node.value());
         }
     }
@@ -53,7 +51,7 @@ impl NdeqNet<f32> for Net {
     fn import_values(&self, values: &[f32]) {
         assert_eq!(values.len(), self.nodes.borrow().len());
 
-        for node in self.nodes.borrow_mut().iter() {
+        for node in self.nodes.borrow_mut().iter_mut() {
             let value = values[node.idx()];
             node.set_value(value);
         }

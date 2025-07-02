@@ -8,17 +8,18 @@ use std::collections::BTreeMap;
 pub struct Node {
     net: Nw<Net>,
     this: Nw<Self>,
-    work_idx: RefCell<usize>,
+    idx: RefCell<usize>,
     value: RefCell<f32>,
     edges: RefCell<BTreeMap<Nw<Self>, f32>>,
 }
 
 impl Node {
     pub fn new(net: Nw<Net>) -> Nr<Self> {
+        let idx = net.upgrade().unwrap().len();
         Nr::new_cyclic(|this| Self {
             net,
             this: this.clone(),
-            work_idx: Default::default(),
+            idx: RefCell::new(idx),
             value: Default::default(),
             edges: Default::default(),
         })
@@ -40,11 +41,7 @@ impl Node {
 
 impl NdeqNode<f32> for Node {
     fn idx(&self) -> usize {
-        *self.work_idx.borrow()
-    }
-
-    fn set_idx(&self, value: usize) {
-        *self.work_idx.borrow_mut() = value;
+        *self.idx.borrow()
     }
 
     fn value(&self) -> f32 {

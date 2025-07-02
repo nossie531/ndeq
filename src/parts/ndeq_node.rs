@@ -19,13 +19,6 @@ pub trait NdeqNode<V> {
     /// Panics if target is currently mutably borrowed.
     fn value(&self) -> V;
 
-    /// Sets node index that is unique in network.
-    ///
-    /// # Panics
-    ///
-    /// Panics if target is currently borrowed.
-    fn set_idx(&self, value: usize);
-
     /// Sets node value.
     ///
     /// # Panics
