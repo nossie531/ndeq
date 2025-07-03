@@ -3,8 +3,9 @@
 use dyn_compatible::prelude::*;
 use ndeq_linalg::prelude::*;
 use ndeq_ode::FnSlope;
-use ndeq_ode::values::{OdeValue, OdeVec, RF32};
+use ndeq_ode::values::{OdeValue, RF32};
 use std::rc::Rc;
+use crate::net_ode::NodeValues;
 
 /// Abstraction trait for Network.
 #[dyn_compatible(true)]
@@ -48,7 +49,7 @@ where
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
-    fn slope(&self) -> Rc<FnSlope<OdeVec<V>>> {
+    fn slope(&self) -> FnSlope<NodeValues<V>> {
         Rc::new(|result, value| {
             result.fill_zero();
 

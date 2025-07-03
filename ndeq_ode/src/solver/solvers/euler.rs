@@ -5,7 +5,6 @@ use crate::util::Work;
 use crate::values::{OdeTime, OdeValue};
 use crate::{FnSlope, tools};
 use std::ops::MulAssign;
-use std::rc::Rc;
 
 /// ODE solver by [Euler methods].
 ///
@@ -21,7 +20,7 @@ pub struct Euler<'a, T, V> {
     new_value: V,
 
     /// Slope closure.
-    slope: Rc<FnSlope<'a, V>>,
+    slope: FnSlope<'a, V>,
 
     /// Work for general.
     work: V,
@@ -56,7 +55,7 @@ where
     }
 
     /// Advance step.
-    fn step(&mut self, h: T, slope: Rc<FnSlope<V>>) {
+    fn step(&mut self, h: T, slope: FnSlope<V>) {
         slope(&mut self.grad, &self.old_value);
         let dy = Work(&mut self.work, &self.grad).exec(|x| *x *= h);
         self.new_value.clone_from(&self.old_value);
@@ -92,7 +91,7 @@ where
     T: OdeTime,
     V: OdeValue + MulAssign<T>,
 {
-    fn set_slope(&mut self, value: Rc<FnSlope<'a, V>>) {
+    fn set_slope(&mut self, value: FnSlope<'a, V>) {
         self.slope = value;
     }
 }

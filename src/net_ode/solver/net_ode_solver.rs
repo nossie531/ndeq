@@ -4,7 +4,7 @@ use crate::prelude::*;
 use dyn_compatible::prelude::*;
 
 /// ODE solver for network.
-#[dyn_compatible(true)]
+#[dyn_compatible(false)]
 pub trait NetOdeSolver<'a, T, V> {
     /// Returns new node values of network.
     fn new_values(&self) -> &[V];

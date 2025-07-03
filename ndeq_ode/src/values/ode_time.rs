@@ -1,6 +1,5 @@
 //! Provider of [`OdeTime`].
 
-use crate::values::RF32;
 use dyn_compatible::prelude::*;
 use ndeq_num::prelude::*;
 use std::ops::{Add, Div, Mul, Sub};
@@ -10,10 +9,11 @@ use std::ops::{Add, Div, Mul, Sub};
 pub trait OdeTime:
     'static
     + Float
-    + Add<RF32, Output = Self>
-    + Sub<RF32, Output = Self>
-    + Mul<RF32, Output = Self>
-    + Div<RF32, Output = Self>
+    + Add<Self, Output = Self>
+    + Sub<Self, Output = Self>
+    + Mul<Self, Output = Self>
+    + Div<Self, Output = Self>
+    + From<f32>
 {
     // nop.
 }
@@ -22,10 +22,11 @@ impl<T> OdeTime for T
 where
     T: 'static
         + Float
-        + Add<RF32, Output = Self>
-        + Sub<RF32, Output = Self>
-        + Mul<RF32, Output = Self>
-        + Div<RF32, Output = Self>,
+        + Add<Self, Output = Self>
+        + Sub<Self, Output = Self>
+        + Mul<Self, Output = Self>
+        + Div<Self, Output = Self>
+        + From<f32>,
 {
     // nop.
 }

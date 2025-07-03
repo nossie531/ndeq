@@ -1,20 +1,15 @@
-//! Provider of [`OdeVec`]
+//! Provider of [`NodeValues`]
 
 use std::borrow::{Borrow, BorrowMut};
 use std::mem;
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 
-/// New type of vector for ODE system.
+/// Node values.
 #[repr(transparent)]
 #[derive(Clone, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
-pub struct OdeVec<T>(Vec<T>);
+pub struct NodeValues<T>(Vec<T>);
 
-impl<T> OdeVec<T> {
-    /// Creates a new value.
-    pub fn new(x: Vec<T>) -> Self {
-        Self(x)
-    }
-
+impl<T> NodeValues<T> {
     /// Returns the number of elements.
     pub fn len(&self) -> usize {
         self.0.len()
@@ -26,37 +21,37 @@ impl<T> OdeVec<T> {
     }
 }
 
-impl<T> AsRef<Vec<T>> for OdeVec<T> {
+impl<T> AsRef<Vec<T>> for NodeValues<T> {
     fn as_ref(&self) -> &Vec<T> {
         self.borrow()
     }
 }
 
-impl<T> AsMut<Vec<T>> for OdeVec<T> {
+impl<T> AsMut<Vec<T>> for NodeValues<T> {
     fn as_mut(&mut self) -> &mut Vec<T> {
         self.borrow_mut()
     }
 }
 
-impl<T> Borrow<Vec<T>> for OdeVec<T> {
+impl<T> Borrow<Vec<T>> for NodeValues<T> {
     fn borrow(&self) -> &Vec<T> {
         unsafe { mem::transmute(self) }
     }
 }
 
-impl<T> BorrowMut<Vec<T>> for OdeVec<T> {
+impl<T> BorrowMut<Vec<T>> for NodeValues<T> {
     fn borrow_mut(&mut self) -> &mut Vec<T> {
         unsafe { mem::transmute(self) }
     }
 }
 
-impl<T> From<&Vec<T>> for &OdeVec<T> {
+impl<T> From<&Vec<T>> for &NodeValues<T> {
     fn from(value: &Vec<T>) -> Self {
         unsafe { mem::transmute(value) }
     }
 }
 
-impl<T> Index<usize> for OdeVec<T> {
+impl<T> Index<usize> for NodeValues<T> {
     type Output = T;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -64,13 +59,13 @@ impl<T> Index<usize> for OdeVec<T> {
     }
 }
 
-impl<T> IndexMut<usize> for OdeVec<T> {
+impl<T> IndexMut<usize> for NodeValues<T> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         self.0.index_mut(index)
     }
 }
 
-impl<T, U> MulAssign<U> for OdeVec<T>
+impl<T, U> MulAssign<U> for NodeValues<T>
 where
     T: MulAssign<U>,
     U: Copy,
@@ -82,7 +77,7 @@ where
     }
 }
 
-impl<T, U> DivAssign<U> for OdeVec<T>
+impl<T, U> DivAssign<U> for NodeValues<T>
 where
     T: DivAssign<U>,
     U: Copy,
@@ -94,7 +89,7 @@ where
     }
 }
 
-impl<'a, T> AddAssign<&'a Self> for OdeVec<T>
+impl<'a, T> AddAssign<&'a Self> for NodeValues<T>
 where
     T: AddAssign<&'a T>,
 {
@@ -106,7 +101,7 @@ where
     }
 }
 
-impl<'a, T> SubAssign<&'a Self> for OdeVec<T>
+impl<'a, T> SubAssign<&'a Self> for NodeValues<T>
 where
     T: SubAssign<&'a T>,
 {

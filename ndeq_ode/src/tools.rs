@@ -5,7 +5,7 @@ use crate::values::{OdeTime, OdeValue};
 use std::rc::Rc;
 
 /// Create flat slope.
-pub fn flat_slope<V>() -> Rc<FnSlope<'static, V>>
+pub fn flat_slope<V>() -> FnSlope<'static, V>
 where
     V: OdeValue,
 {

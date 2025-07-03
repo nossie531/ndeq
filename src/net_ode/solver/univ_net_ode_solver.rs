@@ -1,15 +1,16 @@
 //! Provider of [`UnivNetOdeSolver`].
 
+use crate::net_ode::NodeValues;
 use crate::prelude::*;
 use ndeq_ode::solver::UnivOdeSolver;
-use ndeq_ode::values::{OdeTime, OdeValue, OdeVec};
+use ndeq_ode::values::{OdeTime, OdeValue};
 use std::ops::MulAssign;
 
 /// Universal ODE solver for network.
 pub struct UnivNetOdeSolver<'a, T, V> {
-    base: Box<dyn UnivOdeSolver<'a, T, OdeVec<V>> + 'a>,
+    base: Box<dyn UnivOdeSolver<'a, T, NodeValues<V>> + 'a>,
     net: Option<&'a dyn NdeqNet<V>>,
-    values: OdeVec<V>,
+    values: NodeValues<V>,
 }
 
 impl<'a, T, V> UnivNetOdeSolver<'a, T, V>
@@ -18,7 +19,7 @@ where
     V: OdeValue + MulAssign<T>,
 {
     /// Creates a new value.
-    pub fn new(base: Box<dyn UnivOdeSolver<'a, T, OdeVec<V>> + 'a>) -> Self {
+    pub fn new(base: Box<dyn UnivOdeSolver<'a, T, NodeValues<V>> + 'a>) -> Self {
         Self {
             base: base,
             net: Default::default(),
