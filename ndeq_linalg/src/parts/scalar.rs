@@ -22,10 +22,12 @@ pub trait Scalar:
     + MulAssign
     + AddAssign
 {
+    /// Absolute value type.
     type Real: Float;
 
     /// Returns zero.
     fn zero() -> &'static Self;
+
     /// Returns one.
     fn one() -> &'static Self;
 

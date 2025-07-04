@@ -11,12 +11,12 @@ use ndeq_linalg::aliases::Size;
 /// calculated using logarithms to control the rate of increase. At this time,
 /// the rate of increase is halved around the value of [`consts::TEST_SCALE`].
 pub fn calc<const N: usize>(sizes: [Size; N]) -> usize {
-    let raw_size = sizes.iter().fold(1, |acc, size| acc * area(*size));
+    let raw_size = sizes.iter().map(area).product::<usize>();
     ln_adjusted(raw_size as f32, 1.0, consts::TEST_SCALE as f32).ceil() as usize
 }
 
 /// Calculates area from size.
-fn area(size: Size) -> usize {
+fn area(size: &Size) -> usize {
     (2usize.pow((size.0 * size.1) as u32) as f32) as usize
 }
 

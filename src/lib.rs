@@ -6,5 +6,8 @@
 #![warn(missing_docs)]
 
 pub mod net_ode;
-pub mod parts;
 pub mod prelude;
+
+pub use ndeq_flow::*;
+
+mod ndeq_flow;

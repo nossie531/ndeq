@@ -9,10 +9,10 @@ use std::ops::{Add, Div, Mul, Sub};
 pub trait OdeTime:
     'static
     + Float
-    + Add<Self, Output = Self>
-    + Sub<Self, Output = Self>
-    + Mul<Self, Output = Self>
-    + Div<Self, Output = Self>
+    + Add<Output = Self>
+    + Sub<Output = Self>
+    + Mul<Output = Self>
+    + Div<Output = Self>
     + From<f32>
 {
     // nop.
@@ -22,10 +22,10 @@ impl<T> OdeTime for T
 where
     T: 'static
         + Float
-        + Add<Self, Output = Self>
-        + Sub<Self, Output = Self>
-        + Mul<Self, Output = Self>
-        + Div<Self, Output = Self>
+        + Add<Output = Self>
+        + Sub<Output = Self>
+        + Mul<Output = Self>
+        + Div<Output = Self>
         + From<f32>,
 {
     // nop.

@@ -33,8 +33,8 @@ where
         self.adapter.new_values()
     }
 
-    fn set_net(&mut self, net: &'a dyn NdeqNet<V>) {
-        self.adapter.set_net(net);
+    fn set_flow(&mut self, value: &'a dyn NdeqFlow<V>) {
+        self.adapter.set_flow(value);
     }
 
     fn run(&mut self, t: T) {

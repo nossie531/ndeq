@@ -3,6 +3,7 @@
 use crate::util;
 use dyn_compatible::prelude::*;
 use std::cmp::Ordering;
+use std::iter::{Product, Sum};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
 /// Floating point number.
@@ -13,10 +14,14 @@ pub trait Float:
     + From<f32>
     + PartialEq
     + PartialOrd
+    + Sum
+    + Product
     + Add<Output = Self>
     + Sub<Output = Self>
     + Mul<Output = Self>
     + Div<Output = Self>
+    + for<'a> Sum<&'a Self>
+    + for<'a> Product<&'a Self>
     + for<'a> AddAssign<&'a Self>
     + for<'a> SubAssign<&'a Self>
     + for<'a> MulAssign<&'a Self>

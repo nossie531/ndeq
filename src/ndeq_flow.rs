@@ -1,15 +1,15 @@
-//! Provider of [`NdeqNet`].
+//! Provider of [`NdeqFlow`].
 
+use crate::net_ode::NodeValues;
 use dyn_compatible::prelude::*;
 use ndeq_linalg::prelude::*;
 use ndeq_ode::FnSlope;
 use ndeq_ode::values::{OdeValue, RF32};
 use std::rc::Rc;
-use crate::net_ode::NodeValues;
 
-/// Abstraction trait for Network.
+/// Network value flow.
 #[dyn_compatible(true)]
-pub trait NdeqNet<V>
+pub trait NdeqFlow<V>
 where
     V: OdeValue,
 {

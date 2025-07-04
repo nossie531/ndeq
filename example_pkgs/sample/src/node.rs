@@ -25,6 +25,28 @@ impl Node {
         })
     }
 
+    pub fn idx(&self) -> usize {
+        *self.idx.borrow()
+    }
+
+    pub fn value(&self) -> f32 {
+        *self.value.borrow()
+    }
+
+    pub fn edges(&self) -> Box<dyn Iterator<Item = (usize, f32)> + '_> {
+        let iter = RefIter::new(self.edges.borrow(), |x| x.iter());
+        let ret = iter.imap(|k, v| {
+            let idx = k.upgrade().unwrap().idx();
+            let weight = *v;
+            (idx, weight)
+        });
+        Box::new(ret)
+    }
+
+    pub fn set_value(&self, value: f32) {
+        *self.value.borrow_mut() = value
+    }
+
     pub fn add_edge(&self, node: &Nr<Node>, w: f32) {
         assert!(self.this() != *node);
         assert!(self.net == node.net);
@@ -36,29 +58,5 @@ impl Node {
 
     fn this(&self) -> Nr<Self> {
         self.this.upgrade().unwrap()
-    }
-}
-
-impl NdeqNode<f32> for Node {
-    fn idx(&self) -> usize {
-        *self.idx.borrow()
-    }
-
-    fn value(&self) -> f32 {
-        *self.value.borrow()
-    }
-
-    fn set_value(&self, value: f32) {
-        *self.value.borrow_mut() = value
-    }
-
-    fn edges(&self) -> Box<dyn Iterator<Item = (usize, f32)> + '_> {
-        let iter = RefIter::new(self.edges.borrow(), |x| x.iter());
-        let ret = iter.imap(|k, v| {
-            let idx = k.upgrade().unwrap().idx();
-            let weight = *v;
-            (idx, weight)
-        });
-        Box::new(ret)
     }
 }

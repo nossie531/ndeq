@@ -9,8 +9,8 @@ pub trait NetOdeSolver<'a, T, V> {
     /// Returns new node values of network.
     fn new_values(&self) -> &[V];
 
-    /// Sets network of this instance.
-    fn set_net(&mut self, net: &'a dyn NdeqNet<V>);
+    /// Sets network flow.
+    fn set_flow(&mut self, value: &'a dyn NdeqFlow<V>);
 
     /// Calculate new node values.
     ///

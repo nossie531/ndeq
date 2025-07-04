@@ -291,11 +291,10 @@ where
     /// 1. For each row, sum all components absolute values and get it max digits in binary.
     /// 2. Select the one with the largest absolute value of them.
     fn max_scale_nrom(&self) -> i32 {
-        self.nz_iter()
-            .chunk_by(|x| x.row())
-            .map(|x| x.fold(T::Real::zero(), |s, x| s + x.val().abs()).exponent())
-            .max()
-            .unwrap_or_default()
+        let rows = self.nz_iter().chunk_by(|x| x.row());
+        let sums = rows.map(|r| r.map(|c| c.val().abs()).sum::<T::Real>());
+        let digits = sums.map(|x| x.exponent());
+        digits.max().unwrap_or(0)
     }
 
     /// Returns none-zero components iterator.

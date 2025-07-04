@@ -9,7 +9,7 @@ use std::ops::MulAssign;
 /// Universal ODE solver for network.
 pub struct UnivNetOdeSolver<'a, T, V> {
     base: Box<dyn UnivOdeSolver<'a, T, NodeValues<V>> + 'a>,
-    net: Option<&'a dyn NdeqNet<V>>,
+    flow: Option<&'a dyn NdeqFlow<V>>,
     values: NodeValues<V>,
 }
 
@@ -22,7 +22,7 @@ where
     pub fn new(base: Box<dyn UnivOdeSolver<'a, T, NodeValues<V>> + 'a>) -> Self {
         Self {
             base: base,
-            net: Default::default(),
+            flow: Default::default(),
             values: Default::default(),
         }
     }
@@ -37,13 +37,13 @@ where
         self.base.new_value().as_ref()
     }
 
-    fn set_net(&mut self, net: &'a dyn NdeqNet<V>) {
-        self.net = Some(net);
-        self.base.set_slope(net.slope());
+    fn set_flow(&mut self, value: &'a dyn NdeqFlow<V>) {
+        self.flow = Some(value);
+        self.base.set_slope(value.slope());
     }
 
     fn run(&mut self, t: T) {
-        self.net.unwrap().export_values(self.values.as_mut());
+        self.flow.unwrap().export_values(self.values.as_mut());
         self.base.set_value(&self.values);
         self.base.run(t);
     }

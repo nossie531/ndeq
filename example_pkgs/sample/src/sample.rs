@@ -41,9 +41,9 @@ impl Sample {
     }
 
     pub fn run_simulation(&mut self) {
-        let net = &*self.net as &dyn NdeqNet<f32>;
+        let flow = &*self.net as &dyn NdeqFlow<f32>;
         let mut solver = NetEuler::new(H);
-        solver.set_net(net);
+        solver.set_flow(flow);
 
         let mut t = T_RANGE.start;
         while t <= T_RANGE.end {
@@ -54,7 +54,7 @@ impl Sample {
             self.seriese_vec[2].push((t, node_values[2]));
 
             solver.run(H);
-            net.import_values(solver.new_values().as_ref());
+            flow.import_values(solver.new_values().as_ref());
 
             t += H;
         }
