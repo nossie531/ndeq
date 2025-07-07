@@ -1,10 +1,9 @@
 //! Provider of [`OdeValue`].
 
-use crate::values::RF32;
 use dyn_compatible::prelude::*;
-use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
+use std::ops::{AddAssign, MulAssign, SubAssign};
 
-/// ODE system value.
+/// ODE value.
 ///
 /// This value can be a vector as well as a scalar.
 #[dyn_compatible(false)]
@@ -13,8 +12,7 @@ pub trait OdeValue:
     + Clone
     + Default
     + PartialEq
-    + MulAssign<RF32>
-    + DivAssign<RF32>
+    + MulAssign<f32>
     + for<'a> AddAssign<&'a Self>
     + for<'a> SubAssign<&'a Self>
 {
@@ -26,7 +24,7 @@ pub trait OdeValue:
 
     /// Fills this value with zero.
     fn fill_zero(&mut self) {
-        *self *= RF32(0.0);
+        *self *= 0.0;
     }
 }
 
@@ -36,8 +34,7 @@ where
         + Clone
         + Default
         + PartialEq
-        + MulAssign<RF32>
-        + DivAssign<RF32>
+        + MulAssign<f32>
         + for<'a> AddAssign<&'a Self>
         + for<'a> SubAssign<&'a Self>,
 {

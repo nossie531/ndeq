@@ -21,7 +21,7 @@ impl<'a, T, V> NetOdeSolver<'a, T, V> for EiSolver<T, V> {
         todo!()
     }
 
-    fn set_flow(&mut self, value: &'a dyn NdeqFlow<V>) {
+    fn set_flow(&mut self, value: &'a dyn NetFlow<V>) {
         todo!()
     }
 

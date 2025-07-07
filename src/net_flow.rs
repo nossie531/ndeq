@@ -1,17 +1,17 @@
-//! Provider of [`NdeqFlow`].
+//! Provider of [`NetFlow`].
 
-use crate::net_ode::NodeValues;
+use crate::NodeVec;
 use dyn_compatible::prelude::*;
 use ndeq_linalg::prelude::*;
+use ndeq_num::prelude::*;
 use ndeq_ode::FnSlope;
-use ndeq_ode::values::{OdeValue, RF32};
 use std::rc::Rc;
 
 /// Network value flow.
 #[dyn_compatible(true)]
-pub trait NdeqFlow<V>
+pub trait NetFlow<V>
 where
-    V: OdeValue,
+    V: Float,
 {
     /// Returns the number of nodes.
     ///
@@ -49,9 +49,9 @@ where
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
-    fn slope(&self) -> FnSlope<NodeValues<V>> {
+    fn slope(&self) -> FnSlope<NodeVec<V>> {
         Rc::new(|result, value| {
-            result.fill_zero();
+            *result *= V::zero();
 
             for (bwd_idx, fwd_idx, w) in self.edges() {
                 if bwd_idx == fwd_idx {
@@ -60,10 +60,10 @@ where
 
                 let bwd_value = &value[bwd_idx];
                 let fwd_value = &value[fwd_idx];
-                let mut flow = V::default();
+                let mut flow = V::zero();
                 flow += fwd_value;
                 flow -= bwd_value;
-                flow *= RF32(w);
+                flow *= V::from(w);
                 result[bwd_idx] += &flow;
             }
         })

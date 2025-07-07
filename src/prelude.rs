@@ -1,4 +1,6 @@
 //! Crate's prelude.
 
-pub use crate::net_ode::solver::NetOdeSolver;
-pub use crate::NdeqFlow;
+pub use crate::NetFlow;
+pub use crate::solver::NetOdeSolver;
+pub use crate::solver::solvers::NetEuler;
+pub use crate::solver::solvers::NetRungeKutta;

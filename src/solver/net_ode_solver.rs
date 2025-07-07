@@ -10,7 +10,7 @@ pub trait NetOdeSolver<'a, T, V> {
     fn new_values(&self) -> &[V];
 
     /// Sets network flow.
-    fn set_flow(&mut self, value: &'a dyn NdeqFlow<V>);
+    fn set_flow(&mut self, value: &'a dyn NetFlow<V>);
 
     /// Calculate new node values.
     ///

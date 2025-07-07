@@ -11,6 +11,7 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 pub trait Float:
     'static
     + Copy
+    + Default
     + From<f32>
     + PartialEq
     + PartialOrd

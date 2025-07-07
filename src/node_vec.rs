@@ -1,15 +1,15 @@
-//! Provider of [`NodeValues`]
+//! Provider of [`NodeVec`]
 
 use std::borrow::{Borrow, BorrowMut};
 use std::mem;
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
 
-/// Node values.
+/// Node values vector.
 #[repr(transparent)]
 #[derive(Clone, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
-pub struct NodeValues<T>(Vec<T>);
+pub struct NodeVec<T>(Vec<T>);
 
-impl<T> NodeValues<T> {
+impl<T> NodeVec<T> {
     /// Returns the number of elements.
     pub fn len(&self) -> usize {
         self.0.len()
@@ -21,37 +21,37 @@ impl<T> NodeValues<T> {
     }
 }
 
-impl<T> AsRef<Vec<T>> for NodeValues<T> {
+impl<T> AsRef<Vec<T>> for NodeVec<T> {
     fn as_ref(&self) -> &Vec<T> {
         self.borrow()
     }
 }
 
-impl<T> AsMut<Vec<T>> for NodeValues<T> {
+impl<T> AsMut<Vec<T>> for NodeVec<T> {
     fn as_mut(&mut self) -> &mut Vec<T> {
         self.borrow_mut()
     }
 }
 
-impl<T> Borrow<Vec<T>> for NodeValues<T> {
+impl<T> Borrow<Vec<T>> for NodeVec<T> {
     fn borrow(&self) -> &Vec<T> {
         unsafe { mem::transmute(self) }
     }
 }
 
-impl<T> BorrowMut<Vec<T>> for NodeValues<T> {
+impl<T> BorrowMut<Vec<T>> for NodeVec<T> {
     fn borrow_mut(&mut self) -> &mut Vec<T> {
         unsafe { mem::transmute(self) }
     }
 }
 
-impl<T> From<&Vec<T>> for &NodeValues<T> {
+impl<T> From<&Vec<T>> for &NodeVec<T> {
     fn from(value: &Vec<T>) -> Self {
         unsafe { mem::transmute(value) }
     }
 }
 
-impl<T> Index<usize> for NodeValues<T> {
+impl<T> Index<usize> for NodeVec<T> {
     type Output = T;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -59,13 +59,13 @@ impl<T> Index<usize> for NodeValues<T> {
     }
 }
 
-impl<T> IndexMut<usize> for NodeValues<T> {
+impl<T> IndexMut<usize> for NodeVec<T> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         self.0.index_mut(index)
     }
 }
 
-impl<T, U> MulAssign<U> for NodeValues<T>
+impl<T, U> MulAssign<U> for NodeVec<T>
 where
     T: MulAssign<U>,
     U: Copy,
@@ -77,7 +77,7 @@ where
     }
 }
 
-impl<T, U> DivAssign<U> for NodeValues<T>
+impl<T, U> DivAssign<U> for NodeVec<T>
 where
     T: DivAssign<U>,
     U: Copy,
@@ -89,7 +89,7 @@ where
     }
 }
 
-impl<'a, T> AddAssign<&'a Self> for NodeValues<T>
+impl<'a, T> AddAssign<&'a Self> for NodeVec<T>
 where
     T: AddAssign<&'a T>,
 {
@@ -101,7 +101,7 @@ where
     }
 }
 
-impl<'a, T> SubAssign<&'a Self> for NodeValues<T>
+impl<'a, T> SubAssign<&'a Self> for NodeVec<T>
 where
     T: SubAssign<&'a T>,
 {

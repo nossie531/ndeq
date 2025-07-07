@@ -30,7 +30,7 @@ impl Net {
     }
 }
 
-impl NdeqFlow<f32> for Net {
+impl NetFlow<f32> for Net {
     fn len(&self) -> usize {
         self.nodes.borrow().len()
     }

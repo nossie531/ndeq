@@ -1,7 +1,6 @@
 use crate::net::Net;
 use crate::node::Node;
 use easy_node::prelude::*;
-use ndeq::net_ode::solver::solvers::NetEuler;
 use ndeq::prelude::*;
 use std::ops::Range;
 
@@ -41,7 +40,7 @@ impl Sample {
     }
 
     pub fn run_simulation(&mut self) {
-        let flow = &*self.net as &dyn NdeqFlow<f32>;
+        let flow = &*self.net as &dyn NetFlow<f32>;
         let mut solver = NetEuler::new(H);
         solver.set_flow(flow);
 

@@ -5,9 +5,13 @@
 
 #![warn(missing_docs)]
 
-pub mod net_ode;
 pub mod prelude;
+pub mod solver;
 
-pub use ndeq_flow::*;
+pub use net_flow::*;
+pub use node_val::*;
+pub use node_vec::*;
 
-mod ndeq_flow;
+mod net_flow;
+mod node_val;
+mod node_vec;
