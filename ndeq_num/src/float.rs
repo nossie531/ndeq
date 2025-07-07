@@ -16,6 +16,10 @@ pub trait Float:
     + PartialOrd
     + Sum
     + Product
+    + AddAssign
+    + SubAssign
+    + MulAssign
+    + DivAssign
     + Add<Output = Self>
     + Sub<Output = Self>
     + Mul<Output = Self>
@@ -26,6 +30,10 @@ pub trait Float:
     + for<'a> SubAssign<&'a Self>
     + for<'a> MulAssign<&'a Self>
     + for<'a> DivAssign<&'a Self>
+    + for<'a> Add<&'a Self, Output = Self>
+    + for<'a> Sub<&'a Self, Output = Self>
+    + for<'a> Mul<&'a Self, Output = Self>
+    + for<'a> Div<&'a Self, Output = Self>
 {
     /// Returns zero.
     fn zero() -> Self {

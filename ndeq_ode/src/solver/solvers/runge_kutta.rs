@@ -67,10 +67,10 @@ where
         self.step2(slope.clone(), h);
         self.step3(slope.clone(), h);
 
-        self.grads[0] *= h * 1.0.into() / 6.0.into();
-        self.grads[1] *= h * 2.0.into() / 6.0.into();
-        self.grads[2] *= h * 2.0.into() / 6.0.into();
-        self.grads[3] *= h * 1.0.into() / 6.0.into();
+        self.grads[0] *= h * T::from(1.0) / T::from(6.0);
+        self.grads[1] *= h * T::from(2.0) / T::from(6.0);
+        self.grads[2] *= h * T::from(2.0) / T::from(6.0);
+        self.grads[3] *= h * T::from(1.0) / T::from(6.0);
         self.work.fill_zero();
         self.work += &self.grads[0];
         self.work += &self.grads[1];
@@ -90,7 +90,7 @@ where
     /// Calculate step 1.
     fn step1(&mut self, slope: FnSlope<V>, h: T) {
         let (points, rest) = self.points.split_at_mut(1);
-        let dy = Work(&mut self.work, &self.grads[0]).exec(|w| *w *= h / 2.0.into());
+        let dy = Work(&mut self.work, &self.grads[0]).exec(|w| *w *= h / T::from(2.0));
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[1], &mut rest[0]);
@@ -99,7 +99,7 @@ where
     /// Calculate step 2.
     fn step2(&mut self, slope: FnSlope<V>, h: T) {
         let (points, rest) = self.points.split_at_mut(2);
-        let dy = Work(&mut self.work, &self.grads[1]).exec(|w| *w *= h / 2.0.into());
+        let dy = Work(&mut self.work, &self.grads[1]).exec(|w| *w *= h / T::from(2.0));
         rest[0] += &points[0];
         rest[0] += dy;
         slope(&mut self.grads[2], &mut rest[0]);

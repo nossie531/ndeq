@@ -41,7 +41,6 @@ impl NdeqFlow<f32> for Net {
         return Box::new(ret);
     }
 
-
     fn import_curr_values(&self, values: &[f32]) {
         assert_eq!(values.len(), self.nodes.borrow().len());
         for node in self.nodes.borrow_mut().iter_mut() {
