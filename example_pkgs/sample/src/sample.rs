@@ -54,7 +54,7 @@ impl Sample {
             self.seriese_vec[2].push((t, node_values[2]));
 
             solver.run(H);
-            flow.import_values(solver.new_values().as_ref());
+            flow.import_curr_values(solver.new_values().as_ref());
 
             t += H;
         }

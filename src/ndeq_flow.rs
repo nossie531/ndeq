@@ -27,7 +27,7 @@ where
     /// Panics if `self` or its nodes are currently mutably borrowed.
     fn edges(&self) -> Box<dyn Iterator<Item = (usize, usize, f32)> + '_>;
 
-    /// Imports node values from slice.
+    /// Imports current node values from slice.
     ///
     /// # Panics
     ///
@@ -35,14 +35,14 @@ where
     ///
     /// * `values` length is not equal to nodes count.
     /// * `self` or its nodes are currently mutably borrowed.
-    fn import_values(&self, values: &[V]);
+    fn import_curr_values(&self, values: &[V]);
 
-    /// Exports node values to vector.
+    /// Exports last node values to vector.
     ///
     /// # Panics
     ///
     /// Panics if `self` or its nodes are currently borrowed.
-    fn export_values(&self, values: &mut Vec<V>);
+    fn export_last_values(&self, values: &mut Vec<V>);
 
     /// Returns derivative function for network diffusion.
     ///

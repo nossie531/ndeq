@@ -43,7 +43,7 @@ where
     }
 
     fn run(&mut self, t: T) {
-        self.flow.unwrap().export_values(self.values.as_mut());
+        self.flow.unwrap().export_last_values(self.values.as_mut());
         self.base.set_value(&self.values);
         self.base.run(t);
     }

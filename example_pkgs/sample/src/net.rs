@@ -41,19 +41,19 @@ impl NdeqFlow<f32> for Net {
         return Box::new(ret);
     }
 
-    fn export_values(&self, values: &mut Vec<f32>) {
-        values.clear();
-        for node in self.nodes.borrow().iter() {
-            values.push(node.value());
-        }
-    }
 
-    fn import_values(&self, values: &[f32]) {
+    fn import_curr_values(&self, values: &[f32]) {
         assert_eq!(values.len(), self.nodes.borrow().len());
-
         for node in self.nodes.borrow_mut().iter_mut() {
             let value = values[node.idx()];
             node.set_value(value);
+        }
+    }
+
+    fn export_last_values(&self, values: &mut Vec<f32>) {
+        values.clear();
+        for node in self.nodes.borrow().iter() {
+            values.push(node.value());
         }
     }
 }
