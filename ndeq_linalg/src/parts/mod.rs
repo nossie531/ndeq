@@ -1,5 +1,7 @@
 //! Matrix parts.
 
+pub mod len;
+
 pub use editor::*;
 pub use mdata::*;
 pub use scalar::*;

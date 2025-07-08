@@ -1,7 +1,7 @@
 //! Tools for tests.
 
 pub mod consts;
-pub mod scale;
+pub mod sparse_ptn;
 
 pub use sample::*;
 

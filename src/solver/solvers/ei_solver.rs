@@ -9,9 +9,9 @@ use ndeq_linalg::prelude::*;
 pub struct EiSolver<T, V> {
     h: T,
     // Node values.
-    vec: Matrix<V>,
+    vec: DMatrix<V>,
     // Laplacian matrix.
-    laplacian: Matrix<V>,
+    laplacian: DMatrix<V>,
 }
 
 impl<'a, T, V> NetOdeSolver<'a, T, V> for EiSolver<T, V> {

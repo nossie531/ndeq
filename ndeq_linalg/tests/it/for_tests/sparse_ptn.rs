@@ -1,9 +1,9 @@
-//! Test scale calculations.
+//! Sparse pattern calculations.
 
 use crate::for_tests::consts;
 use ndeq_linalg::aliases::Size;
 
-/// Calculates test scale from matrix sizes.
+/// Calculates the number of sparse patterns from matrix sizes.
 ///
 /// First, the product of the area for each `sizes` is calculated, and then
 /// the exponent is calculated to the power of 2. Although this is the ideal

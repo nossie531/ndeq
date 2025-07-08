@@ -6,13 +6,13 @@ use crate::parts::{MData, Scalar};
 use std::collections::btree_map::Iter as TreeIter;
 use std::slice::Iter as SliceIter;
 
-/// Iterator of matrix component.
+/// Iterator of matrix none zero component.
 #[derive(Clone)]
-pub struct MCells<'a, T> {
+pub struct NzIter<'a, T> {
     base: BaseIter<'a, T>,
 }
 
-impl<'a, T> MCells<'a, T> {
+impl<'a, T> NzIter<'a, T> {
     /// Creates a new value.
     pub(crate) fn new(mdata: &'a MData<T>, size: Size) -> Self {
         Self {
@@ -24,7 +24,7 @@ impl<'a, T> MCells<'a, T> {
     }
 }
 
-impl<'a, T> Iterator for MCells<'a, T>
+impl<'a, T> Iterator for NzIter<'a, T>
 where
     T: Scalar,
 {

@@ -6,15 +6,15 @@ use crate::parts::{MData, Scalar};
 use std::collections::btree_map::IterMut as TreeIterMut;
 use std::slice::IterMut as SliceIterMut;
 
-/// Mutable iterator of matrix component.
-pub struct MCellsMut<'a, T>
+/// Mutable iterator of matrix none zero component.
+pub struct NzIterMut<'a, T>
 where
     T: Scalar,
 {
     base: BaseIterMut<'a, T>,
 }
 
-impl<'a, T> MCellsMut<'a, T>
+impl<'a, T> NzIterMut<'a, T>
 where
     T: Scalar,
 {
@@ -29,7 +29,7 @@ where
     }
 }
 
-impl<'a, T> Iterator for MCellsMut<'a, T>
+impl<'a, T> Iterator for NzIterMut<'a, T>
 where
     T: Scalar,
 {

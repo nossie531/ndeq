@@ -1,0 +1,66 @@
+use crate::aliases::{Pos, Size};
+use crate::parts::{MData, Scalar};
+use crate::prelude::*;
+use std::marker::PhantomData;
+
+/// Matrix builder.
+pub struct MatrixBuilder<T, R, C> {
+    /// Matrix size.
+    size: Size,
+
+    /// Matrix internal data.
+    mdata: MData<T>,
+
+    /// Phantom data.
+    pd: PhantomData<(R, C)>,
+}
+
+impl<T, R, C> MatrixBuilder<T, R, C>
+where
+    T: Scalar,
+{
+    /// Creates a new value.
+    pub(crate) fn new(size: Size) -> Self {
+        Self {
+            size,
+            mdata: MData::new(size, false),
+            pd: Default::default(),
+        }
+    }
+
+    /// Builds matrix.
+    #[must_use]
+    pub fn build(self) -> Matrix<T, R, C> {
+        Matrix::<T, R, C>::new_internal(self.size, self.mdata)
+    }
+
+    /// Sets sparse flag.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `self` has data already.
+    #[must_use]
+    pub fn sparse(mut self, value: bool) -> Self {
+        assert!(self.mdata.nz_iter(self.size).next().is_none());
+        self.mdata = MData::new(self.size, value);
+        self
+    }
+
+    /// Sets entries.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any of the entry in `values` is out of range.
+    #[must_use]
+    pub fn entries<I>(mut self, values: I) -> Self
+    where
+        I: IntoIterator<Item = (Pos, T)>,
+    {
+        for (p, v) in values {
+            assert!(p.0 < self.size.0 && p.1 < self.size.1);
+            self.mdata.set(self.size, p, v);
+        }
+
+        self
+    }
+}

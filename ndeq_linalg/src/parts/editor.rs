@@ -19,7 +19,7 @@ where
     T: Scalar,
 {
     /// Creates a new instance.
-    pub fn new(matrix: &'a mut Matrix<T>, pos: Pos) -> Self {
+    pub fn new<R, C>(matrix: &'a mut Matrix<T, R, C>, pos: Pos) -> Self {
         let n = matrix.n();
         match matrix.mdata_mut() {
             MData::Dense(vec) => Self::Dense(&mut vec[pos.0 * n + pos.1]),

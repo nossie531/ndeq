@@ -18,13 +18,13 @@ pub struct Sample {
 
 impl Sample {
     /// Sample square matrix size.
-    pub const SQ_SIZE: Size = (consts::STD_N, consts::STD_N);
+    pub const SQ_SIZE: Size = (consts::N, consts::N);
 
     /// Sample row vector size.
-    pub const ROW_VEC_SIZE: Size = (1, consts::STD_N);
+    pub const ROW_VEC_SIZE: Size = (1, consts::N);
 
     /// Sample column vector size.
-    pub const COL_VEC_SIZE: Size = (consts::STD_N, 1);
+    pub const COL_VEC_SIZE: Size = (consts::N, 1);
 
     /// Creates a new value.
     pub fn new() -> Self {
@@ -34,8 +34,8 @@ impl Sample {
     }
 
     /// Creates a standard row vector.
-    pub fn create_row_vector(&mut self) -> Matrix<f32> {
-        let mut ret = Matrix::new(Self::ROW_VEC_SIZE, false);
+    pub fn create_row_vector(&mut self) -> DMatrix<f32> {
+        let mut ret = DMatrix::new(Self::ROW_VEC_SIZE);
         for i in 0..ret.m() {
             *ret.cell((0, i)) = self.random_in_open01();
         }
@@ -44,8 +44,8 @@ impl Sample {
     }
 
     /// Creates a standard column vector.
-    pub fn create_col_vector(&mut self) -> Matrix<f32> {
-        let mut ret = Matrix::new(Self::COL_VEC_SIZE, false);
+    pub fn create_col_vector(&mut self) -> DMatrix<f32> {
+        let mut ret = DMatrix::new(Self::COL_VEC_SIZE);
         for i in 0..ret.m() {
             *ret.cell((i, 0)) = self.random_in_open01();
         }
@@ -54,8 +54,8 @@ impl Sample {
     }
 
     /// Creates a standard square matrix.
-    pub fn create_sq_matrix(&mut self, sparse: bool) -> Matrix<f32> {
-        let mut ret = Matrix::new(Self::SQ_SIZE, sparse);
+    pub fn create_sq_matrix(&mut self, sparse: bool) -> DMatrix<f32> {
+        let mut ret = DMatrix::make(Self::SQ_SIZE).sparse(sparse).build();
         let nnz_ratio = self.rng.random::<f32>();
         let zero_poss = self.random_shot(Self::SQ_SIZE, 1.0 - nnz_ratio);
 

@@ -1,7 +1,7 @@
 //! Provider of [`MData`].
 
 use crate::aliases::{Pos, Size};
-use crate::iters::{MCells, MCellsMut};
+use crate::iters::{NzIter, NzIterMut};
 use crate::parts::Scalar;
 use std::collections::BTreeMap;
 
@@ -38,6 +38,13 @@ where
         }
     }
 
+    pub fn len(&self) -> usize {
+        match self {
+            Self::Dense(x) => x.len(),
+            Self::Sparse(x) => x.len(),
+        }
+    }
+
     /// Returns component of specified position.
     pub fn get(&self, size: Size, pos: Pos) -> &T {
         match self {
@@ -47,8 +54,8 @@ where
     }
 
     /// Returns none-zero components iterator.
-    pub fn nz_iter<'a>(&'a self, size: Size) -> MCells<'a, T> {
-        MCells::new(self, size)
+    pub fn nz_iter<'a>(&'a self, size: Size) -> NzIter<'a, T> {
+        NzIter::new(self, size)
     }
 
     /// Sets value to specified position.
@@ -66,7 +73,7 @@ where
     }
 
     /// Returns mutable none-zero components iterator.
-    pub fn nz_iter_mut<'a>(&'a mut self, size: Size) -> MCellsMut<'a, T> {
-        MCellsMut::new(self, size)
+    pub fn nz_iter_mut<'a>(&'a mut self, size: Size) -> NzIterMut<'a, T> {
+        NzIterMut::new(self, size)
     }
 }
