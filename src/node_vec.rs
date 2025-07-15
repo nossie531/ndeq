@@ -3,11 +3,26 @@
 use std::borrow::{Borrow, BorrowMut};
 use std::mem;
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
+use ensure_impl::prelude::*;
+use ndeq_ode::values::OdeValue;
 
 /// Node values vector.
 #[repr(transparent)]
 #[derive(Clone, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct NodeVec<T>(Vec<T>);
+
+#[ensure_impl]
+impl<T> OdeValue for NodeVec<T>
+where 
+    T: 'static,
+    T: Clone,
+    T: Default,
+    T: PartialEq,
+    T: MulAssign<f32>,
+    T: for<'a> AddAssign<&'a T>,
+    T: for<'a> SubAssign<&'a T>,
+{
+}
 
 impl<T> NodeVec<T> {
     /// Returns the number of elements.

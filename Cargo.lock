@@ -224,6 +224,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "16185de00fc580d32338c122347e2c9a3c52a28be2bb347e9bf80fec221f4023"
 
 [[package]]
+name = "ensure_impl"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a7d2ec2ab693cfe80c156d3270cbcc33a8b29c45baa3a10ad57b0f615ca564f"
+dependencies = [
+ "ensure_impl_macro",
+]
+
+[[package]]
+name = "ensure_impl_macro"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8be6530b8a5095b8bbf52ab845d0c1c4517dc0642765c0879ccd9b09ac250de0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "fdeflate"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -454,6 +474,7 @@ name = "ndeq"
 version = "0.1.0"
 dependencies = [
  "dyn_compatible",
+ "ensure_impl",
  "ndeq_linalg",
  "ndeq_num",
  "ndeq_ode",
