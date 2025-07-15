@@ -199,18 +199,18 @@ dependencies = [
 
 [[package]]
 name = "dyn_compatible"
-version = "0.1.0"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8903555317a43f0ee4feb1e6b6f605430e912110419c97ad4ccc260a808eb592"
+checksum = "cce723788b391ea2377607d5c995528f30ea1935cb5d91d6b835f87f1074d533"
 dependencies = [
  "dyn_compatible_macro",
 ]
 
 [[package]]
 name = "dyn_compatible_macro"
-version = "0.1.0"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3a5d4c3f7befc3b550da960fda622d157ca0913a882a121bce17c55e51960ba"
+checksum = "9710e5c80d5d746f243d9ca0a02952f833fd5ae049e89e1e18bcbcf0705a1b1b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -225,18 +225,18 @@ checksum = "16185de00fc580d32338c122347e2c9a3c52a28be2bb347e9bf80fec221f4023"
 
 [[package]]
 name = "ensure_impl"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a7d2ec2ab693cfe80c156d3270cbcc33a8b29c45baa3a10ad57b0f615ca564f"
+checksum = "862bd4166ca8dbd9a730cd258a3dd6bdafcaff1fd980b09614f47bf0c7475f2f"
 dependencies = [
  "ensure_impl_macro",
 ]
 
 [[package]]
 name = "ensure_impl_macro"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8be6530b8a5095b8bbf52ab845d0c1c4517dc0642765c0879ccd9b09ac250de0"
+checksum = "0a5d2fc09932a2ed22942e92e39e016b56b578e614f10691c8cc37f447ee383a"
 dependencies = [
  "proc-macro2",
  "quote",
