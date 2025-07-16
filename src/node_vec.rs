@@ -1,10 +1,10 @@
 //! Provider of [`NodeVec`]
 
+use ensure_impl::prelude::*;
+use ndeq_ode::values::OdeValue;
 use std::borrow::{Borrow, BorrowMut};
 use std::mem;
 use std::ops::{AddAssign, DivAssign, Index, IndexMut, MulAssign, SubAssign};
-use ensure_impl::prelude::*;
-use ndeq_ode::values::OdeValue;
 
 /// Node values vector.
 #[repr(transparent)]
@@ -13,7 +13,7 @@ pub struct NodeVec<T>(Vec<T>);
 
 #[ensure_impl]
 impl<T> OdeValue for NodeVec<T>
-where 
+where
     T: 'static,
     T: Clone,
     T: Default,

@@ -1,11 +1,11 @@
 //! Provider of [`Matrix`].
 
-use crate::builders::{MatrixBuilder, VectorBuilder};
 use crate::aliases::{Pos, Size};
+use crate::builders::{MatrixBuilder, VectorBuilder};
 use crate::iters::{MCell, NzIter, NzIterMut};
 use crate::parts::len::{Fixed, Single, Var};
 use crate::parts::{Editor, MData, Scalar};
-use crate::util;
+use crate::util::{AsPos, mutil};
 use iter_chunk_ext::prelude::*;
 use ndeq_num::prelude::*;
 use std::fmt::{self, Debug, Formatter};
@@ -41,7 +41,7 @@ pub struct Matrix<T, R, C> {
 }
 
 impl<T, const N: usize> SVector<T, N>
-where 
+where
     T: Scalar,
 {
     /// Creates a new vector.
@@ -52,6 +52,7 @@ where
     }
 
     /// Creates a vector builder.
+    #[must_use]
     pub fn make() -> VectorBuilder<T, Fixed<N>> {
         VectorBuilder::new(N)
     }
@@ -69,13 +70,14 @@ where
     }
 
     /// Creates a vector builder.
+    #[must_use]
     pub fn make(len: usize) -> VectorBuilder<T, Var> {
         VectorBuilder::new(len)
     }
 }
 
 impl<T, N> Vector<T, N>
-where 
+where
     T: Scalar,
 {
     /// Returns mutable reference of vector component.
@@ -83,8 +85,9 @@ where
     /// # Panics
     ///
     /// Panics if `pos` is out of range.
+    #[must_use]
     pub fn val(&mut self, index: usize) -> Editor<'_, T> {
-        assert!((0..self.size.0).contains(&index));
+        assert!(index < self.m());
         Editor::new(self, (index, 0))
     }
 }
@@ -151,7 +154,7 @@ where
     pub fn identity(len: usize) -> Self {
         let nnz = len;
         let size = (len, len);
-        let sparse = util::is_sparse_prefered(nnz, size);
+        let sparse = mutil::is_sparse_prefered(nnz, size);
         let mut ret = Self::make(size).sparse(sparse).build();
         for i in 0..len {
             for j in 0..len {
@@ -244,9 +247,10 @@ where
     /// # Panics
     ///
     /// Panics if `self` is not square matrix.
+    #[must_use]
     pub fn expmv(&self, vec: &Vector<T, R>) -> Vector<T, R> {
         assert!(self.is_square());
-        assert_eq!(vec.len(), self.size.0);
+        assert_eq!(vec.len(), self.n());
         let mut ret = vec.clone_size();
         let mut work = vec.clone_size();
         let mut term = vec.clone();
@@ -270,10 +274,24 @@ where
     /// # Panics
     ///
     /// Panics if `pos` is out of range.
+    #[must_use]
     pub fn cell(&mut self, pos: Pos) -> Editor<'_, T> {
-        assert!((0..self.size.0).contains(&pos.0));
-        assert!((0..self.size.1).contains(&pos.1));
+        assert!(AsPos(pos).is_in(self.size()));
         Editor::new(self, pos)
+    }
+
+    /// Cast matrix type.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `self` and `other` size is different.
+    #[must_use]
+    pub fn cast<R2, C2>(self, mut other: Matrix<T, R2, C2>) -> Matrix<T, R2, C2> {
+        assert_eq!(self.size(), other.size());
+
+        let mut newtype = unsafe { mem::transmute(self) };
+        mem::swap(&mut newtype, &mut other);
+        other
     }
 
     /// Perform multiple operation and store its result to `out`.
@@ -295,19 +313,6 @@ where
         };
 
         method(&self, rhs, out);
-    }
-
-    /// Cast matrix type.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `self` and `other` size is different.
-    pub fn cast<R2, C2>(self, mut other: Matrix<T, R2, C2>) -> Matrix<T, R2, C2> {
-        assert_eq!(self.size(), other.size());
-
-        let mut newtype = unsafe { mem::transmute(self) };
-        mem::swap(&mut newtype, &mut other);
-        other
     }
 }
 
@@ -370,13 +375,13 @@ where
 }
 
 impl<T, N> Index<usize> for Vector<T, N>
-where 
+where
     T: Scalar,
 {
     type Output = T;
-    
+
     fn index(&self, index: usize) -> &Self::Output {
-        assert!((0..self.size.0).contains(&index));
+        assert!(index < self.m());
         self.data.get(self.size, (index, 0))
     }
 }
@@ -388,8 +393,7 @@ where
     type Output = T;
 
     fn index(&self, index: Pos) -> &Self::Output {
-        assert!((0..self.size.0).contains(&index.0));
-        assert!((0..self.size.1).contains(&index.1));
+        assert!(AsPos(index).is_in(self.size()));
         self.data.get(self.size, index)
     }
 }

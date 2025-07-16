@@ -1,5 +1,4 @@
 /// Instance builders.
-
 pub use matrix_builder::*;
 pub use vector_builder::*;
 

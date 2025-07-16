@@ -2,7 +2,8 @@ mod for_tests;
 
 use for_tests::{Sample, sparse_ptn};
 use ndeq_linalg::parts::Scalar;
-use ndeq_linalg::{prelude::*, util};
+use ndeq_linalg::prelude::*;
+use ndeq_linalg::util::mutil;
 use test_panic::prelude::*;
 
 const M: usize = 4;
@@ -68,18 +69,18 @@ fn sparse() {
 fn identity() {
     with_smatrix();
     with_dmatrix();
-    
+
     fn with_smatrix() {
         let result = SMatrix::<f32, N, N>::identity();
         assert_eq!(result.size(), (N, N));
-        assert_eq!(result.is_sparse(), util::is_sparse_prefered(N, (N, N)));
+        assert_eq!(result.is_sparse(), mutil::is_sparse_prefered(N, (N, N)));
         assert!(result.is_identity());
     }
 
     fn with_dmatrix() {
         let result = DMatrix::<f32>::identity(N);
         assert_eq!(result.size(), (N, N));
-        assert_eq!(result.is_sparse(), util::is_sparse_prefered(N, (N, N)));
+        assert_eq!(result.is_sparse(), mutil::is_sparse_prefered(N, (N, N)));
         assert!(result.is_identity());
     }
 }
