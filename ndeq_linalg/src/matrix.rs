@@ -209,6 +209,12 @@ where
         self.size.1
     }
 
+    /// Returns the number of components.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.size.0 * self.size.1
+    }
+
     /// Returns size.
     #[must_use]
     pub fn size(&self) -> Size {
@@ -239,9 +245,8 @@ where
     ///
     /// Panics if `self` is not square matrix.
     pub fn expmv(&self, vec: &Vector<T, R>) -> Vector<T, R> {
-        assert_eq!(self.size.0, self.size.1);
-        assert_eq!(vec.size.0, self.size.0);
-        assert_eq!(vec.size.1, 1);
+        assert!(self.is_square());
+        assert_eq!(vec.len(), self.size.0);
         let mut ret = vec.clone_size();
         let mut work = vec.clone_size();
         let mut term = vec.clone();

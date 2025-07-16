@@ -85,6 +85,12 @@ fn identity() {
 }
 
 #[test]
+fn len() {
+    let target = DMatrix::<f32>::new((M, N));
+    assert_eq!(target.len(), M * N);
+}
+
+#[test]
 fn index() {
     with_err_index();
     with_normal();
