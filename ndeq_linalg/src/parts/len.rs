@@ -1,4 +1,4 @@
-/// Matrix edge length.
+//! Matrix edge length.
 
 /// Singe edge length.
 pub struct Single();
