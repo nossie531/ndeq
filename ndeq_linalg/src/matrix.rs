@@ -13,21 +13,6 @@ use std::marker::PhantomData;
 use std::mem;
 use std::ops::{AddAssign, Index, Mul, MulAssign};
 
-/// Static size vector.
-pub type SVector<T, const N: usize> = Vector<T, Fixed<N>>;
-
-/// Dynamic size vector.
-pub type DVector<T> = Vector<T, Var>;
-
-/// Vector (Single column matrix).
-pub type Vector<T, N> = Matrix<T, N, Single>;
-
-/// Static size matrix.
-pub type SMatrix<T, const R: usize, const C: usize> = Matrix<T, Fixed<R>, Fixed<C>>;
-
-/// Dynamic size matrix.
-pub type DMatrix<T> = Matrix<T, Var, Var>;
-
 /// [Matrix].
 ///
 /// [Matrix]: https://en.wikipedia.org/wiki/Matrix_(mathematics)
@@ -39,6 +24,21 @@ pub struct Matrix<T, R, C> {
     /// Phantom data.
     pd: PhantomData<(R, C)>,
 }
+
+/// Vector (Single column matrix).
+pub type Vector<T, N> = Matrix<T, N, Single>;
+
+/// Static size vector.
+pub type SVector<T, const N: usize> = Vector<T, Fixed<N>>;
+
+/// Dynamic size vector.
+pub type DVector<T> = Vector<T, Var>;
+
+/// Static size matrix.
+pub type SMatrix<T, const R: usize, const C: usize> = Matrix<T, Fixed<R>, Fixed<C>>;
+
+/// Dynamic size matrix.
+pub type DMatrix<T> = Matrix<T, Var, Var>;
 
 impl<T, const N: usize> SVector<T, N>
 where
