@@ -38,6 +38,7 @@ where
         }
     }
 
+    /// Returns internal data length.
     pub fn len(&self) -> usize {
         match self {
             Self::Dense(x) => x.len(),
