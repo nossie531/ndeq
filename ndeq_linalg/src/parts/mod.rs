@@ -1,11 +1,10 @@
 //! Matrix parts.
 
 pub mod len;
+pub mod strage;
 
 pub use editor::*;
-pub use mdata::*;
 pub use scalar::*;
 
 mod editor;
-mod mdata;
 mod scalar;

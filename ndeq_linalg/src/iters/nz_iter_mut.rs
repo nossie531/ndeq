@@ -2,7 +2,8 @@
 
 use crate::aliases::{Pos, Size};
 use crate::iters::MCellMut;
-use crate::parts::{MData, Scalar};
+use crate::parts::Scalar;
+use crate::parts::strage::SelfStrage;
 use std::collections::btree_map::IterMut as TreeIterMut;
 use std::slice::IterMut as SliceIterMut;
 
@@ -19,11 +20,11 @@ where
     T: Scalar,
 {
     /// Creates a new value.
-    pub(crate) fn new(mdata: &'a mut MData<T>, size: Size) -> Self {
+    pub(crate) fn new(mdata: &'a mut SelfStrage<T>, size: Size) -> Self {
         Self {
             base: match mdata {
-                MData::Dense(vec) => BaseIterMut::ForSlice(vec.iter_mut(), size.1, 0),
-                MData::Sparse(tree) => BaseIterMut::ForTree(tree.iter_mut()),
+                SelfStrage::Dense(vec) => BaseIterMut::ForSlice(vec.iter_mut(), size.1, 0),
+                SelfStrage::Sparse(tree) => BaseIterMut::ForTree(tree.iter_mut()),
             },
         }
     }

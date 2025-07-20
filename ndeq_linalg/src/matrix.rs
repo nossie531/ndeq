@@ -4,8 +4,9 @@ use crate::aliases::{Pos, Size};
 use crate::builders::{MatrixBuilder, VectorBuilder};
 use crate::iters::{MCell, NzIter, NzIterMut};
 use crate::parts::len::{Fixed, Single, Var};
-use crate::parts::{Editor, MData, Scalar};
-use crate::util::{AsPos, Vec2d, mutil};
+use crate::parts::{Editor, Scalar};
+use crate::parts::strage::{Dense, SelfStrage};
+use crate::util::{AsPos, mutil};
 use iter_chunks_ext::prelude::*;
 use ndeq_num::prelude::*;
 use std::fmt::{self, Debug, Formatter};
@@ -17,10 +18,8 @@ use std::ops::{AddAssign, Index, Mul, MulAssign};
 ///
 /// [Matrix]: https://en.wikipedia.org/wiki/Matrix_(mathematics)
 pub struct Matrix<T, R, C> {
-    /// Matrix size.
-    size: Size,
     /// Internal data.
-    data: MData<T>,
+    data: SelfStrage<T>,
     /// Phantom data.
     pd: PhantomData<(R, C)>,
 }
@@ -203,38 +202,38 @@ where
     /// Returns row length.
     #[must_use]
     pub fn m(&self) -> usize {
-        self.size.0
+        self.size().0
     }
 
     /// Returns column length.
     #[must_use]
     pub fn n(&self) -> usize {
-        self.size.1
+        self.size().1
     }
 
     /// Returns the number of components.
     #[must_use]
     pub fn len(&self) -> usize {
-        self.size.0 * self.size.1
+        self.data.len()
     }
 
     /// Returns size.
     #[must_use]
     pub fn size(&self) -> Size {
-        self.size
+        self.data.size()
     }
 
     /// Clone this matrix size.
     #[must_use]
     pub fn clone_size(&self) -> Self {
-        let ret = DMatrix::make(self.size).sparse(self.is_sparse()).build();
+        let ret = DMatrix::make(self.size()).sparse(self.is_sparse()).build();
         unsafe { ret.mimic() }
     }
 
     /// Clone this matrix with sparse flag.
     #[must_use]
     pub fn clone_with_sparse(&self, sparse: bool) -> Self {
-        let mut ret = DMatrix::make(self.size).sparse(sparse).build();
+        let mut ret = DMatrix::make(self.size()).sparse(sparse).build();
         for mc in self.nz_iter() {
             *ret.cell(mc.pos()) = self[mc.pos()];
         }
@@ -322,7 +321,6 @@ where
 {
     fn clone(&self) -> Self {
         Self {
-            size: self.size.clone(),
             data: self.data.clone(),
             pd: self.pd.clone(),
         }
@@ -335,7 +333,6 @@ where
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         f.debug_struct("Matrix")
-            .field("size", &self.size)
             .field("data", &self.data)
             .finish()
     }
@@ -352,7 +349,7 @@ where
     /// Comparisons are based only on whether the values of all components match
     /// ([`Self::sparse`] does not affect the result).
     fn eq(&self, other: &Self) -> bool {
-        if self.size != other.size {
+        if self.size() != other.size() {
             return false;
         }
 
@@ -382,7 +379,7 @@ where
 
     fn index(&self, index: usize) -> &Self::Output {
         assert!(index < self.m());
-        self.data.get((index, 0))
+        self.data.value((index, 0))
     }
 }
 
@@ -394,7 +391,7 @@ where
 
     fn index(&self, index: Pos) -> &Self::Output {
         assert!(AsPos(index).is_in(self.size()));
-        self.data.get(index)
+        self.data.value(index)
     }
 }
 
@@ -427,7 +424,7 @@ where
     type Output = Matrix<T, R, C>;
 
     fn mul(self, rhs: T) -> Self::Output {
-        let mut ret = DMatrix::make(self.size).sparse(self.is_sparse()).build();
+        let mut ret = DMatrix::make(self.size()).sparse(self.is_sparse()).build();
         for mc in self.nz_iter() {
             *ret.cell(mc.pos()) = *mc.val() * rhs;
         }
@@ -480,7 +477,7 @@ where
     T: Scalar,
 {
     /// Returns mutable reference of internal data.
-    pub(crate) fn mdata_mut(&mut self) -> &mut MData<T> {
+    pub(crate) fn mdata_mut(&mut self) -> &mut SelfStrage<T> {
         &mut self.data
     }
 
@@ -493,10 +490,8 @@ where
     }
 
     /// Creates a new matrix with internal data.
-    pub(crate) fn new_internal(size: Size, data: MData<T>) -> Self {
-        debug_assert!(size.0 * size.1 >= data.len());
+    pub(crate) fn new_internal(data: SelfStrage<T>) -> Self {
         Self {
-            size,
             data,
             pd: Default::default(),
         }
@@ -505,8 +500,7 @@ where
     /// Creates a dummy empty matrix.
     fn empty() -> Self {
         Matrix {
-            size: (0, 0),
-            data: MData::Dense(Vec2d::new((0, 0))),
+            data: SelfStrage::Dense(Dense::new((0, 0))),
             pd: Default::default(),
         }
     }
@@ -552,7 +546,7 @@ where
     /// Perform multiple operation without sparse matrix.
     fn mul_without_sparse_to<R2, C2>(&self, rhs: &Matrix<T, R2, C2>, out: &mut Matrix<T, R, C2>) {
         assert_eq!(self.n(), rhs.m());
-        assert_eq!((self.m(), rhs.n()), out.size);
+        assert_eq!((self.m(), rhs.n()), out.size());
 
         for i in 0..out.m() {
             for j in 0..out.n() {
@@ -569,7 +563,7 @@ where
     /// Perform multiple operation with sparse matrix.
     fn mul_with_sparse_to<R2, C2>(&self, rhs: &Matrix<T, R2, C2>, out: &mut Matrix<T, R, C2>) {
         assert_eq!(self.n(), rhs.m());
-        assert_eq!((self.m(), rhs.n()), out.size);
+        assert_eq!((self.m(), rhs.n()), out.size());
 
         let mut lhs_iter = self.nz_iter();
         let mut rhs_iter = rhs.nz_iter();
@@ -600,6 +594,6 @@ where
 
     /// Returns mutable none-zero components iterator.
     fn nz_iter_mut(&mut self) -> NzIterMut<'_, T> {
-        self.data.nz_iter_mut(self.size)
+        self.data.nz_iter_mut(self.size())
     }
 }

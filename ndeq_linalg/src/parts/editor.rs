@@ -1,7 +1,8 @@
 use crate::aliases::Pos;
-use crate::parts::{MData, Scalar};
+use crate::parts::Scalar;
 use crate::prelude::*;
-use std::collections::btree_map::{Entry, OccupiedEntry};
+use crate::parts::strage::SelfStrage;
+use std::collections::btree_map::OccupiedEntry;
 use std::mem;
 use std::ops::{Deref, DerefMut};
 
@@ -21,17 +22,9 @@ where
     /// Creates a new instance.
     pub fn new<R, C>(matrix: &'a mut Matrix<T, R, C>, pos: Pos) -> Self {
         match matrix.mdata_mut() {
-            MData::Dense(vec) => Self::Dense(&mut vec[pos]),
-            MData::Sparse(map) => {
-                /* Waiting new feature `BTreeMap::insert_entry`.
-                Entry search after entry insert is inefficient.
-                https://github.com/rust-lang/rust/issues/65225
-                */
-                map.entry(pos).or_insert(*T::zero());
-                let Entry::Occupied(entry) = map.entry(pos) else {
-                    panic!()
-                };
-                Self::Sparse(Some(entry))
+            SelfStrage::Dense(x) => Self::Dense(x.at_mut(pos)),
+            SelfStrage::Sparse(x) => {
+                Self::Sparse(Some(x.at_mut(pos)))
             }
         }
     }

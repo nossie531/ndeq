@@ -1,6 +1,7 @@
 use crate::aliases::{Pos, Size};
-use crate::parts::{MData, Scalar};
+use crate::parts::Scalar;
 use crate::prelude::*;
+use crate::parts::strage::SelfStrage;
 use std::marker::PhantomData;
 
 /// Matrix builder.
@@ -9,7 +10,7 @@ pub struct MatrixBuilder<T, R, C> {
     size: Size,
 
     /// Matrix internal data.
-    mdata: MData<T>,
+    mdata: SelfStrage<T>,
 
     /// Phantom data.
     pd: PhantomData<(R, C)>,
@@ -23,7 +24,7 @@ where
     pub(crate) fn new(size: Size) -> Self {
         Self {
             size,
-            mdata: MData::new(size, false),
+            mdata: SelfStrage::new(size, false),
             pd: Default::default(),
         }
     }
@@ -31,7 +32,7 @@ where
     /// Builds matrix.
     #[must_use]
     pub fn build(self) -> Matrix<T, R, C> {
-        Matrix::<T, R, C>::new_internal(self.size, self.mdata)
+        Matrix::<T, R, C>::new_internal(self.mdata)
     }
 
     /// Sets sparse flag.
@@ -42,7 +43,7 @@ where
     #[must_use]
     pub fn sparse(mut self, value: bool) -> Self {
         assert!(self.mdata.nz_iter().next().is_none());
-        self.mdata = MData::new(self.size, value);
+        self.mdata = SelfStrage::new(self.size, value);
         self
     }
 
@@ -62,7 +63,7 @@ where
         assert!(self.mdata.nz_iter().next().is_none());
         for (p, v) in values {
             assert!(p.0 < self.size.0 && p.1 < self.size.1);
-            self.mdata.set(p, v);
+            self.mdata.set_value(p, v);
         }
 
         self

@@ -1,5 +1,6 @@
-use crate::parts::{MData, Scalar};
+use crate::parts::Scalar;
 use crate::prelude::*;
+use crate::parts::strage::SelfStrage;
 use std::marker::PhantomData;
 
 /// Vector builder.
@@ -8,7 +9,7 @@ pub struct VectorBuilder<T, N> {
     len: usize,
 
     /// Vector internal data.
-    mdata: MData<T>,
+    mdata: SelfStrage<T>,
 
     /// Phantom data.
     pd: PhantomData<N>,
@@ -22,7 +23,7 @@ where
     pub(crate) fn new(len: usize) -> Self {
         Self {
             len,
-            mdata: MData::new((len, 1), false),
+            mdata: SelfStrage::new((len, 1), false),
             pd: Default::default(),
         }
     }
@@ -30,7 +31,7 @@ where
     /// Builds matrix.
     #[must_use]
     pub fn build(self) -> Vector<T, N> {
-        Vector::<T, N>::new_internal((self.len, 1), self.mdata)
+        Vector::<T, N>::new_internal(self.mdata)
     }
 
     /// Sets values.
@@ -49,7 +50,7 @@ where
         assert!(self.mdata.nz_iter().next().is_none());
         for (i, v) in values {
             assert!(i < self.len);
-            self.mdata.set((i, 0), v);
+            self.mdata.set_value((i, 0), v);
         }
 
         self

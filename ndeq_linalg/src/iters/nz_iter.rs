@@ -2,7 +2,8 @@
 
 use crate::aliases::Pos;
 use crate::iters::MCell;
-use crate::parts::{MData, Scalar};
+use crate::parts::Scalar;
+use crate::parts::strage::SelfStrage;
 use std::collections::btree_map::Iter as TreeIter;
 use std::slice::Iter as SliceIter;
 
@@ -12,13 +13,16 @@ pub struct NzIter<'a, T> {
     base: BaseIter<'a, T>,
 }
 
-impl<'a, T> NzIter<'a, T> {
+impl<'a, T> NzIter<'a, T>
+where 
+    T: Scalar
+{
     /// Creates a new value.
-    pub(crate) fn new(mdata: &'a MData<T>) -> Self {
+    pub(crate) fn new(mdata: &'a SelfStrage<T>) -> Self {
         Self {
             base: match mdata {
-                MData::Dense(vec) => BaseIter::ForSlice(vec.iter(), vec.size().1, 0),
-                MData::Sparse(tree) => BaseIter::ForTree(tree.iter()),
+                SelfStrage::Dense(vec) => BaseIter::ForSlice(vec.iter(), mdata.size().1, 0),
+                SelfStrage::Sparse(tree) => BaseIter::ForTree(tree.iter()),
             },
         }
     }
