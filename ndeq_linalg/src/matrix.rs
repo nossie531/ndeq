@@ -5,7 +5,7 @@ use crate::builders::{MatrixBuilder, VectorBuilder};
 use crate::iters::{MCell, NzIter, NzIterMut};
 use crate::parts::len::{Fixed, Single, Var};
 use crate::parts::{Editor, MData, Scalar};
-use crate::util::{AsPos, mutil};
+use crate::util::{AsPos, Vec2d, mutil};
 use iter_chunks_ext::prelude::*;
 use ndeq_num::prelude::*;
 use std::fmt::{self, Debug, Formatter};
@@ -382,7 +382,7 @@ where
 
     fn index(&self, index: usize) -> &Self::Output {
         assert!(index < self.m());
-        self.data.get(self.size, (index, 0))
+        self.data.get((index, 0))
     }
 }
 
@@ -394,7 +394,7 @@ where
 
     fn index(&self, index: Pos) -> &Self::Output {
         assert!(AsPos(index).is_in(self.size()));
-        self.data.get(self.size, index)
+        self.data.get(index)
     }
 }
 
@@ -506,7 +506,7 @@ where
     fn empty() -> Self {
         Matrix {
             size: (0, 0),
-            data: MData::Dense(Vec::new()),
+            data: MData::Dense(Vec2d::new((0, 0))),
             pd: Default::default(),
         }
     }
@@ -528,7 +528,7 @@ where
 
     /// Returns none-zero components iterator.
     fn nz_iter(&self) -> NzIter<'_, T> {
-        self.data.nz_iter(self.size)
+        self.data.nz_iter()
     }
 
     /// Perform add assign with dense matrix on the right-hand side.

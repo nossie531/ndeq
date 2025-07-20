@@ -1,5 +1,5 @@
-use crate::for_tests::{Sample, sparse_ptn};
 use crate::for_tests::consts::*;
+use crate::for_tests::{Sample, sparse_ptn};
 use ndeq_linalg::parts::Scalar;
 use ndeq_linalg::prelude::*;
 use ndeq_linalg::util::mutil;
@@ -121,11 +121,11 @@ fn len() {
 
 #[test]
 fn index() {
-    with_err_index();
+    with_out_of_range();
     with_normal();
     with_vector();
 
-    fn with_err_index() {
+    fn with_out_of_range() {
         let target = DMatrix::<f32>::new((M, N));
         let result = test_panic(|| _ = target[(M / 2, N)]);
         assert!(result.is_panic());
@@ -150,10 +150,10 @@ fn index() {
 
 #[test]
 fn val() {
-    with_err_index();
+    with_out_of_range();
     with_normal();
 
-    fn with_err_index() {
+    fn with_out_of_range() {
         let mut target = DVector::<f32>::new(N);
         let result = test_panic(|| *target.val(N) = 0.42);
         assert!(result.is_panic());
@@ -170,10 +170,10 @@ fn val() {
 
 #[test]
 fn cell() {
-    with_err_index();
+    with_out_of_range();
     with_normal();
 
-    fn with_err_index() {
+    fn with_out_of_range() {
         let mut target = DMatrix::<f32>::new((M, N));
         let result = test_panic(|| *target.cell((M / 2, N)) = 0.42);
         assert!(result.is_panic());

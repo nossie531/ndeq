@@ -20,9 +20,8 @@ where
 {
     /// Creates a new instance.
     pub fn new<R, C>(matrix: &'a mut Matrix<T, R, C>, pos: Pos) -> Self {
-        let n = matrix.n();
         match matrix.mdata_mut() {
-            MData::Dense(vec) => Self::Dense(&mut vec[pos.0 * n + pos.1]),
+            MData::Dense(vec) => Self::Dense(&mut vec[pos]),
             MData::Sparse(map) => {
                 /* Waiting new feature `BTreeMap::insert_entry`.
                 Entry search after entry insert is inefficient.

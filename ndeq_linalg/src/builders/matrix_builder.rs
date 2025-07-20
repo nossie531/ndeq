@@ -41,7 +41,7 @@ where
     /// Panics if `self` has data already.
     #[must_use]
     pub fn sparse(mut self, value: bool) -> Self {
-        assert!(self.mdata.nz_iter(self.size).next().is_none());
+        assert!(self.mdata.nz_iter().next().is_none());
         self.mdata = MData::new(self.size, value);
         self
     }
@@ -59,10 +59,10 @@ where
     where
         I: IntoIterator<Item = (Pos, T)>,
     {
-        assert!(self.mdata.nz_iter(self.size).next().is_none());
+        assert!(self.mdata.nz_iter().next().is_none());
         for (p, v) in values {
             assert!(p.0 < self.size.0 && p.1 < self.size.1);
-            self.mdata.set(self.size, p, v);
+            self.mdata.set(p, v);
         }
 
         self

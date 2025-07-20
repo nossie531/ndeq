@@ -1,6 +1,6 @@
 //! Provider of [`MCells`].
 
-use crate::aliases::{Pos, Size};
+use crate::aliases::Pos;
 use crate::iters::MCell;
 use crate::parts::{MData, Scalar};
 use std::collections::btree_map::Iter as TreeIter;
@@ -14,10 +14,10 @@ pub struct NzIter<'a, T> {
 
 impl<'a, T> NzIter<'a, T> {
     /// Creates a new value.
-    pub(crate) fn new(mdata: &'a MData<T>, size: Size) -> Self {
+    pub(crate) fn new(mdata: &'a MData<T>) -> Self {
         Self {
             base: match mdata {
-                MData::Dense(vec) => BaseIter::ForSlice(vec.iter(), size.1, 0),
+                MData::Dense(vec) => BaseIter::ForSlice(vec.iter(), vec.size().1, 0),
                 MData::Sparse(tree) => BaseIter::ForTree(tree.iter()),
             },
         }

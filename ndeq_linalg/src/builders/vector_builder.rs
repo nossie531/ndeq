@@ -46,10 +46,10 @@ where
     where
         I: IntoIterator<Item = (usize, T)>,
     {
-        assert!(self.mdata.nz_iter((self.len, 1)).next().is_none());
+        assert!(self.mdata.nz_iter().next().is_none());
         for (i, v) in values {
             assert!(i < self.len);
-            self.mdata.set((self.len, 1), (i, 0), v);
+            self.mdata.set((i, 0), v);
         }
 
         self

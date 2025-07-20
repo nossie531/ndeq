@@ -12,6 +12,7 @@ use std::ops::{Add, AddAssign, Mul, MulAssign};
 pub trait Scalar:
     'static
     + Copy
+    + Default
     + Debug
     + Display
     + PartialEq
