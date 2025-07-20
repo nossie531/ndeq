@@ -6,7 +6,7 @@ use crate::iters::{MCell, NzIter, NzIterMut};
 use crate::parts::len::{Fixed, Single, Var};
 use crate::parts::{Editor, MData, Scalar};
 use crate::util::{AsPos, mutil};
-use iter_chunk_ext::prelude::*;
+use iter_chunks_ext::prelude::*;
 use ndeq_num::prelude::*;
 use std::fmt::{self, Debug, Formatter};
 use std::marker::PhantomData;
@@ -98,8 +98,8 @@ where
 {
     /// Creates an identity matrix.
     #[must_use]
-    pub fn identity() -> Self {
-        let ret = DMatrix::identity(N);
+    pub fn new_identity() -> Self {
+        let ret = DMatrix::new_identity(N);
         unsafe { ret.mimic() }
     }
 }
@@ -116,7 +116,7 @@ where
 
     /// Creates a new sparse matrix.
     #[must_use]
-    pub fn sparse() -> Self {
+    pub fn new_sparse() -> Self {
         Self::make().sparse(true).build()
     }
 
@@ -139,19 +139,13 @@ where
 
     /// Creates a new sparse matrix.
     #[must_use]
-    pub fn sparse(size: Size) -> Self {
+    pub fn new_sparse(size: Size) -> Self {
         Self::make(size).sparse(true).build()
-    }
-
-    /// Creates a matrix builder.
-    #[must_use]
-    pub fn make(size: Size) -> MatrixBuilder<T, Var, Var> {
-        MatrixBuilder::new(size)
     }
 
     /// Creates an identity matrix.
     #[must_use]
-    pub fn identity(len: usize) -> Self {
+    pub fn new_identity(len: usize) -> Self {
         let nnz = len;
         let size = (len, len);
         let sparse = mutil::is_sparse_prefered(nnz, size);
@@ -164,6 +158,12 @@ where
         }
 
         ret
+    }
+
+    /// Creates a matrix builder.
+    #[must_use]
+    pub fn make(size: Size) -> MatrixBuilder<T, Var, Var> {
+        MatrixBuilder::new(size)
     }
 }
 
@@ -520,7 +520,7 @@ where
     /// 1. For each row, sum all components absolute values and get it max digits in binary.
     /// 2. Select the one with the largest absolute value of them.
     fn max_scale_nrom(&self) -> i32 {
-        let rows = self.nz_iter().chunk_by(|x| x.row());
+        let rows = self.nz_iter().chunks(|x| x.row());
         let sums = rows.map(|r| r.map(|c| c.val().abs()).sum::<T::Real>());
         let digits = sums.map(|x| x.exponent());
         digits.max().unwrap_or(0)

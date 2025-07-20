@@ -50,12 +50,16 @@ where
     ///
     /// # Panics
     ///
-    /// Panics if any of the entry in `values` is out of range.
+    /// Panic if any of the following occurs.
+    ///
+    /// * `self` has data already.
+    /// * `values` item is out of range.
     #[must_use]
     pub fn entries<I>(mut self, values: I) -> Self
     where
         I: IntoIterator<Item = (Pos, T)>,
     {
+        assert!(self.mdata.nz_iter(self.size).next().is_none());
         for (p, v) in values {
             assert!(p.0 < self.size.0 && p.1 < self.size.1);
             self.mdata.set(self.size, p, v);

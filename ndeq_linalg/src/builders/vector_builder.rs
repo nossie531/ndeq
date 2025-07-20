@@ -33,16 +33,20 @@ where
         Vector::<T, N>::new_internal((self.len, 1), self.mdata)
     }
 
-    /// Sets entries.
+    /// Sets values.
     ///
     /// # Panics
     ///
-    /// Panics if any of the entry in `values` is out of range.
+    /// Panic if any of the following occurs.
+    ///
+    /// * `self` has data already.
+    /// * `values` item is out of range.
     #[must_use]
-    pub fn entries<I>(mut self, values: I) -> Self
+    pub fn values<I>(mut self, values: I) -> Self
     where
         I: IntoIterator<Item = (usize, T)>,
     {
+        assert!(self.mdata.nz_iter((self.len, 1)).next().is_none());
         for (i, v) in values {
             assert!(i < self.len);
             self.mdata.set((self.len, 1), (i, 0), v);

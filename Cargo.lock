@@ -402,9 +402,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "iter_chunk_ext"
+name = "iter_chunks_ext"
 version = "0.1.0"
-source = "git+https://github.com/nossie531/iter_chunk_ext.git#666c0a0c8d7c11ec18b539bb6e55ba9660727474"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "748227b320f479251b8f5379d887e7d71dc46c9105d2efb538e1e3651ee1b620"
 
 [[package]]
 name = "jpeg-decoder"
@@ -485,7 +486,7 @@ name = "ndeq_linalg"
 version = "0.1.0"
 dependencies = [
  "dyn_compatible",
- "iter_chunk_ext",
+ "iter_chunks_ext",
  "ndeq_num",
  "rand",
  "rand_pcg",

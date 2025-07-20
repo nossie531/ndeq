@@ -75,7 +75,7 @@ where
     ///
     /// Panics if `self` or its nodes are currently mutably borrowed.
     fn laplacian(&self) -> DMatrix<f32> {
-        let mut ret = DMatrix::sparse((self.len(), self.len()));
+        let mut ret = DMatrix::new_sparse((self.len(), self.len()));
 
         for (bwd_idx, fwd_idx, w) in self.edges() {
             if bwd_idx == fwd_idx {

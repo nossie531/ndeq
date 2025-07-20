@@ -5,7 +5,7 @@ edition = { workspace = true}
 
 [dependencies]
 dyn_compatible = { workspace = true }
-iter_chunk_ext = { git = "https://github.com/nossie531/iter_chunk_ext.git" }
+iter_chunks_ext = "0.1.0"
 ndeq_num = { path = "../ndeq_num" }
 
 [dev-dependencies]
