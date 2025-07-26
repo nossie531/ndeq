@@ -7,7 +7,6 @@ pub mod solver;
 pub mod tools;
 pub mod values;
 
-pub use aliases::*;
+m::u!(pub mod aliases);
 
-mod aliases;
 mod util;

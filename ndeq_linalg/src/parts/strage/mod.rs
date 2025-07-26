@@ -1,7 +1,5 @@
-pub use dense::*;
-pub use self_strage::*;
-pub use sparse::*;
-
-mod dense;
-mod self_strage;
-mod sparse;
+m::u!(pub mod own_vec_strage);
+m::u!(pub mod matrix_strage);
+m::u!(pub mod ref_vec_strage);
+m::u!(pub mod own_strage);
+m::u!(pub mod own_dok_strage);

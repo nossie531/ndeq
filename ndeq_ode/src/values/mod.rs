@@ -1,7 +1,4 @@
 //! Values for ODE.
 
-pub use ode_time::*;
-pub use ode_value::*;
-
-mod ode_time;
-mod ode_value;
+m::u!(pub mod ode_time);
+m::u!(pub mod ode_value);

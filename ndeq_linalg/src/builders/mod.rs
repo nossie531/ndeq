@@ -1,6 +1,4 @@
-/// Instance builders.
-pub use matrix_builder::*;
-pub use vector_builder::*;
+//! Instance builders.
 
-mod matrix_builder;
-mod vector_builder;
+m::u!(pub mod matrix_builder);
+m::u!(pub mod vector_builder);

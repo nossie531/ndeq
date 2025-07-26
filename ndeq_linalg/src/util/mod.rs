@@ -2,6 +2,4 @@
 
 pub mod mutil;
 
-pub use as_pos::*;
-
-mod as_pos;
+m::u!(pub mod as_pos);

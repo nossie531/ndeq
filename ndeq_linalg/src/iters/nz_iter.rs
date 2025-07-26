@@ -3,7 +3,7 @@
 use crate::aliases::Pos;
 use crate::iters::MCell;
 use crate::parts::Scalar;
-use crate::parts::strage::SelfStrage;
+use crate::parts::strage::{MatrixStrage, OwnStrage};
 use std::collections::btree_map::Iter as TreeIter;
 use std::slice::Iter as SliceIter;
 
@@ -18,11 +18,11 @@ where
     T: Scalar
 {
     /// Creates a new value.
-    pub(crate) fn new(mdata: &'a SelfStrage<T>) -> Self {
+    pub(crate) fn new(mdata: &'a OwnStrage<T>) -> Self {
         Self {
             base: match mdata {
-                SelfStrage::Dense(vec) => BaseIter::ForSlice(vec.iter(), mdata.size().1, 0),
-                SelfStrage::Sparse(tree) => BaseIter::ForTree(tree.iter()),
+                OwnStrage::Dense(vec) => BaseIter::ForSlice(vec.iter(), mdata.size().1, 0),
+                OwnStrage::Sparse(tree) => BaseIter::ForTree(tree.iter()),
             },
         }
     }

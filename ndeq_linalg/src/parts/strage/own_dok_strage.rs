@@ -1,17 +1,18 @@
-//! Provider of [`Sparse`].
+//! Provider of [`OwnDokStrage`].
 
 use std::collections::BTreeMap;
 use std::collections::btree_map::{Entry, Iter, IterMut, OccupiedEntry};
 use crate::aliases::{Pos, Size};
 use crate::parts::Scalar;
 
+/// Self owning matrix strage with dictionary.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Sparse<T> {
+pub struct OwnDokStrage<T> {
     pub(crate) map: BTreeMap<Pos, T>,
     pub(crate) size: Size,
 }
 
-impl<T> Sparse<T>
+impl<T> OwnDokStrage<T>
 where
     T: Scalar,
 {

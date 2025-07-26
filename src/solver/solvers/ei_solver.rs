@@ -1,12 +1,16 @@
 //! Provider of [`EiSolver`].
 
 use crate::prelude::*;
-use ndeq_linalg::prelude::*;
+use ndeq_linalg::{parts::Scalar, prelude::*};
 
 /// ODE solver for network with [Exponential Integrator].
 ///
 /// [Exponential Integrator]: https://en.wikipedia.org/wiki/Exponential_integrator
-pub struct EiSolver<T, V> {
+pub struct EiSolver<T, V>
+where 
+    T: Scalar,
+    V: Scalar,
+{
     h: T,
     // Node values.
     vec: DMatrix<V>,
@@ -14,7 +18,11 @@ pub struct EiSolver<T, V> {
     laplacian: DMatrix<V>,
 }
 
-impl<'a, T, V> NetOdeSolver<'a, T, V> for EiSolver<T, V> {
+impl<'a, T, V> NetOdeSolver<'a, T, V> for EiSolver<T, V>
+where 
+    T: Scalar,
+    V: Scalar,
+{
     // - net から [各ノード値のベクトル] と [ラプラシアン行列] を取得する。
     // - [各ノード値のベクトル] と [ラプラシアン行列] から行列指数関数を実行する。
     fn new_values(&self) -> &[V] {

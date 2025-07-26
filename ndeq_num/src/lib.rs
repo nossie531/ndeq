@@ -2,7 +2,6 @@
 
 pub mod prelude;
 
-pub use float::*;
+m::u!(pub mod float);
 
-mod float;
 mod util;

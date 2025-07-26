@@ -5,7 +5,7 @@ use crate::builders::{MatrixBuilder, VectorBuilder};
 use crate::iters::{MCell, NzIter, NzIterMut};
 use crate::parts::len::{Fixed, Single, Var};
 use crate::parts::{Editor, Scalar};
-use crate::parts::strage::{Dense, SelfStrage};
+use crate::parts::strage::{OwnVecStrage, MatrixStrage, OwnStrage};
 use crate::util::{AsPos, mutil};
 use iter_chunks_ext::prelude::*;
 use ndeq_num::prelude::*;
@@ -17,11 +17,15 @@ use std::ops::{AddAssign, Index, Mul, MulAssign};
 /// [Matrix].
 ///
 /// [Matrix]: https://en.wikipedia.org/wiki/Matrix_(mathematics)
-pub struct Matrix<T, R, C> {
+pub struct Matrix<T, R, C, S = OwnStrage<T>>
+where 
+    T: Scalar,
+    S: MatrixStrage<T>
+{
     /// Internal data.
-    data: SelfStrage<T>,
+    data: S,
     /// Phantom data.
-    pd: PhantomData<(R, C)>,
+    pd: PhantomData<(T, R, C)>,
 }
 
 /// Vector (Single column matrix).
@@ -477,7 +481,7 @@ where
     T: Scalar,
 {
     /// Returns mutable reference of internal data.
-    pub(crate) fn mdata_mut(&mut self) -> &mut SelfStrage<T> {
+    pub(crate) fn mdata_mut(&mut self) -> &mut OwnStrage<T> {
         &mut self.data
     }
 
@@ -490,7 +494,7 @@ where
     }
 
     /// Creates a new matrix with internal data.
-    pub(crate) fn new_internal(data: SelfStrage<T>) -> Self {
+    pub(crate) fn new_internal(data: OwnStrage<T>) -> Self {
         Self {
             data,
             pd: Default::default(),
@@ -500,7 +504,7 @@ where
     /// Creates a dummy empty matrix.
     fn empty() -> Self {
         Matrix {
-            data: SelfStrage::Dense(Dense::new((0, 0))),
+            data: OwnStrage::Dense(OwnVecStrage::new((0, 0))),
             pd: Default::default(),
         }
     }

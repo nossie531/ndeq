@@ -1,7 +1,7 @@
 use crate::aliases::{Pos, Size};
 use crate::parts::Scalar;
 use crate::prelude::*;
-use crate::parts::strage::SelfStrage;
+use crate::parts::strage::{MatrixStrage, OwnStrage};
 use std::marker::PhantomData;
 
 /// Matrix builder.
@@ -10,7 +10,7 @@ pub struct MatrixBuilder<T, R, C> {
     size: Size,
 
     /// Matrix internal data.
-    mdata: SelfStrage<T>,
+    mdata: OwnStrage<T>,
 
     /// Phantom data.
     pd: PhantomData<(R, C)>,
@@ -24,7 +24,7 @@ where
     pub(crate) fn new(size: Size) -> Self {
         Self {
             size,
-            mdata: SelfStrage::new(size, false),
+            mdata: OwnStrage::new(size, false),
             pd: Default::default(),
         }
     }
@@ -43,7 +43,7 @@ where
     #[must_use]
     pub fn sparse(mut self, value: bool) -> Self {
         assert!(self.mdata.nz_iter().next().is_none());
-        self.mdata = SelfStrage::new(self.size, value);
+        self.mdata = OwnStrage::new(self.size, value);
         self
     }
 

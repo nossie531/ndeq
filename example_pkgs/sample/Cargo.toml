@@ -4,6 +4,7 @@ edition.workspace = true
 publish = false
 
 [dependencies]
+m = { workspace = true }
 ndeq = { workspace = true }
 plotters = "0.3"
 plotters-backend = "0.3"

@@ -1,18 +1,18 @@
-//! Provider of [`Dense`].
+//! Provider of [`OwnVecStrage`].
 
 use crate::aliases::{Pos, Size};
 use crate::parts::Scalar;
 use std::slice::{Iter, IterMut};
 use std::iter;
 
-/// Two dimension vector.
+/// Self owning matrix strage with vector.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Dense<T> {
+pub struct OwnVecStrage<T> {
     pub(crate) vec: Vec<T>,
     pub(crate) size: Size,
 }
 
-impl<T> Dense<T>
+impl<T> OwnVecStrage<T>
 where
     T: Scalar,
 {

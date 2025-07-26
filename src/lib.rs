@@ -8,10 +8,6 @@
 pub mod prelude;
 pub mod solver;
 
-pub use net_flow::*;
-pub use node_val::*;
-pub use node_vec::*;
-
-mod net_flow;
-mod node_val;
-mod node_vec;
+m::u!(pub mod net_flow);
+m::u!(pub mod node_val);
+m::u!(pub mod node_vec);

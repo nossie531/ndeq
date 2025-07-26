@@ -9,6 +9,4 @@ pub mod parts;
 pub mod prelude;
 pub mod util;
 
-pub use matrix::*;
-
-mod matrix;
+m::u!(pub mod matrix);

@@ -3,6 +3,4 @@
 pub mod consts;
 pub mod sparse_ptn;
 
-pub use sample::*;
-
-mod sample;
+m::u!(pub mod sample);

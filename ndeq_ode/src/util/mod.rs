@@ -1,5 +1,3 @@
 //! Crate's utility.
 
-mod work;
-
-pub use work::*;
+m::u!(pub mod work);

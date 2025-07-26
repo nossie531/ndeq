@@ -10,8 +10,11 @@ license = "MIT OR Apache-2.0"
 [workspace.dependencies]
 dyn_compatible = "0.1"
 ensure_impl = "0.2"
-ndeq_num = { version = "=0.1.0", path = "ndeq_num" }
+m = { package = "mod_idiom", version = "0.1" }
 ndeq = { version = "=0.1.0", path = "." }
+ndeq_linalg = { version = "=0.1.0", path = "ndeq_linalg" }
+ndeq_num = { version = "=0.1.0", path = "ndeq_num" }
+ndeq_ode = { version = "=0.1.0", path = "ndeq_ode" }
 
 [package]
 name = "ndeq"
@@ -27,6 +30,7 @@ license.workspace = true
 [dependencies]
 dyn_compatible = { workspace = true }
 ensure_impl = { workspace = true }
+m = { workspace = true }
 ndeq_num = { workspace = true }
-ndeq_linalg = { version = "=0.1.0", path = "ndeq_linalg" }
-ndeq_ode = { version = "=0.1.0", path = "ndeq_ode" }
+ndeq_linalg = { workspace = true }
+ndeq_ode = { workspace = true }

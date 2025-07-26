@@ -1,9 +1,5 @@
 //! Network ODE solvers.
 
-pub use ei_solver::*;
-pub use net_euler::*;
-pub use net_runge_kutta::*;
-
-mod ei_solver;
-mod net_euler;
-mod net_runge_kutta;
+m::u!(pub mod ei_solver);
+m::u!(pub mod net_euler);
+m::u!(pub mod net_runge_kutta);

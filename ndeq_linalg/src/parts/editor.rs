@@ -1,7 +1,7 @@
 use crate::aliases::Pos;
 use crate::parts::Scalar;
 use crate::prelude::*;
-use crate::parts::strage::SelfStrage;
+use crate::parts::strage::OwnStrage;
 use std::collections::btree_map::OccupiedEntry;
 use std::mem;
 use std::ops::{Deref, DerefMut};
@@ -22,8 +22,8 @@ where
     /// Creates a new instance.
     pub fn new<R, C>(matrix: &'a mut Matrix<T, R, C>, pos: Pos) -> Self {
         match matrix.mdata_mut() {
-            SelfStrage::Dense(x) => Self::Dense(x.at_mut(pos)),
-            SelfStrage::Sparse(x) => {
+            OwnStrage::Dense(x) => Self::Dense(x.at_mut(pos)),
+            OwnStrage::Sparse(x) => {
                 Self::Sparse(Some(x.at_mut(pos)))
             }
         }
