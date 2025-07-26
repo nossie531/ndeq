@@ -2,6 +2,7 @@
 
 use crate::for_tests::consts;
 use ndeq_linalg::aliases::Size;
+use ndeq_linalg::mat_util::MatSize;
 
 /// Calculates the number of sparse patterns from matrix sizes.
 ///
@@ -18,7 +19,7 @@ pub fn calc<const N: usize>(sizes: [Size; N]) -> usize {
 
 /// Returns 2^(`size.0 * size.1`).
 fn area_pow(size: &Size) -> f32 {
-    2usize.pow((size.0 * size.1) as u32) as f32
+    2usize.pow(MatSize(*size).len() as u32) as f32
 }
 
 /// Returns adjusted value.

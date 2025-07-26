@@ -1,5 +1,4 @@
-ndeq
-===
+# ndeq
 
 Network diffusion simulator.
 

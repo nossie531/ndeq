@@ -5,8 +5,8 @@ use crate::builders::{MatrixBuilder, VectorBuilder};
 use crate::iters::{MCell, NzIter, NzIterMut};
 use crate::parts::len::{Fixed, Single, Var};
 use crate::parts::{Editor, Scalar};
-use crate::parts::strage::{OwnVecStrage, MatrixStrage, OwnStrage};
-use crate::util::{AsPos, mutil};
+use crate::parts::strage::{MatrixStrage, MatrixStrageMut, OwnStrage, OwnVecStrage};
+use crate::mat_util::{MatPos, mutil};
 use iter_chunks_ext::prelude::*;
 use ndeq_num::prelude::*;
 use std::fmt::{self, Debug, Formatter};
@@ -90,7 +90,7 @@ where
     /// Panics if `pos` is out of range.
     #[must_use]
     pub fn val(&mut self, index: usize) -> Editor<'_, T> {
-        assert!(index < self.m());
+        assert!(index < self.rn());
         Editor::new(self, (index, 0))
     }
 }
@@ -199,19 +199,19 @@ where
         }
 
         let x_iter = self.nz_iter().map(|x| (x.pos(), x.val()));
-        let y_iter = (0..self.n()).map(|x| ((x, x), T::one()));
+        let y_iter = (0..self.cn()).map(|x| ((x, x), T::one()));
         x_iter.eq(y_iter)
     }
 
     /// Returns row length.
     #[must_use]
-    pub fn m(&self) -> usize {
+    pub fn rn(&self) -> usize {
         self.size().0
     }
 
     /// Returns column length.
     #[must_use]
-    pub fn n(&self) -> usize {
+    pub fn cn(&self) -> usize {
         self.size().1
     }
 
@@ -253,7 +253,7 @@ where
     #[must_use]
     pub fn expmv(&self, vec: &Vector<T, R>) -> Vector<T, R> {
         assert!(self.is_square());
-        assert_eq!(vec.len(), self.n());
+        assert_eq!(vec.len(), self.cn());
         let mut ret = vec.clone_size();
         let mut work = vec.clone_size();
         let mut term = vec.clone();
@@ -279,7 +279,7 @@ where
     /// Panics if `pos` is out of range.
     #[must_use]
     pub fn cell(&mut self, pos: Pos) -> Editor<'_, T> {
-        assert!(AsPos(pos).is_in(self.size()));
+        assert!(MatPos(pos, self.size()).ok());
         Editor::new(self, pos)
     }
 
@@ -306,7 +306,7 @@ where
     /// * `out` size missmatch to result size.
     /// * `self` columns count and `rhs` rows count do not match.
     pub fn mul_to<R2, C2>(&self, rhs: &Matrix<T, R2, C2>, out: &mut Matrix<T, R, C2>) {
-        assert_eq!(self.n(), rhs.m());
+        assert_eq!(self.cn(), rhs.rn());
 
         let use_sparse_calc = self.is_sparse() || rhs.is_sparse();
         let method = if use_sparse_calc {
@@ -382,7 +382,7 @@ where
     type Output = T;
 
     fn index(&self, index: usize) -> &Self::Output {
-        assert!(index < self.m());
+        assert!(index < self.rn());
         self.data.value((index, 0))
     }
 }
@@ -394,7 +394,7 @@ where
     type Output = T;
 
     fn index(&self, index: Pos) -> &Self::Output {
-        assert!(AsPos(index).is_in(self.size()));
+        assert!(MatPos(index, self.size()).ok());
         self.data.value(index)
     }
 }
@@ -454,8 +454,8 @@ where
     ///
     /// Panics if `self` columns count and `rhs` rows count do not match.
     fn mul(self, rhs: &Matrix<T, R2, C2>) -> Self::Output {
-        assert_eq!(self.n(), rhs.m());
-        let size = (self.m(), rhs.n());
+        assert_eq!(self.cn(), rhs.rn());
+        let size = (self.rn(), rhs.cn());
         let sparse = self.is_sparse() && rhs.is_sparse();
         let ret = DMatrix::make(size).sparse(sparse).build();
         let mut ret = unsafe { ret.mimic() };
@@ -532,8 +532,8 @@ where
     /// Perform add assign with dense matrix on the right-hand side.
     fn add_assign_for_dense_rhs(&mut self, rhs: &Self) {
         assert_eq!(self.size(), rhs.size());
-        for i in 0..rhs.m() {
-            for j in 0..rhs.n() {
+        for i in 0..rhs.rn() {
+            for j in 0..rhs.cn() {
                 *self.cell((i, j)) += rhs[(i, j)];
             }
         }
@@ -549,13 +549,13 @@ where
 
     /// Perform multiple operation without sparse matrix.
     fn mul_without_sparse_to<R2, C2>(&self, rhs: &Matrix<T, R2, C2>, out: &mut Matrix<T, R, C2>) {
-        assert_eq!(self.n(), rhs.m());
-        assert_eq!((self.m(), rhs.n()), out.size());
+        assert_eq!(self.cn(), rhs.rn());
+        assert_eq!((self.rn(), rhs.cn()), out.size());
 
-        for i in 0..out.m() {
-            for j in 0..out.n() {
+        for i in 0..out.rn() {
+            for j in 0..out.cn() {
                 let mut sum = *T::zero();
-                for k in 0..self.n() {
+                for k in 0..self.cn() {
                     sum += self[(i, k)] * rhs[(k, j)];
                 }
 
@@ -566,8 +566,8 @@ where
 
     /// Perform multiple operation with sparse matrix.
     fn mul_with_sparse_to<R2, C2>(&self, rhs: &Matrix<T, R2, C2>, out: &mut Matrix<T, R, C2>) {
-        assert_eq!(self.n(), rhs.m());
-        assert_eq!((self.m(), rhs.n()), out.size());
+        assert_eq!(self.cn(), rhs.rn());
+        assert_eq!((self.rn(), rhs.cn()), out.size());
 
         let mut lhs_iter = self.nz_iter();
         let mut rhs_iter = rhs.nz_iter();
@@ -595,9 +595,15 @@ where
             }
         }
     }
+}
 
+impl<T, R, C, S> Matrix<T, R, C, S>
+where
+    T: Scalar,
+    S: MatrixStrageMut<T>,
+{
     /// Returns mutable none-zero components iterator.
     fn nz_iter_mut(&mut self) -> NzIterMut<'_, T> {
-        self.data.nz_iter_mut(self.size())
+        self.data.nz_iter_mut()
     }
 }

@@ -9,9 +9,7 @@ use std::slice::Iter as SliceIter;
 
 /// Iterator of matrix none zero component.
 #[derive(Clone)]
-pub struct NzIter<'a, T> {
-    base: BaseIter<'a, T>,
-}
+pub struct NzIter<'a, T>(BaseIter<'a, T>);
 
 impl<'a, T> NzIter<'a, T>
 where 
@@ -19,12 +17,12 @@ where
 {
     /// Creates a new value.
     pub(crate) fn new(mdata: &'a OwnStrage<T>) -> Self {
-        Self {
-            base: match mdata {
-                OwnStrage::Dense(vec) => BaseIter::ForSlice(vec.iter(), mdata.size().1, 0),
-                OwnStrage::Sparse(tree) => BaseIter::ForTree(tree.iter()),
-            },
-        }
+        let base = match mdata {
+            OwnStrage::Dense(vec) => BaseIter::ForSlice(vec.iter(), mdata.size().1, 0),
+            OwnStrage::Sparse(tree) => BaseIter::ForTree(tree.iter()),
+        };
+
+        Self(base)
     }
 }
 
@@ -35,7 +33,7 @@ where
     type Item = MCell<'a, T>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match &mut self.base {
+        match &mut self.0 {
             BaseIter::ForSlice(iter, m, i) => {
                 while let Some(val) = iter.next() {
                     let pos = (*i / *m, *i % *m);

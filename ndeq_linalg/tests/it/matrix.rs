@@ -2,7 +2,7 @@ use crate::for_tests::consts::*;
 use crate::for_tests::{Sample, sparse_ptn};
 use ndeq_linalg::parts::Scalar;
 use ndeq_linalg::prelude::*;
-use ndeq_linalg::util::mutil;
+use ndeq_linalg::mat_util::mutil;
 use test_panic::prelude::*;
 
 #[test]
@@ -356,8 +356,8 @@ fn mul() {
 
     fn expected_vs_scalar<T: Scalar>(lhs: &DMatrix<T>, rhs: T) -> DMatrix<T> {
         let mut ret = DMatrix::new(lhs.size());
-        for i in 0..ret.m() {
-            for j in 0..ret.n() {
+        for i in 0..ret.rn() {
+            for j in 0..ret.cn() {
                 *ret.cell((i, j)) = lhs[(i, j)] * rhs;
             }
         }

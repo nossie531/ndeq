@@ -2,8 +2,9 @@
 
 use crate::aliases::{Pos, Size};
 use crate::iters::{NzIter, NzIterMut};
+use crate::mat_util::MatPos;
 use crate::parts::Scalar;
-use crate::parts::strage::{OwnVecStrage, MatrixStrage, OwnDokStrage};
+use crate::parts::strage::{MatrixStrage, MatrixStrageMut, OwnDokStrage, OwnVecStrage};
 
 /// Self owning matrix strage.
 #[derive(Clone, Debug, PartialEq)]
@@ -29,7 +30,7 @@ where
 }
 
 impl<T> MatrixStrage<T> for OwnStrage<T>
-where
+where 
     T: Scalar,
 {
     /// Returns `true` if storage format is for sparse matrix.
@@ -51,21 +52,26 @@ where
     /// Returns value at specified position.
     fn value(&self, pos: Pos) -> &T {
         match self {
-            Self::Dense(x) => &x.vec[pos.0 * x.size.1 + pos.1],
+            Self::Dense(x) => &x.vec[MatPos(pos, x.size).index()],
             Self::Sparse(x) => x.map.get(&pos).unwrap_or_else(|| T::zero()),
         }
     }
 
     /// Returns none-zero components iterator.
-    fn nz_iter<'a>(&'a self) -> NzIter<'a, T> {
+    fn nz_iter(&self) -> NzIter<'_, T> {
         NzIter::new(self)
     }
+}
 
+impl<T> MatrixStrageMut<T> for OwnStrage<T>
+where
+    T: Scalar,
+{
     /// Sets value to specified position.
     fn set_value(&mut self, pos: Pos, value: T) {
         match self {
             Self::Dense(x) => {
-                x.vec[pos.0 * x.size.1 + pos.1] = value
+                x.vec[MatPos(pos, x.size).index()] = value
             },
             Self::Sparse(x) => {
                 if value == *T::zero() {
@@ -78,7 +84,7 @@ where
     }
 
     /// Returns mutable none-zero components iterator.
-    fn nz_iter_mut<'a>(&'a mut self, size: Size) -> NzIterMut<'a, T> {
-        NzIterMut::new(self, size)
+    fn nz_iter_mut<'a>(&'a mut self) -> NzIterMut<'a, T> {
+        NzIterMut::new(self)
     }
 }

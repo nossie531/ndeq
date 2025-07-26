@@ -1,6 +1,6 @@
 use crate::parts::Scalar;
 use crate::prelude::*;
-use crate::parts::strage::{MatrixStrage, OwnStrage};
+use crate::parts::strage::{MatrixStrage, MatrixStrageMut, OwnStrage};
 use std::marker::PhantomData;
 
 /// Vector builder.

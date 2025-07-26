@@ -1,6 +1,7 @@
 //! Provider of [`OwnVecStrage`].
 
 use crate::aliases::{Pos, Size};
+use crate::mat_util::{MatPos, MatSize};
 use crate::parts::Scalar;
 use std::slice::{Iter, IterMut};
 use std::iter;
@@ -18,7 +19,7 @@ where
 {
     /// Creates a new value.
     pub fn new(size: Size) -> Self {
-        let len = size.0 * size.1;
+        let len = MatSize(size).len();
         let mut vec = Vec::with_capacity(len);
         vec.extend(iter::repeat_with(T::default).take(len));
         Self { vec, size }
@@ -31,7 +32,7 @@ where
 
     /// Returns mutable reference at specified position.
     pub fn at_mut(&mut self, pos: Pos) -> &mut T {
-        &mut self.vec[pos.0 * self.size.1 + pos.1]
+        &mut self.vec[MatPos(pos, self.size).index()]
     }
 
     /// Returns mutable iterator over the components.

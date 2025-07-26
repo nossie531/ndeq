@@ -2,6 +2,7 @@
 
 use crate::for_tests::consts;
 use ndeq_linalg::aliases::{Pos, Size};
+use ndeq_linalg::mat_util::MatSize;
 use ndeq_linalg::prelude::*;
 use rand::seq::index::sample;
 use rand::{Rng, SeedableRng};
@@ -36,7 +37,7 @@ impl Sample {
     /// Creates a standard row vector.
     pub fn create_row_vector(&mut self) -> DMatrix<f32> {
         let mut ret = DMatrix::new(Self::ROW_VEC_SIZE);
-        for i in 0..ret.m() {
+        for i in 0..ret.rn() {
             *ret.cell((0, i)) = self.random_in_open01();
         }
 
@@ -46,7 +47,7 @@ impl Sample {
     /// Creates a standard column vector.
     pub fn create_col_vector(&mut self) -> DMatrix<f32> {
         let mut ret = DMatrix::new(Self::COL_VEC_SIZE);
-        for i in 0..ret.m() {
+        for i in 0..ret.rn() {
             *ret.cell((i, 0)) = self.random_in_open01();
         }
 
@@ -59,8 +60,8 @@ impl Sample {
         let nnz_ratio = self.rng.random::<f32>();
         let zero_poss = self.random_shot(Self::SQ_SIZE, 1.0 - nnz_ratio);
 
-        for i in 0..ret.m() {
-            for j in 0..ret.n() {
+        for i in 0..ret.rn() {
+            for j in 0..ret.cn() {
                 let is_zero = zero_poss.contains(&(i, j));
                 *ret.cell((i, j)) = if is_zero {
                     0.0
@@ -77,7 +78,7 @@ impl Sample {
 impl Sample {
     /// Generates random set in two dimension index.
     fn random_shot(&mut self, size: Size, ratio: f32) -> BTreeSet<Pos> {
-        let cmps_cnt = size.0 * size.1;
+        let cmps_cnt = MatSize(size).len();
         let zero_cnt = (cmps_cnt as f32 * ratio).round() as usize;
         let zero_idxs = sample(&mut self.rng, cmps_cnt, zero_cnt);
         let zero_poss = zero_idxs.iter().map(|idx| (idx / size.1, idx % size.1));
