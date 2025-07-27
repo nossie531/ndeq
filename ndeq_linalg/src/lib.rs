@@ -5,8 +5,8 @@
 pub mod aliases;
 pub mod builders;
 pub mod iters;
+pub mod mat_util;
 pub mod parts;
 pub mod prelude;
-pub mod mat_util;
 
 m::u!(pub mod matrix);

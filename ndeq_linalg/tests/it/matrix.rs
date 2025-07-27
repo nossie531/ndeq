@@ -1,8 +1,8 @@
 use crate::for_tests::consts::*;
 use crate::for_tests::{Sample, sparse_ptn};
+use ndeq_linalg::mat_util;
 use ndeq_linalg::parts::Scalar;
 use ndeq_linalg::prelude::*;
-use ndeq_linalg::mat_util;
 use test_panic::prelude::*;
 
 #[test]
