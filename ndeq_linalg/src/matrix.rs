@@ -154,10 +154,7 @@ where
         let sparse = mat_util::is_sparse_prefered(nnz, size);
         let mut ret = Self::make(size).sparse(sparse).build();
         for i in 0..len {
-            for j in 0..len {
-                let val = if i == j { T::one() } else { T::zero() };
-                *ret.cell((i, j)) = *val;
-            }
+            *ret.cell((i, i)) = *T::one();
         }
 
         ret
