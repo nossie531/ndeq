@@ -200,14 +200,6 @@ where
 
         let x_iter = self.nz_iter().map(|x| (x.pos(), x.val()));
         let y_iter = (0..self.cn()).map(|x| ((x, x), T::one()));
-        
-        let x_iter2 = x_iter.clone();
-        let x_out = x_iter2.map(|x| format!("({:?}, {})", x.0, x.1)).collect::<Vec<_>>().join(",");
-        println!("{x_out}");
-        let y_iter2 = y_iter.clone();
-        let y_out = y_iter2.map(|x| format!("({:?}, {})", x.0, x.1)).collect::<Vec<_>>().join(",");
-        println!("{y_out}");
-
         x_iter.eq(y_iter)
     }
 
