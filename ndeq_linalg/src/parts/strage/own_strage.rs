@@ -52,7 +52,7 @@ where
     /// Returns value at specified position.
     fn value(&self, pos: Pos) -> &T {
         match self {
-            Self::Dense(x) => &x.vec[MatPos(pos, x.size).index()],
+            Self::Dense(x) => &x.vec[MatPos(pos).on(x.size)],
             Self::Sparse(x) => x.map.get(&pos).unwrap_or_else(|| T::zero()),
         }
     }
@@ -71,7 +71,7 @@ where
     fn set_value(&mut self, pos: Pos, value: T) {
         match self {
             Self::Dense(x) => {
-                x.vec[MatPos(pos, x.size).index()] = value
+                x.vec[MatPos(pos).on(x.size)] = value
             },
             Self::Sparse(x) => {
                 if value == *T::zero() {

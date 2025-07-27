@@ -32,7 +32,7 @@ where
 
     /// Returns mutable reference at specified position.
     pub fn at_mut(&mut self, pos: Pos) -> &mut T {
-        &mut self.vec[MatPos(pos, self.size).index()]
+        &mut self.vec[MatPos(pos).on(self.size)]
     }
 
     /// Returns mutable iterator over the components.

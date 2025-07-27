@@ -2,7 +2,7 @@ use crate::for_tests::consts::*;
 use crate::for_tests::{Sample, sparse_ptn};
 use ndeq_linalg::parts::Scalar;
 use ndeq_linalg::prelude::*;
-use ndeq_linalg::mat_util::mutil;
+use ndeq_linalg::mat_util;
 use test_panic::prelude::*;
 
 #[test]
@@ -101,14 +101,14 @@ fn new_identity() {
     fn with_smatrix() {
         let result = SMatrix::<f32, N, N>::new_identity();
         assert_eq!(result.size(), (N, N));
-        assert_eq!(result.is_sparse(), mutil::is_sparse_prefered(N, (N, N)));
+        assert_eq!(result.is_sparse(), mat_util::is_sparse_prefered(N, (N, N)));
         assert!(result.is_identity());
     }
 
     fn with_dmatrix() {
         let result = DMatrix::<f32>::new_identity(N);
         assert_eq!(result.size(), (N, N));
-        assert_eq!(result.is_sparse(), mutil::is_sparse_prefered(N, (N, N)));
+        assert_eq!(result.is_sparse(), mat_util::is_sparse_prefered(N, (N, N)));
         assert!(result.is_identity());
     }
 }

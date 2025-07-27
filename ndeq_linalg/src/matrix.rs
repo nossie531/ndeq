@@ -6,7 +6,7 @@ use crate::iters::{MCell, NzIter, NzIterMut};
 use crate::parts::len::{Fixed, Single, Var};
 use crate::parts::{Editor, Scalar};
 use crate::parts::strage::{MatrixStrage, MatrixStrageMut, OwnStrage, OwnVecStrage};
-use crate::mat_util::{MatPos, mutil};
+use crate::mat_util::{self, MatPos};
 use iter_chunks_ext::prelude::*;
 use ndeq_num::prelude::*;
 use std::fmt::{self, Debug, Formatter};
@@ -151,7 +151,7 @@ where
     pub fn new_identity(len: usize) -> Self {
         let nnz = len;
         let size = (len, len);
-        let sparse = mutil::is_sparse_prefered(nnz, size);
+        let sparse = mat_util::is_sparse_prefered(nnz, size);
         let mut ret = Self::make(size).sparse(sparse).build();
         for i in 0..len {
             for j in 0..len {
@@ -200,6 +200,14 @@ where
 
         let x_iter = self.nz_iter().map(|x| (x.pos(), x.val()));
         let y_iter = (0..self.cn()).map(|x| ((x, x), T::one()));
+        
+        let x_iter2 = x_iter.clone();
+        let x_out = x_iter2.map(|x| format!("({:?}, {})", x.0, x.1)).collect::<Vec<_>>().join(",");
+        println!("{x_out}");
+        let y_iter2 = y_iter.clone();
+        let y_out = y_iter2.map(|x| format!("({:?}, {})", x.0, x.1)).collect::<Vec<_>>().join(",");
+        println!("{y_out}");
+
         x_iter.eq(y_iter)
     }
 
@@ -279,7 +287,7 @@ where
     /// Panics if `pos` is out of range.
     #[must_use]
     pub fn cell(&mut self, pos: Pos) -> Editor<'_, T> {
-        assert!(MatPos(pos, self.size()).ok());
+        assert!(MatPos(pos).is_in(self.size()));
         Editor::new(self, pos)
     }
 
@@ -394,7 +402,7 @@ where
     type Output = T;
 
     fn index(&self, index: Pos) -> &Self::Output {
-        assert!(MatPos(index, self.size()).ok());
+        assert!(MatPos(index).is_in(self.size()));
         self.data.value(index)
     }
 }

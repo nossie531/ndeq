@@ -3,24 +3,18 @@
 use crate::aliases::{Pos, Size};
 
 /// Matrix position.
-pub struct MatPos(pub Pos, pub Size);
+pub struct MatPos(pub Pos);
 
 impl MatPos {
-    pub fn ok(&self) -> bool {
-        let row_ok = self.pos().0 < self.size().0;
-        let col_ok = self.pos().1 < self.size().1;
-        row_ok && col_ok
+    pub fn is_in(&self, size: Size) -> bool {
+        self.base().0 < size.0 && self.base().1 < size.1
     }
 
-    pub fn index(&self) -> usize {
-        self.pos().0 + self.size().1 + self.pos().1
+    pub fn on(&self, size: Size) -> usize {
+        self.base().0 * size.1 + self.base().1
     }
 
-    pub fn pos(&self) -> &Pos {
+    pub fn base(&self) -> &Pos {
         &self.0
-    }
-
-    pub fn size(&self) -> &Size {
-        &self.1
     }
 }

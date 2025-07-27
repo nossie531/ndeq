@@ -30,7 +30,7 @@ where
     }
 
     fn value(&self, pos: Pos) -> &T {
-        &self.vec[MatPos(pos, self.size).index()]
+        &self.vec[MatPos(pos).on(self.size)]
     }
 
     fn nz_iter(&self) -> NzIter<'_, T> {
